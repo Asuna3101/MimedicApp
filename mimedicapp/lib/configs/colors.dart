@@ -14,4 +14,15 @@ class AppColors {
   static const Color error = Color(0xFFD32F2F);
   static const Color success = Color(0xFF2E7D32);
   static const Color warning = Color(0xFFFFA000);
+
+  //Métodos dinámicos para obtener colores según componente
+  static Color getButtonColor(BuildContext context) {
+    return primary; // Morado como color del botón por defecto
+  }
+
+  static Color getSecondaryColor(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? primary // Usar morado oscuro en modo oscuro
+        : white; // Usar blanco en modo claro
+  }
 }
