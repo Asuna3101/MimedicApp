@@ -11,7 +11,7 @@ class Bottombar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.primary,
+        color: AppColors.accent,
       ),
       child: SafeArea(
         top: false,

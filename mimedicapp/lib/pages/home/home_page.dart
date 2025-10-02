@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mimedicapp/pages/home/bottomBar.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class PaginaHome extends StatefulWidget {
+  const PaginaHome({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<PaginaHome> createState() => _PaginaHomeState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _PaginaHomeState extends State<PaginaHome> {
    int bottomIndex = 0;
 
   @override

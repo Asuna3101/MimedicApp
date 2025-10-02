@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Asegúrate de importar GetX
+import 'package:mimedicapp/pages/home/home_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/configs/app_theme.dart'; // Importa tu archivo de temas
@@ -19,13 +20,13 @@ class MimedicApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme(), // Usa el tema claro desde AppTheme
       themeMode: ThemeMode.light, // Usar tema claro por defecto
-      initialRoute: '/inicio',
+      initialRoute: '/home',
       getPages: [
         // Usa getPages en lugar de routes
         GetPage(name: '/inicio', page: () => PaginaInicio()),
         GetPage(name: '/sign-up', page: () => const PaginaRegistro()),
         // GetPage(name: '/sign-in', page: () => PaginaInicioSesion()),
-        // GetPage(name: '/home', page: () => PaginaHome()),
+        GetPage(name: '/home', page: () => const PaginaHome()),
         // GetPage(name: '/perfil', page: () => PaginaPerfil()),
         // Aquí puedes agregar más páginas conforme las vayas creando
       ],
