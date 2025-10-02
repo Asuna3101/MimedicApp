@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mimedicapp/pages/home/home_page.dart';
 import 'configs/colors.dart';
 
 void main() {
@@ -18,7 +19,7 @@ class MimedicTestApp extends StatelessWidget {
         primaryColor: AppColors.primary,
         scaffoldBackgroundColor: AppColors.white,
       ),
-      home: const FontAndColorTestScreen(),
+      home: const HomePage(),
     );
   }
 }
