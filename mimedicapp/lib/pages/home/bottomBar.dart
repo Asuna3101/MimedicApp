@@ -11,7 +11,7 @@ class Bottombar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: AppColors.accent,
+        color: AppColors.primary,
       ),
       child: SafeArea(
         top: false,
@@ -22,7 +22,7 @@ class Bottombar extends StatelessWidget {
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.white,
+          selectedItemColor: AppColors.accent,
           unselectedItemColor: Colors.white70,
           enableFeedback: false,
           showSelectedLabels: false,
