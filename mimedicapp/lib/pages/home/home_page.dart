@@ -21,7 +21,7 @@ class _PaginaHomeState extends State<PaginaHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Topbar(),
+      appBar: const Topbar(),
       body: IndexedStack(
         index: bottomIndex,
         children: views,
