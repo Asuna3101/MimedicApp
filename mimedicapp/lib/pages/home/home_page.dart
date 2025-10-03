@@ -1,37 +1,65 @@
 import 'package:flutter/material.dart';
-import 'package:mimedicapp/components/bottomBar.dart';
-import 'package:mimedicapp/components/topBar.dart';
+import 'package:mimedicapp/pages/home/components/homeCard.dart';
 
-class PaginaHome extends StatefulWidget {
+class PaginaHome extends StatelessWidget {
   const PaginaHome({super.key});
-
-  @override
-  State<PaginaHome> createState() => _PaginaHomeState();
-}
-
-class _PaginaHomeState extends State<PaginaHome> {
-   int bottomIndex = 0;
-
-  final List<Widget> views = const [
-    Center(child: Text("Vista Home", style: TextStyle(fontSize: 22))),
-    Center(child: Text("Vista Tareas", style: TextStyle(fontSize: 22))),
-    Center(child: Text("Vista Configuración", style: TextStyle(fontSize: 22))),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Topbar(),
-      body: IndexedStack(
-        index: bottomIndex,
-        children: views,
-      
-      ),
-      bottomNavigationBar: Bottombar(
-        currentIndex: bottomIndex,
-        onTap: (i) {
-          setState(() => bottomIndex = i);
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Aquí vamos a poner botones tipo "cards"
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2, // 2 columnas
+                crossAxisSpacing: 24,
+                mainAxisSpacing: 24,
+                childAspectRatio: 0.9,
+                children: [
+                  HomeCard(
+                    title: "Medicación",
+                    imagePath: 'assets/img/homeIcons/medicamentos.png',
+                    onTap: () {
+
+                    },
+                  ),
+                  HomeCard(
+                    title: "Citas",
+                    imagePath: 'assets/img/homeIcons/citas.png',
+                    onTap: () {
+                      
+                    },
+                  ),
+                  HomeCard(
+                    title: "Comidas",
+                    imagePath: 'assets/img/homeIcons/comidas.png',
+                    onTap: () {
+                      
+                    },
+                  ),
+                  HomeCard(
+                    title: "Ejercicio",
+                    imagePath: 'assets/img/homeIcons/ejercicios.png',
+                    onTap: () {
+                      
+                    },
+                  ),
+                  HomeCard(
+                    title: "Reportes y seguimiento",
+                    imagePath: 'assets/img/homeIcons/reportes.png',
+                    onTap: () {
+                      
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

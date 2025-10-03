@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:mimedicapp/configs/colors.dart';
+import 'package:mimedicapp/navigation/tabs.dart';
 
 class Bottombar extends StatelessWidget {
-  final int currentIndex;
-  final ValueChanged<int> onTap;
+  final AppTab current;
+  final ValueChanged<AppTab> onTap;
 
-  const Bottombar({super.key, required this.currentIndex, required this.onTap});
+  const Bottombar({super.key, required this.onTap, required this.current});
 
   @override
   Widget build(BuildContext context) {
+    final tabs = bottomTabs;
+    final selected = tabs.indexOf(current);
+    final effectiveIndex = selected == -1 ? 0 : selected;
+
     return Container(
       decoration: const BoxDecoration(
         color: AppColors.primary,
@@ -17,22 +22,22 @@ class Bottombar extends StatelessWidget {
         top: false,
         minimum: const EdgeInsets.only(top: 6),
         child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: onTap,
+          currentIndex: effectiveIndex,
+          onTap: (i) => onTap(tabs[i]),
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppColors.accent,
           unselectedItemColor: Colors.white70,
-          enableFeedback: false,
           showSelectedLabels: false,
           showUnselectedLabels: false,
           iconSize: 40,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.edit_note_rounded), label: ''),
-            BottomNavigationBarItem(icon: Icon(Icons.menu_rounded), label: ''),
-          ],
+          items: tabs.map((t) {
+            return BottomNavigationBarItem(
+              icon: Icon(bottomTabIcons[t]),
+              label: '',
+            );
+          }).toList(),
         ),
       ),
     );
