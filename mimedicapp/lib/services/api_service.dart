@@ -185,7 +185,7 @@ class ApiService {
       'password': password,
     };
 
-    final response = await post('/auth/login-correo', data);
+    final response = await post('/auth/login', data);
 
     // Guardar el token si el login es exitoso
     if (response['access_token'] != null) {

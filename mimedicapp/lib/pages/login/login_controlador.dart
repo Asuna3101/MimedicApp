@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import '../../services/user_service.dart';
-import '../../services/api_service.dart';
 
 class LoginControlador extends GetxController {
   final UserService _userService = UserService();
@@ -54,10 +53,12 @@ class LoginControlador extends GetxController {
       isLoading.value = true;
 
       // Intentar hacer login
-      await _userService.login(
+      final result = await _userService.login(
         correoController.text.trim(),
         contrasenaController.text,
       );
+
+      print('Login exitoso: $result'); // Para debugging
 
       // Si llegamos aquí, el login fue exitoso
       Get.snackbar(
@@ -66,35 +67,35 @@ class LoginControlador extends GetxController {
         backgroundColor: Colors.green[100],
         colorText: Colors.green[800],
         icon: const Icon(Icons.check_circle, color: Colors.green),
-        duration: const Duration(seconds: 2),
+        duration: const Duration(seconds: 3),
       );
 
       // Limpiar el formulario
       _clearForm();
 
-      // Navegar a la pantalla principal
-      Get.offAllNamed('/home'); // Asegúrate de tener esta ruta definida
-    } on ApiException catch (e) {
-      errorMessage.value = e.message;
+      // Esperar un poco para que se vea el mensaje
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Navegar de vuelta al inicio
+      Get.offAllNamed('/inicio');
+    } catch (e) {
+      // Capturar cualquier error
+      print('Error en login: $e'); // Para debugging
+
+      String errorMsg = 'Error al iniciar sesión. Verifica tus credenciales.';
+      if (e.toString().contains('credenciales')) {
+        errorMsg = 'Credenciales incorrectas. Verifica tu correo y contraseña.';
+      }
+
+      errorMessage.value = errorMsg;
       Get.snackbar(
         'Error de inicio de sesión',
-        e.message,
+        errorMsg,
         backgroundColor: Colors.red[100],
         colorText: Colors.red[800],
         icon: const Icon(Icons.error, color: Colors.red),
         duration: const Duration(seconds: 4),
       );
-    } catch (e) {
-      errorMessage.value = 'Error inesperado. Inténtalo de nuevo.';
-      Get.snackbar(
-        'Error',
-        'Ocurrió un error inesperado. Por favor, inténtalo de nuevo.',
-        backgroundColor: Colors.red[100],
-        colorText: Colors.red[800],
-        icon: const Icon(Icons.error, color: Colors.red),
-        duration: const Duration(seconds: 4),
-      );
-      print('Error en login: $e'); // Para debugging
     } finally {
       isLoading.value = false;
     }
