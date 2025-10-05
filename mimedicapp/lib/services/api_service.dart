@@ -101,9 +101,13 @@ class ApiService {
   }
 
   /// Realizar petición POST
-  Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
+  /// Si [auth] es false, no se añade el header Authorization (útil para registro/login)
+  Future<dynamic> post(String endpoint, Map<String, dynamic> data,
+      {bool auth = true}) async {
     try {
-      final headers = await _getAuthHeaders();
+      final headers = auth
+          ? await _getAuthHeaders()
+          : Map<String, String>.from(_defaultHeaders);
       final url = '$baseUrl$endpoint';
 
       // Logging para debugging

@@ -1,5 +1,6 @@
 import '../models/usuario.dart';
 import 'api_service.dart';
+import '../configs/api_config.dart';
 
 class UserService {
   final ApiService _apiService = ApiService();
@@ -7,30 +8,29 @@ class UserService {
   /// Crear un nuevo usuario (registro)
   Future<Usuario> createUser(Usuario usuario) async {
     try {
-      final userData = {
-        'correo': usuario.correo,
-        'nombre': usuario.nombre,
-        'fecha_nacimiento': usuario.fechaNacimiento
-            .toIso8601String()
-            .split('T')[0], // Solo fecha
-        'celular': usuario.celular,
-        'password': usuario.contrasena,
-        'is_active': true, // Campo requerido por el backend
-      };
+      // Construir el payload usando el método del modelo
+      final userData = usuario.toRegistrationJson();
 
-      final response = await _apiService.post('/users/', userData);
+      // Usar el endpoint de registro según ApiConfig
+      final fullUrl = '${ApiService.baseUrl}${ApiConfig.registerEndpoint}';
+      print('➡️ Register URL: $fullUrl');
+      print('➡️ Register payload: $userData');
+      final response = await _apiService
+          .post(ApiConfig.registerEndpoint, userData, auth: false);
 
-      // Convertir la respuesta del backend al modelo de Flutter
+      // El backend devuelve al menos el id y el correo. Construimos el Usuario
+      // a partir del id devuelto y los datos que ya tenemos en el cliente.
       return Usuario(
         idUsuario: response['id'],
-        nombre: response['nombre'],
-        fechaNacimiento: DateTime.parse(response['fecha_nacimiento']),
-        celular: response['celular'] ?? '',
-        correo: response['correo'],
+        nombre: usuario.nombre,
+        fechaNacimiento: usuario.fechaNacimiento,
+        celular: usuario.celular,
+        correo: usuario.correo,
         contrasena: '', // No devolvemos la contraseña por seguridad
       );
     } catch (e) {
-      throw Exception('Error al crear usuario: $e');
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al crear usuario: $e');
     }
   }
 

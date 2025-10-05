@@ -151,12 +151,15 @@ class RegistroControlador extends GetxController {
   /// Registrar usuario
   Future<void> registrarUsuario() async {
     try {
+      // Evitar llamadas concurrentes / doble envío
+      if (isLoading.value) return;
       clearError();
 
       if (!_validateForm()) {
         return;
       }
 
+      // Marcar carga antes de enviar para bloquear reintentos rápidos
       isLoading.value = true;
 
       // Crear el usuario con los datos del formulario
@@ -184,8 +187,8 @@ class RegistroControlador extends GetxController {
       // Limpiar el formulario
       _clearForm();
 
-      // Navegar a la pantalla de login o inicio
-      Get.offNamed('/inicio'); // O la ruta que prefieras
+      // Navegar a la pantalla de login después del registro
+      Get.offAllNamed('/sign-in');
     } on ApiException catch (e) {
       errorMessage.value = e.message;
       Get.snackbar(
@@ -260,8 +263,12 @@ class RegistroControlador extends GetxController {
     if (value == null || value.isEmpty) {
       return 'El celular es requerido';
     }
-    if (value.length < 10) {
-      return 'El celular debe tener al menos 10 dígitos';
+    // Normalizar: eliminar espacios y caracteres no numéricos
+    final normalized = value.replaceAll(RegExp(r'\D'), '');
+
+    // Validar exactamente 9 dígitos
+    if (!RegExp(r'^\d{9}$').hasMatch(normalized)) {
+      return 'El celular debe tener exactamente 9 dígitos';
     }
     return null;
   }
