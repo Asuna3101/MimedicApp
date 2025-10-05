@@ -29,7 +29,7 @@ class MimedicApp extends StatelessWidget {
         GetPage(name: '/inicio', page: () => PaginaInicio()),
         GetPage(name: '/sign-up', page: () => const PaginaRegistro()),
         GetPage(name: '/sign-in', page: () => const PaginaLogin()),
-        GetPage(name: '/home', page: () => PaginaHome()),
+        // GetPage(name: '/home', page: () => PaginaHome()),
         // GetPage(name: '/perfil', page: () => PaginaPerfil()),
         // Aquí puedes agregar más páginas conforme las vayas creando
       ],
