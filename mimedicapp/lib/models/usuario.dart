@@ -15,78 +15,33 @@ class Usuario {
     required this.contrasena,
   });
 
-  // Constructor para crear usuario para registro (sin ID)
-  Usuario.forRegistration({
-    required this.nombre,
-    required this.fechaNacimiento,
-    required this.celular,
-    required this.correo,
-    required this.contrasena,
-  }) : idUsuario = 0; // ID temporal para registro
-
 // Método toString para representar la clase como un String
   @override
   String toString() {
-    return 'Usuario{idUsuario: $idUsuario, nombre: $nombre, fechaNacimiento: $fechaNacimiento, celular: $celular, correo: $correo}';
+    return 'Usuario{idUsuario: $idUsuario, nombre: $nombre, fechaNacimiento: $fechaNacimiento, celular: $celular, correo: $correo, contrasena: $contrasena}';
   }
 
-// Método para convertir la instancia a un Map (JSON) - Compatible con backend
+// Método para convertir la instancia a un Map (JSON)
   Map<String, dynamic> toJson() {
     return {
-      'id': idUsuario,
+      'idUsuario': idUsuario,
       'nombre': nombre,
-      'fecha_nacimiento':
-          fechaNacimiento.toIso8601String().split('T')[0], // Solo fecha
+      'fechaNacimiento': fechaNacimiento.toIso8601String(),
       'celular': celular,
       'correo': correo,
-      'password': contrasena,
+      'contrasena': contrasena,
     };
   }
 
-  // Método para convertir a JSON para registro
-  Map<String, dynamic> toRegistrationJson() {
-    return {
-      'nombre': nombre,
-      'fecha_nacimiento':
-          fechaNacimiento.toIso8601String().split('T')[0], // Solo fecha
-      'celular': celular,
-      'correo': correo,
-      'password': contrasena,
-    };
-  }
-
-// Método para crear una instancia de Usuario a partir de un Map (compatible con backend)
+// Método para crear una instancia de Usuario a partir de un Map
   factory Usuario.fromJson(Map<String, dynamic> json) {
     return Usuario(
-      idUsuario: json['id'] ?? json['idUsuario'] ?? 0,
-      nombre: json['nombre'] ?? '',
-      fechaNacimiento: json['fecha_nacimiento'] != null
-          ? DateTime.parse(json['fecha_nacimiento'])
-          : json['fechaNacimiento'] != null
-              ? DateTime.parse(json['fechaNacimiento'])
-              : DateTime.now(),
-      celular: json['celular'] ?? '',
-      correo: json['correo'] ?? '',
-      contrasena: json['password'] ?? json['contrasena'] ?? '',
-    );
-  }
-
-  // Método para crear copia con modificaciones
-  Usuario copyWith({
-    int? idUsuario,
-    String? nombre,
-    DateTime? fechaNacimiento,
-    String? celular,
-    String? correo,
-    String? contrasena,
-  }) {
-    return Usuario(
-      idUsuario: idUsuario ?? this.idUsuario,
-      nombre: nombre ?? this.nombre,
-      fechaNacimiento: fechaNacimiento ?? this.fechaNacimiento,
-      celular: celular ?? this.celular,
-      correo: correo ?? this.correo,
-      contrasena: contrasena ?? this.contrasena,
+      idUsuario: json['idUsuario'],
+      nombre: json['nombre'],
+      fechaNacimiento: DateTime.parse(json['fechaNacimiento']),
+      celular: json['celular'],
+      correo: json['correo'],
+      contrasena: json['contrasena'],
     );
   }
 }
