@@ -4,7 +4,8 @@ import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
 import 'package:mimedicapp/configs/app_theme.dart'; // Importa tu archivo de temas
-
+import 'package:mimedicapp/pages/registro_cita_medica/registro_cita_pantalla.dart';
+import 'package:mimedicapp/pages/agendar_cita_medica/agendar_cita_pantalla.dart';
 void main() {
   runApp(const MimedicApp());
 }
@@ -29,6 +30,8 @@ class MimedicApp extends StatelessWidget {
         // GetPage(name: '/home', page: () => PaginaHome()),
         // GetPage(name: '/perfil', page: () => PaginaPerfil()),
         // Aquí puedes agregar más páginas conforme las vayas creando
+        GetPage(name: '/citas', page: () => const RegistroCitaPantalla()),
+        GetPage(name: '/citas/agendar', page: () => const AgendarCitaPantalla()),
       ],
     );
   }

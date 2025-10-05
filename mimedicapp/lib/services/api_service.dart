@@ -1,244 +1,238 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import '../configs/api_config.dart';
 
+import 'package:mimedicapp/configs/api_config.dart';
+
+/// Servicio HTTP base (login, headers con token, métodos GET/POST/PUT/DELETE).
+/// - Guarda/lee el JWT en SharedPreferences bajo la clave `auth_token`.
+/// - Usa los endpoints definidos en `ApiConfig`.
 class ApiService {
-  // URL base del backend
-  static String get baseUrl => ApiConfig.getBaseUrl();
-
-  // Headers por defecto
-  static const Map<String, String> _defaultHeaders = {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
-  };
-
-  // Singleton pattern
+  // --------------- Singleton ---------------
   static final ApiService _instance = ApiService._internal();
   factory ApiService() => _instance;
   ApiService._internal();
 
-  // Token de autenticación
-  String? _authToken;
+  // --------------- Estado / Token ---------------
+  String? _authToken; // cacheado en memoria
 
-  /// Obtener el token de autenticación guardado
+  /// Devuelve la URL absoluta combinando base + endpoint relativo
+  String _abs(String endpoint) {
+    // Si el endpoint ya es absoluto, lo regresamos tal cual
+    if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
+      return endpoint;
+    }
+    return '${ApiConfig.baseUrl}$endpoint';
+  }
+
+  /// Lee el token del cache o de SharedPreferences
   Future<String?> getAuthToken() async {
     if (_authToken != null) return _authToken;
-
     final prefs = await SharedPreferences.getInstance();
     _authToken = prefs.getString('auth_token');
     return _authToken;
-  }
+    }
 
-  /// Guardar el token de autenticación
+  /// Persiste el token
   Future<void> saveAuthToken(String token) async {
     _authToken = token;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('auth_token', token);
   }
 
-  /// Limpiar el token de autenticación
+  /// Borra el token
   Future<void> clearAuthToken() async {
     _authToken = null;
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('auth_token');
   }
 
-  /// Obtener headers con autenticación
-  Future<Map<String, String>> _getAuthHeaders() async {
-    final headers = Map<String, String>.from(_defaultHeaders);
-    final token = await getAuthToken();
-    if (token != null) {
-      headers['Authorization'] = 'Bearer $token';
+  // --------------- Headers ---------------
+  Future<Map<String, String>> _headers({bool withAuth = false}) async {
+    final headers = Map<String, String>.from(ApiConfig.defaultHeaders);
+    if (withAuth) {
+      final token = await getAuthToken();
+      if (token != null && token.isNotEmpty) {
+        headers['Authorization'] = 'Bearer $token';
+      }
     }
     return headers;
   }
 
-  /// Manejar respuestas HTTP
+  // --------------- Manejo de respuestas ---------------
   dynamic _handleResponse(http.Response response) {
-    switch (response.statusCode) {
+    final status = response.statusCode;
+    final body = response.body;
+
+    // Intenta parsear JSON si hay body
+    dynamic jsonBody;
+    if (body.isNotEmpty) {
+      try {
+        jsonBody = json.decode(body);
+      } catch (_) {
+        // Si no es JSON y fue 200/201, devuelve string
+        if (status == 200 || status == 201) return body;
+      }
+    }
+
+    switch (status) {
       case 200:
       case 201:
-        if (response.body.isEmpty) return {};
-        return json.decode(response.body);
+        return jsonBody ?? {};
       case 400:
-        throw ApiException('Solicitud inválida: ${response.body}');
+        throw ApiException(_extractDetail(jsonBody) ?? 'Solicitud inválida');
       case 401:
         throw ApiException('No autorizado - Token inválido o expirado');
       case 403:
         throw ApiException('Acceso denegado');
       case 404:
         throw ApiException('Recurso no encontrado');
+      case 409:
+        throw ApiException(_extractDetail(jsonBody) ?? 'Conflicto: recurso en uso');
       case 422:
-        final errorData = json.decode(response.body);
-        throw ApiException('Error de validación: ${errorData['detail']}');
+        throw ApiException(_extractDetail(jsonBody) ?? 'Error de validación');
       case 500:
         throw ApiException('Error interno del servidor');
       default:
-        throw ApiException('Error inesperado: ${response.statusCode}');
+        throw ApiException('Error inesperado: $status');
     }
   }
 
-  /// Realizar petición GET
-  Future<dynamic> get(String endpoint) async {
+  String? _extractDetail(dynamic data) {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http
+      if (data is Map && data['detail'] != null) {
+        return data['detail'].toString();
+      }
+    } catch (_) {}
+    return null;
+  }
+
+  // --------------- Métodos HTTP genéricos ---------------
+  Future<dynamic> get(String endpoint, {bool auth = true}) async {
+    try {
+      final r = await http
           .get(
-            Uri.parse('$baseUrl$endpoint'),
-            headers: headers,
+            Uri.parse(_abs(endpoint)),
+            headers: await _headers(withAuth: auth),
           )
-          .timeout(const Duration(seconds: 30));
-
-      return _handleResponse(response);
+          .timeout(ApiConfig.timeout);
+      return _handleResponse(r);
     } on SocketException {
-      throw ApiException('Error de conexión - Verifica tu conexión a internet');
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiException('Error inesperado: $e');
+      throw ApiException('Sin conexión. Verifica tu internet.');
+    } on HttpException catch (e) {
+      throw ApiException('HTTP error: $e');
+    } on FormatException {
+      throw ApiException('Respuesta no válida del servidor');
     }
   }
 
-  /// Realizar petición POST
-  Future<dynamic> post(String endpoint, Map<String, dynamic> data) async {
+  Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
-      final headers = await _getAuthHeaders();
-      final url = '$baseUrl$endpoint';
-
-      // Logging para debugging
-      print('🚀 POST Request to: $url');
-      print('📋 Headers: $headers');
-      print('📦 Body: ${json.encode(data)}');
-      print('📊 Data keys: ${data.keys.toList()}');
-      print('📊 Data values: ${data.values.toList()}');
-
-      final response = await http
+      final url = _abs(endpoint);
+      final r = await http
           .post(
             Uri.parse(url),
-            headers: headers,
+            headers: await _headers(withAuth: auth),
             body: json.encode(data),
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(ApiConfig.timeout);
 
-      print('📡 Response Status: ${response.statusCode}');
-      print('📡 Response Body: ${response.body}');
-
-      return _handleResponse(response);
-    } on SocketException catch (e) {
-      print('🔌 Socket Exception: $e');
-      throw ApiException(
-          'Error de conexión - Verifica tu conexión a internet\nURL: $baseUrl$endpoint');
+      return _handleResponse(r);
+    } on SocketException {
+      throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
-      print('❌ Unexpected Error: $e');
       if (e is ApiException) rethrow;
       throw ApiException('Error inesperado: $e');
     }
   }
 
-  /// Realizar petición PUT
-  Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
+  Future<dynamic> put(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http
+      final r = await http
           .put(
-            Uri.parse('$baseUrl$endpoint'),
-            headers: headers,
+            Uri.parse(_abs(endpoint)),
+            headers: await _headers(withAuth: auth),
             body: json.encode(data),
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(ApiConfig.timeout);
 
-      return _handleResponse(response);
+      return _handleResponse(r);
     } on SocketException {
-      throw ApiException('Error de conexión - Verifica tu conexión a internet');
+      throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiException('Error inesperado: $e');
     }
   }
 
-  /// Realizar petición DELETE
-  Future<dynamic> delete(String endpoint) async {
+  Future<dynamic> delete(String endpoint, {bool auth = true}) async {
     try {
-      final headers = await _getAuthHeaders();
-      final response = await http
+      final r = await http
           .delete(
-            Uri.parse('$baseUrl$endpoint'),
-            headers: headers,
+            Uri.parse(_abs(endpoint)),
+            headers: await _headers(withAuth: auth),
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(ApiConfig.timeout);
 
-      return _handleResponse(response);
+      return _handleResponse(r);
     } on SocketException {
-      throw ApiException('Error de conexión - Verifica tu conexión a internet');
+      throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiException('Error inesperado: $e');
     }
   }
 
-  /// Login con correo - Compatible con el backend
-  Future<Map<String, dynamic>> loginWithEmail(
-      String email, String password) async {
-    final data = {
-      'correo': email,
-      'password': password,
-    };
+  // --------------- Login / Logout ---------------
+  /// Login JSON: { correo, password } → { access_token, token_type }
+  Future<Map<String, dynamic>> loginWithEmail(String email, String password) async {
+    final payload = {'correo': email, 'password': password};
 
-    final response = await post('/auth/login', data);
+    final resp = await post(ApiConfig.loginEndpoint, payload, auth: false);
 
-    // Guardar el token si el login es exitoso
-    if (response['access_token'] != null) {
-      await saveAuthToken(response['access_token']);
+    final token = resp['access_token'];
+    if (token is String && token.isNotEmpty) {
+      await saveAuthToken(token);
     }
-
-    return response;
+    return resp is Map<String, dynamic> ? resp : <String, dynamic>{};
   }
 
-  /// Login con OAuth2 (form data) - Alternativo
-  Future<Map<String, dynamic>> loginWithForm(
-      String email, String password) async {
+  /// Login (form-url-encoded). Útil si tu backend expone esa variante.
+  Future<Map<String, dynamic>> loginWithForm(String email, String password) async {
     try {
-      final headers = Map<String, String>.from(_defaultHeaders);
-      headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      final headers = Map<String, String>.from(ApiConfig.defaultHeaders)
+        ..['Content-Type'] = 'application/x-www-form-urlencoded';
 
       final body = 'username=$email&password=$password';
-
-      final response = await http
+      final r = await http
           .post(
-            Uri.parse('$baseUrl/auth/login'),
+            Uri.parse(_abs(ApiConfig.loginFormEndpoint)),
             headers: headers,
             body: body,
           )
-          .timeout(const Duration(seconds: 30));
+          .timeout(ApiConfig.timeout);
 
-      final responseData = _handleResponse(response);
-
-      // Guardar el token si el login es exitoso
-      if (responseData['access_token'] != null) {
-        await saveAuthToken(responseData['access_token']);
+      final resp = _handleResponse(r);
+      final token = (resp is Map<String, dynamic>) ? resp['access_token'] : null;
+      if (token is String && token.isNotEmpty) {
+        await saveAuthToken(token);
       }
-
-      return responseData;
+      return resp is Map<String, dynamic> ? resp : <String, dynamic>{};
     } on SocketException {
-      throw ApiException('Error de conexión - Verifica tu conexión a internet');
-    } catch (e) {
-      if (e is ApiException) rethrow;
-      throw ApiException('Error inesperado: $e');
+      throw ApiException('Sin conexión. Verifica tu internet.');
     }
   }
 
-  /// Logout
-  Future<void> logout() async {
-    await clearAuthToken();
-  }
+  /// Cierra sesión local (borra token)
+  Future<void> logout() async => clearAuthToken();
 }
 
-/// Excepción personalizada para errores de API
+/// Excepción propia para los errores de API
 class ApiException implements Exception {
   final String message;
   ApiException(this.message);
-
   @override
   String toString() => 'ApiException: $message';
 }
