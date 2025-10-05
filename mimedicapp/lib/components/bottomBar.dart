@@ -10,7 +10,7 @@ class Bottombar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabs = bottomTabs;
+    const tabs = allTabs;
     final selected = tabs.indexOf(current);
     final effectiveIndex = selected == -1 ? 0 : selected;
 

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Asegúrate de importar GetX
+import 'package:mimedicapp/pages/home/citas/citas_page.dart';
 import 'package:mimedicapp/pages/container/container_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
+import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/configs/app_theme.dart'; // Importa tu archivo de temas
 

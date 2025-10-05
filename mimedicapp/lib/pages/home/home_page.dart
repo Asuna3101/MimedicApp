@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:mimedicapp/pages/home/components/homeCard.dart';
+import 'package:get/get.dart';
+import 'package:mimedicapp/pages/home/components/home_card.dart';
+import 'package:mimedicapp/pages/home/home_controller.dart';
 
-class PaginaHome extends StatelessWidget {
-  const PaginaHome({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
+    final controller = Get.put(HomeController());
+
+    return Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Aquí vamos a poner botones tipo "cards"
             Expanded(
               child: GridView.count(
-                crossAxisCount: 2, // 2 columnas
+                crossAxisCount: 2, 
                 crossAxisSpacing: 24,
                 mainAxisSpacing: 24,
                 childAspectRatio: 0.9,
@@ -23,44 +25,33 @@ class PaginaHome extends StatelessWidget {
                   HomeCard(
                     title: "Medicación",
                     imagePath: 'assets/img/homeIcons/medicamentos.png',
-                    onTap: () {
-
-                    },
+                    onTap: controller.goToMedicacion,
                   ),
                   HomeCard(
                     title: "Citas",
                     imagePath: 'assets/img/homeIcons/citas.png',
-                    onTap: () {
-                      
-                    },
+                    onTap: controller.goToCitas,
                   ),
                   HomeCard(
                     title: "Comidas",
                     imagePath: 'assets/img/homeIcons/comidas.png',
-                    onTap: () {
-                      
-                    },
+                    onTap: controller.goToComidas,
                   ),
                   HomeCard(
                     title: "Ejercicio",
                     imagePath: 'assets/img/homeIcons/ejercicios.png',
-                    onTap: () {
-                      
-                    },
+                    onTap: controller.goToEjercicio
                   ),
                   HomeCard(
                     title: "Reportes y seguimiento",
                     imagePath: 'assets/img/homeIcons/reportes.png',
-                    onTap: () {
-                      
-                    },
+                    onTap: controller.goToReportes
                   ),
                 ],
               ),
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 }
