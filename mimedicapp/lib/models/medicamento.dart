@@ -19,23 +19,23 @@ class Medicamento {
 
   // Conversión a JSON (útil para almacenamiento local)
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'nombre': nombre,
-    'dosis': dosis,
-    'unidad': unidad,
-    'frecuenciaHoras': frecuenciaHoras,
-    'fechaInicio': fechaInicio.toIso8601String(),
-    'fechaFin': fechaFin.toIso8601String(),
-  };
+        'id': id,
+        'nombre': nombre,
+        'dosis': dosis,
+        'unidad': unidad,
+        'frecuenciaHoras': frecuenciaHoras,
+        'fechaInicio': fechaInicio.toIso8601String(),
+        'fechaFin': fechaFin.toIso8601String(),
+      };
 
   // Constructor desde JSON
   factory Medicamento.fromJson(Map<String, dynamic> json) => Medicamento(
-    id: json['id'],
-    nombre: json['nombre'],
-    dosis: json['dosis'],
-    unidad: json['unidad'],
-    frecuenciaHoras: json['frecuenciaHoras'],
-    fechaInicio: DateTime.parse(json['fechaInicio']),
-    fechaFin: DateTime.parse(json['fechaFin']),
-  );
+        id: json['id'],
+        nombre: json['nombre'],
+        dosis: json['dosis'],
+        unidad: json['unidad'],
+        frecuenciaHoras: json['frecuenciaHoras'],
+        fechaInicio: DateTime.parse(json['fechaInicio']),
+        fechaFin: DateTime.parse(json['fechaFin']),
+      );
 }
