@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mimedicapp/models/medicamento.dart';
 
-import '../../../configs/colors.dart';
+import '../../../../configs/colors.dart';
 
 class MedicineCard extends StatelessWidget {
-  final String nombre;
-  final String dosis;
+  final Medicamento medicamento;
   final VoidCallback onEdit;
 
   const MedicineCard({
     super.key,
-    required this.nombre,
-    required this.dosis,
+    required this.medicamento,
     required this.onEdit,
   });
 
@@ -23,20 +22,27 @@ class MedicineCard extends StatelessWidget {
         Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
+            side: BorderSide(
+              color: AppColors.getButtonColor(context),
+              width: 0.2,
+            ),
           ),
           elevation: 1,
           child: Padding(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(24),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Nombre (ajustado al contenido)
-                Text(
-                  nombre,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: AppColors.primary,
+                SizedBox(
+                  width: 120,
+                  child: Text(
+                    medicamento.nombre,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      color: AppColors.primary,
+                    ),
                   ),
                 ),
 
@@ -44,8 +50,8 @@ class MedicineCard extends StatelessWidget {
 
                 Expanded(
                   child: Text(
-                    dosis,
-                    style: const TextStyle(fontSize: 14, color: AppColors.primary),
+                    "${medicamento.dosis} ${medicamento.unidad} cada ${medicamento.frecuenciaHoras} horas",
+                    style: const TextStyle(fontSize: 15, color: AppColors.primary),
                     softWrap: true,
                   ),
                 ),
@@ -56,14 +62,13 @@ class MedicineCard extends StatelessWidget {
 
         // Botón editar flotante arriba a la derecha
         Positioned(
-          top: -10,
-          right: -10,
+          top: -18,
+          right: -18,
           child: IconButton(
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.transparent),
-              // overlayColor: WidgetStateProperty.all(Colors.transparent),
             ),
-            icon: Icon(Icons.edit, color: AppColors.getButtonColor(context), size: 20),
+            icon: Icon(Icons.edit, color: AppColors.getButtonColor(context), size: 30),
             onPressed: onEdit,
           ),
         ),
