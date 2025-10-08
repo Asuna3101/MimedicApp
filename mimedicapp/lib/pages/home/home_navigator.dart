@@ -8,7 +8,7 @@ import 'package:mimedicapp/pages/home/home_page.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento.dart';
-import 'package:mimedicapp/pages/home/medicacion/medicacion/medicacion_page.dart';
+import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_page.dart';
 
 class HomeNavigator extends StatelessWidget {

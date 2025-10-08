@@ -2,49 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
-import 'package:mimedicapp/pages/home/medicacion/medicacion/medicacion_controller.dart';
+import 'package:mimedicapp/pages/home/medicacion/medicacion_controller.dart';
 
-import '../../../../models/medicamentoUsuario.dart';
-import '../components/med_card.dart';
+import '../../../models/medicamentoUsuario.dart';
+import 'components/med_card.dart';
 
 class MedicacionPage extends StatelessWidget {
   const MedicacionPage({super.key});
 
-  // Lista hardcoded
-  List<MedicamentoUsuario> get _medicamentos => [
-    MedicamentoUsuario(
-      id: 1,
-      nombre: 'Paracetamol',
-      dosis: 500,
-      unidad: 'mg',
-      frecuenciaHoras: 8,
-      fechaInicio: DateTime.now().subtract(const Duration(days: 2)),
-      fechaFin: DateTime.now().add(const Duration(days: 5)),
-    ),
-    MedicamentoUsuario(
-      id: 2,
-      nombre: 'Ibuprofeno',
-      dosis: 400,
-      unidad: 'mg',
-      frecuenciaHoras: 12,
-      fechaInicio: DateTime.now().subtract(const Duration(days: 1)),
-      fechaFin: DateTime.now().add(const Duration(days: 3)),
-    ),
-    MedicamentoUsuario(
-      id: 3,
-      nombre: 'Amoxicilina',
-      dosis: 875,
-      unidad: 'mg',
-      frecuenciaHoras: 12,
-      fechaInicio: DateTime.now(),
-      fechaFin: DateTime.now().add(const Duration(days: 7)),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     final controller = Get.put(MedicacionController());
-    final medicamentos = _medicamentos;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
@@ -53,7 +21,6 @@ class MedicacionPage extends StatelessWidget {
           const SizedBox(height: 12),
 
           const Header(titulo: "Medicación", imagePath: "assets/img/homeIcons/medicamentos.png"),
-      
 
           const SizedBox(height: 30),
 
@@ -88,25 +55,41 @@ class MedicacionPage extends StatelessWidget {
 
           const SizedBox(height: 30),
 
-          // Lista de medicamentos
-          Column(
-            children: medicamentos
-                .map((m) => Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: MedicineCard(
-                medicamento: m,
-                onEdit: () {
-                  controller.goToEditarMedicacion(m);
-                  // ScaffoldMessenger.of(context).showSnackBar(
-                  //   SnackBar(
-                  //     content: Text('Editar ${m.nombre}'),
-                  //   ),
-                  // );
-                },
-              ),
-            ))
-                .toList(),
-          ),
+          Obx(() {
+            if (controller.isLoading.value) {
+              // Muestra un loader mientras carga
+              return const Center(
+                child: CircularProgressIndicator(color: AppColors.primary),
+              );
+            }
+
+            if (controller.medicamentosUsuario.isEmpty) {
+              // Si no hay medicamentos
+              return const Text(
+                'No tienes medicamentos registrados.',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              );
+            }
+
+            // Si hay medicamentos, los muestra
+            return Column(
+              children: controller.medicamentosUsuario
+                  .map(
+                    (m) => Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                  child: MedicineCard(
+                    medicamento: m,
+                    onEdit: () => controller.goToEditarMedicacion(m),
+                  ),
+                ),
+              )
+                  .toList(),
+            );
+          }),
         ],
       ),
     );

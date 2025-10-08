@@ -33,8 +33,8 @@ class MedicamentoUsuario {
         nombre: json['nombre'],
         dosis: json['dosis'],
         unidad: json['unidad'],
-        frecuenciaHoras: json['frecuencia_horas'],
-        fechaInicio: DateTime.parse(json['fecha_inicio']),
-        fechaFin: DateTime.parse(json['fecha_fin']),
+        frecuenciaHoras: json['frecuenciaHoras'],
+        fechaInicio: DateTime.parse(json['fechaInicio']),
+        fechaFin: DateTime.parse(json['fechaFin']),
       );
 }

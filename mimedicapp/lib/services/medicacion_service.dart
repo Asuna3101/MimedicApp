@@ -25,6 +25,12 @@ class MedicacionService {
     return unidades;
   }
 
+  Future<List<MedicamentoUsuario>> getMedicamentosUsuario() async {
+    final response = await _apiService.get(ApiConfig.medicamentosUsuarioEndpoint);
+    final List data = response as List;
+    return data.map((e) => MedicamentoUsuario.fromJson(e)).toList();
+  }
+
   Future<MedicamentoResponse> createMedicamentoUsuario(MedicamentoUsuario medicamento) async {
     try {
       final response = await _apiService.post(
