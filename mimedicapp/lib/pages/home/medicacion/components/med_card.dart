@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mimedicapp/models/medicamento.dart';
+import 'package:mimedicapp/models/medicamentoUsuario.dart';
 
 import '../../../../configs/colors.dart';
 
 class MedicineCard extends StatelessWidget {
-  final Medicamento medicamento;
+  final MedicamentoUsuario medicamento;
   final VoidCallback onEdit;
 
   const MedicineCard({

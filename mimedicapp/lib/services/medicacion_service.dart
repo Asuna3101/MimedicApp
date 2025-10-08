@@ -1,26 +1,39 @@
+import 'package:mimedicapp/configs/api_config.dart';
 import 'package:mimedicapp/models/medicamento.dart';
+import 'package:mimedicapp/models/medicamentoUsuario.dart';
+import 'package:mimedicapp/models/responses/medicamentoResponse.dart';
+import 'package:mimedicapp/models/unidad.dart';
+import 'package:mimedicapp/services/api_service.dart';
 
-import 'api_service.dart';
-
-class UserService {
+class MedicacionService {
   final ApiService _apiService = ApiService();
 
-  /// registrar un nuevo medicamento
-  Future<Medicamento> createMedicamento(Medicamento medicamento) async {
+  Future<List<Medicamento>> getMedicamentos() async {
+    final response = await _apiService.get(ApiConfig.medicamentosEndpoint);
+    final List data = response as List;
+    return data.map((e) => Medicamento.fromJson(e)).toList();
+  }
+
+  Future<List<Unidad>> getUnidades() async {
+    final response = await _apiService.get(ApiConfig.unidadesEndpoint);
+    final List data = response as List;
+    final unidades = data.map((e) => Unidad.fromJson(e)).toList();
+
+    // Debug opcional
+    // print('Unidades: ${unidades.map((u) => u.nombre).toList()}');
+
+    return unidades;
+  }
+
+  Future<MedicamentoResponse> createMedicamentoUsuario(MedicamentoUsuario medicamento) async {
     try {
-
-
-
-      return Medicamento(
-        id: medicamento.id,
-        nombre: medicamento.nombre,
-        dosis: medicamento.dosis,
-        unidad: medicamento.unidad,
-        frecuenciaHoras: medicamento.frecuenciaHoras,
-        fechaInicio: medicamento.fechaInicio,
-        fechaFin: medicamento.fechaFin,
+      final response = await _apiService.post(
+        ApiConfig.agregarMedicamentoEndpoint,
+        medicamento.toJson(),
       );
-    } catch(e) {
+
+      return MedicamentoResponse.fromJson(response);
+    } catch (e) {
       if (e is ApiException) rethrow;
       throw ApiException('Error al registrar medicamento: $e');
     }

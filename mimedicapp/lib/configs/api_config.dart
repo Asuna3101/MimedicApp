@@ -4,7 +4,7 @@ class ApiConfig {
   // En desarrollo, usa tu IP local. Ejemplo: 'http://192.168.1.100:8001/api/v1'
   // Para el emulador de Android: 'http://10.0.2.2:8001/api/v1'
   // Para iOS Simulator: 'http://127.0.0.1:8001/api/v1'
-  static const String baseUrl = 'http://10.0.2.2:8002/api/v1';
+  static const String baseUrl = 'http://192.168.80.1:8002/api/v1';
 
   // Para dispositivos físicos, reemplaza con tu IP local:
   // static const String baseUrl = 'http://TU_IP_LOCAL:8000/api/v1';
@@ -24,7 +24,10 @@ class ApiConfig {
   static const String registerEndpoint = '/auth/register';
   static const String usersEndpoint = '/users/';
   static const String currentUserEndpoint = '/users/me';
-
+  static const String medicamentosEndpoint = '/medicamentos';
+  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String unidadesEndpoint = '/unidades';
+  
   /// Obtener la URL base según el entorno
   static String getBaseUrl() {
     // Aquí puedes agregar lógica para diferentes entornos

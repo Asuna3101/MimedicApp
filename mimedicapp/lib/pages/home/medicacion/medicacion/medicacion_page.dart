@@ -4,15 +4,15 @@ import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/pages/home/medicacion/medicacion/medicacion_controller.dart';
 
-import '../../../../models/medicamento.dart';
+import '../../../../models/medicamentoUsuario.dart';
 import '../components/med_card.dart';
 
 class MedicacionPage extends StatelessWidget {
   const MedicacionPage({super.key});
 
   // Lista hardcoded
-  List<Medicamento> get _medicamentos => [
-    Medicamento(
+  List<MedicamentoUsuario> get _medicamentos => [
+    MedicamentoUsuario(
       id: 1,
       nombre: 'Paracetamol',
       dosis: 500,
@@ -21,7 +21,7 @@ class MedicacionPage extends StatelessWidget {
       fechaInicio: DateTime.now().subtract(const Duration(days: 2)),
       fechaFin: DateTime.now().add(const Duration(days: 5)),
     ),
-    Medicamento(
+    MedicamentoUsuario(
       id: 2,
       nombre: 'Ibuprofeno',
       dosis: 400,
@@ -30,7 +30,7 @@ class MedicacionPage extends StatelessWidget {
       fechaInicio: DateTime.now().subtract(const Duration(days: 1)),
       fechaFin: DateTime.now().add(const Duration(days: 3)),
     ),
-    Medicamento(
+    MedicamentoUsuario(
       id: 3,
       nombre: 'Amoxicilina',
       dosis: 875,
