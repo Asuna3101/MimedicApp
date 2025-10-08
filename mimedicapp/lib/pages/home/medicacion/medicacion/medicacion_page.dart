@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
-import 'package:mimedicapp/pages/home/medicacion/medicacion_controller.dart';
+import 'package:mimedicapp/pages/home/medicacion/medicacion/medicacion_controller.dart';
 
-import '../../../models/medicamento.dart';
-import 'components/med_card.dart';
+import '../../../../models/medicamento.dart';
+import '../components/med_card.dart';
 
 class MedicacionPage extends StatelessWidget {
   const MedicacionPage({super.key});
@@ -96,12 +96,12 @@ class MedicacionPage extends StatelessWidget {
               child: MedicineCard(
                 medicamento: m,
                 onEdit: () {
-                  // TODO: acción editar
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Editar ${m.nombre}'),
-                    ),
-                  );
+                  controller.goToEditarMedicacion(m);
+                  // ScaffoldMessenger.of(context).showSnackBar(
+                  //   SnackBar(
+                  //     content: Text('Editar ${m.nombre}'),
+                  //   ),
+                  // );
                 },
               ),
             ))

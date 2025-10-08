@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
-import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento_controller.dart';
+import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_controller.dart';
 
 class AgregarMedicamentoPage extends StatelessWidget {
   const AgregarMedicamentoPage({super.key});
