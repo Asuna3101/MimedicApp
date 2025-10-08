@@ -1,5 +1,5 @@
 abstract class HomeRoutes {
-  static const inicio = '/home/inicio';
+  static const inicio = '/';
   // Routes medicacion
   static const medicacion = '/home/medicacion';
   static const agregarMedicamento = '/home/medicacion/agregar';

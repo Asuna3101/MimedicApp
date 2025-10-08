@@ -10,8 +10,16 @@ class MedicacionController extends GetxController {
 
   final medicamentosUsuario = <MedicamentoUsuario>[].obs;
 
-  void goToAgregarMedicacion() => Get.toNamed(HomeRoutes.agregarMedicamento, id: 1);
-  void goToEditarMedicacion(MedicamentoUsuario medicamento) => Get.toNamed(HomeRoutes.editarMedicamento, id: 1);
+  void goToAgregarMedicacion() {
+    Get.toNamed(HomeRoutes.agregarMedicamento, id: 1)?.then((result) {
+      if (result == true) {
+        loadData();
+      }
+    });
+  }
+
+  void goToEditarMedicacion(MedicamentoUsuario medicamento) =>
+      Get.toNamed(HomeRoutes.editarMedicamento, id: 1);
 
   @override
   void onReady() {

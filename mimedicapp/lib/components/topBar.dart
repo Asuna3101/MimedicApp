@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
+import 'package:mimedicapp/pages/notificaciones/notificaciones_page.dart';
+import 'package:mimedicapp/pages/profile/profile_page.dart';
 
-class Topbar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback? onNotifications;
-  final VoidCallback? onProfile;
-  
-  const Topbar({super.key, this.onNotifications, this.onProfile});
+class Topbar extends StatelessWidget implements PreferredSizeWidget { 
+
+  const Topbar({super.key});
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -25,11 +26,11 @@ class Topbar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.notifications_none, color: AppColors.accent, size: 30),
-          onPressed: onNotifications,
+          onPressed: () => Get.to(() => const NotificationsPage()),
         ),
         IconButton(
           icon: const Icon(Icons.person_2_rounded, color: AppColors.accent, size: 30),
-          onPressed: onProfile,
+          onPressed: () => Get.to(() => const ProfilePage()),
         ),
       ],
     );

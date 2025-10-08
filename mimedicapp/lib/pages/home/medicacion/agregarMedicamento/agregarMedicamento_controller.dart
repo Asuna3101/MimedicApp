@@ -126,6 +126,7 @@ class AgregarMedicamentoController extends GetxController {
       final mensaje =
           resultado.message ?? 'Medicamento guardado correctamente.';
 
+      Get.back(result: true, id: 1);
       Get.snackbar(
         'Éxito',
         mensaje,
@@ -134,7 +135,6 @@ class AgregarMedicamentoController extends GetxController {
         icon: const Icon(Icons.check_circle, color: AppColors.success),
         duration: const Duration(seconds: 3),
       );
-      
     } catch (e) {
       Get.snackbar('Error', e.toString(), backgroundColor: Colors.red.shade300);
     } finally {

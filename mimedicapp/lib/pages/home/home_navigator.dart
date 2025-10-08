@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mimedicapp/pages/home/citas/citas_page.dart';
-import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
-import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/home_controller.dart';
 import 'package:mimedicapp/pages/home/home_page.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
+import 'package:mimedicapp/pages/home/citas/citas_page.dart';
+import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
+import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento.dart';
 import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_page.dart';
 
 class HomeNavigator extends StatelessWidget {
+
   const HomeNavigator({super.key});
 
   @override
   Widget build(BuildContext context) {
-    Get.put(HomeController());
-    
-    final Map<String, WidgetBuilder> routeBuilders = {
+    Get.put(HomeController()); // mantener vivo mientras viva la tab
+
+    final routeBuilders = <String, WidgetBuilder>{
       HomeRoutes.inicio: (_) => const HomePage(),
       HomeRoutes.medicacion: (_) => const MedicacionPage(),
       HomeRoutes.agregarMedicamento: (_) => const AgregarMedicamentoPage(),
