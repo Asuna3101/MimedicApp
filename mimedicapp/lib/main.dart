@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart'; // Asegúrate de importar GetX
+import 'package:mimedicapp/pages/container/container_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
@@ -27,6 +28,7 @@ class MimedicApp extends StatelessWidget {
         GetPage(name: '/inicio', page: () => PaginaInicio()),
         GetPage(name: '/sign-up', page: () => const PaginaRegistro()),
         GetPage(name: '/sign-in', page: () => const PaginaLogin()),
+        GetPage(name: '/app', page: () => const ContainerPage()),
         // GetPage(name: '/home', page: () => PaginaHome()),
         // GetPage(name: '/perfil', page: () => PaginaPerfil()),
         // Aquí puedes agregar más páginas conforme las vayas creando

@@ -77,7 +77,7 @@ class LoginControlador extends GetxController {
       await Future.delayed(const Duration(seconds: 1));
 
       // Navegar de vuelta al inicio
-      Get.offAllNamed('/inicio');
+      Get.offAllNamed('/app');
     } catch (e) {
       // Capturar cualquier error
       print('Error en login: $e'); // Para debugging

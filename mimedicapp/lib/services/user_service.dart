@@ -1,5 +1,6 @@
 import '../models/usuario.dart';
 import 'api_service.dart';
+import '../configs/api_config.dart';
 
 class UserService {
   final ApiService _apiService = ApiService();
@@ -7,45 +8,41 @@ class UserService {
   /// Crear un nuevo usuario (registro)
   Future<Usuario> createUser(Usuario usuario) async {
     try {
-      final userData = {
-        'correo': usuario.correo,
-        'nombre': usuario.nombre,
-        'fecha_nacimiento': usuario.fechaNacimiento
-            .toIso8601String()
-            .split('T')[0], // Solo fecha
-        'celular': usuario.celular,
-        'password': usuario.contrasena,
-        'is_active': true, // Campo requerido por el backend
-      };
+      final userData = usuario.toRegistrationJson();
 
-      final response = await _apiService.post('/users/', userData);
+      // Loguea la URL real sin tocar baseUrl a mano
+      final fullUrl = ApiConfig.url(ApiConfig.registerEndpoint);
+      print('Register URL: $fullUrl');
+      print('Register payload: $userData');
 
-      // Convertir la respuesta del backend al modelo de Flutter
+      final response =
+          await _apiService.post(ApiConfig.registerEndpoint, userData, auth: false);
+
       return Usuario(
         idUsuario: response['id'],
-        nombre: response['nombre'],
-        fechaNacimiento: DateTime.parse(response['fecha_nacimiento']),
-        celular: response['celular'] ?? '',
-        correo: response['correo'],
-        contrasena: '', // No devolvemos la contraseña por seguridad
+        nombre: usuario.nombre,
+        fechaNacimiento: usuario.fechaNacimiento,
+        celular: usuario.celular,
+        correo: usuario.correo,
+        contrasena: '', // nunca devolver password
       );
     } catch (e) {
-      throw Exception('Error al crear usuario: $e');
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al crear usuario: $e');
     }
   }
 
-  /// Obtener información del usuario actual
+  /// Usuario actual (usa endpoint de ApiConfig)
   Future<Usuario> getCurrentUser() async {
     try {
-      final response = await _apiService.get('/users/me');
-
+      final response = await _apiService.get(ApiConfig.currentUserEndpoint);
       return Usuario(
         idUsuario: response['id'],
         nombre: response['nombre'],
         fechaNacimiento: DateTime.parse(response['fecha_nacimiento']),
         celular: response['celular'] ?? '',
         correo: response['correo'],
-        contrasena: '', // No devolvemos la contraseña
+        contrasena: '',
       );
     } catch (e) {
       throw Exception('Error al obtener usuario actual: $e');
@@ -55,15 +52,14 @@ class UserService {
   /// Obtener usuario por ID
   Future<Usuario> getUserById(int userId) async {
     try {
-      final response = await _apiService.get('/users/$userId');
-
+      final response = await _apiService.get('${ApiConfig.usersEndpoint}/$userId');
       return Usuario(
         idUsuario: response['id'],
         nombre: response['nombre'],
         fechaNacimiento: DateTime.parse(response['fecha_nacimiento']),
         celular: response['celular'] ?? '',
         correo: response['correo'],
-        contrasena: '', // No devolvemos la contraseña
+        contrasena: '',
       );
     } catch (e) {
       throw Exception('Error al obtener usuario: $e');
@@ -71,23 +67,20 @@ class UserService {
   }
 
   /// Actualizar usuario
-  Future<Usuario> updateUser(
-      int userId, Map<String, dynamic> updateData) async {
+  Future<Usuario> updateUser(int userId, Map<String, dynamic> updateData) async {
     try {
-      // Formatear fecha si está presente
       if (updateData['fechaNacimiento'] != null) {
         updateData['fecha_nacimiento'] =
             updateData['fechaNacimiento'].toIso8601String().split('T')[0];
         updateData.remove('fechaNacimiento');
       }
-
-      // Cambiar contrasena por password si está presente
       if (updateData['contrasena'] != null) {
         updateData['password'] = updateData['contrasena'];
         updateData.remove('contrasena');
       }
 
-      final response = await _apiService.put('/users/$userId', updateData);
+      final response =
+          await _apiService.put('${ApiConfig.usersEndpoint}/$userId', updateData);
 
       return Usuario(
         idUsuario: response['id'],
@@ -95,7 +88,7 @@ class UserService {
         fechaNacimiento: DateTime.parse(response['fecha_nacimiento']),
         celular: response['celular'] ?? '',
         correo: response['correo'],
-        contrasena: '', // No devolvemos la contraseña
+        contrasena: '',
       );
     } catch (e) {
       throw Exception('Error al actualizar usuario: $e');
@@ -105,13 +98,13 @@ class UserService {
   /// Eliminar usuario
   Future<void> deleteUser(int userId) async {
     try {
-      await _apiService.delete('/users/$userId');
+      await _apiService.delete('${ApiConfig.usersEndpoint}/$userId');
     } catch (e) {
       throw Exception('Error al eliminar usuario: $e');
     }
   }
 
-  /// Login de usuario
+  /// Login
   Future<Map<String, dynamic>> login(String email, String password) async {
     try {
       return await _apiService.loginWithEmail(email, password);
@@ -120,7 +113,7 @@ class UserService {
     }
   }
 
-  /// Logout de usuario
+  /// Logout
   Future<void> logout() async {
     try {
       await _apiService.logout();
@@ -129,7 +122,7 @@ class UserService {
     }
   }
 
-  /// Verificar si el usuario está autenticado
+  /// ¿Autenticado?
   Future<bool> isAuthenticated() async {
     final token = await _apiService.getAuthToken();
     return token != null && token.isNotEmpty;

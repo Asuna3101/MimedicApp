@@ -1,9 +1,10 @@
 /// Configuración de la API
 class ApiConfig {
-  /// Se inyecta con: --dart-define=BASE_URL=...
+  /// Inyecta la URL con: --dart-define=BASE_URL=...
+  /// Fallback útil para emulador Android: 10.0.2.2 apunta al host
   static const String baseUrl = String.fromEnvironment(
     'BASE_URL',
-    defaultValue: 'http://10.0.2.2:8002/api/v1', // fallback útil en emulador Android
+    defaultValue: 'http://10.0.2.2:8002/api/v1',
   );
 
   // Timeouts y headers
@@ -13,16 +14,22 @@ class ApiConfig {
     'Accept': 'application/json',
   };
 
-  // ---------- AUTH ----------
-  static const String loginEndpoint = '/auth/login';
-  static const String loginFormEndpoint = '/auth/login';
-  static const String usersEndpoint = '/users'; // sin / final para evitar dobles //
-  static const String currentUserEndpoint = '/users/me';
+// ---------- AUTH ----------
+static const String loginEndpoint = '/auth/login';
+static const String loginFormEndpoint = '/auth/login';
+static const String registerEndpoint = '/auth/register';
+// sin slash final para evitar dobles “//”
+static const String usersEndpoint = '/users';
+static const String currentUserEndpoint = '/users/me';
 
-  // Helper para construir URLs absolutas (evita dobles “//”)
+
+  // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
     final p = path.startsWith('/') ? path : '/$path';
-    return '$baseUrl$p';
+    final base = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+    return '$base$p';
   }
 
   // ---------- HEALTH ----------
@@ -37,7 +44,6 @@ class ApiConfig {
   static String availability({required int doctorId, required String fechaIso}) =>
       url('/health/doctores/$doctorId/availability?fecha=$fechaIso');
 
-  // Crear cita (usa baseUrl inyectado)
   static String get createAppointment => url('/health/citas');
 
   /// Instrucciones rápidas para IP local
@@ -48,12 +54,16 @@ Para conectar con tu backend local:
    - Windows: ipconfig
    - macOS/Linux: ifconfig
 
-2) Ejecuta la app con:
-   flutter run --dart-define=BASE_URL=http://TU_IP_LOCAL:8002/api/v1
+2) Ejecuta la app con (ejemplos):
+   - Emulador Android:
+     flutter run --dart-define=BASE_URL=http://10.0.2.2:8002/api/v1
+   - Dispositivo físico (misma Wi-Fi):
+     flutter run --dart-define=BASE_URL=http://TU_IP_LOCAL:8002/api/v1
+   - iOS Simulator:
+     flutter run --dart-define=BASE_URL=http://127.0.0.1:8002/api/v1
 
 Notas:
-- Android Emulator usa 10.0.2.2 en vez de 127.0.0.1
-- iOS Simulator puede usar 127.0.0.1
-- Dispositivo físico: ambos (PC y móvil) en la misma Wi-Fi.
+- Evita hardcodear IPs en código; usa --dart-define.
+- Si usas HTTP en dev, permite tráfico claro en AndroidManifest (usesCleartextTraffic).
 ''';
 }

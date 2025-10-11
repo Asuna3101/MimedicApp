@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'inicio_controlador.dart';
 
 class PaginaInicio extends StatelessWidget {
-  TemplateController control = Get.put(TemplateController());
+  final TemplateController control = Get.put(TemplateController());
 
   Widget _buildBody(BuildContext context) {
     return SafeArea(

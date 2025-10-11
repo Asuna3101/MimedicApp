@@ -68,6 +68,11 @@ flutter:
     - assets/img/ico.png
     - assets/img/splash/splash_icon.png
     - assets/img/splash/splash_branding.png
+    - assets/img/homeIcons/citas.png
+    - assets/img/homeIcons/ejercicios.png
+    - assets/img/homeIcons/comidas.png
+    - assets/img/homeIcons/medicamentos.png
+    - assets/img/homeIcons/reportes.png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
 

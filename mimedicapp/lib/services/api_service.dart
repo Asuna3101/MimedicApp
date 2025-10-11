@@ -18,13 +18,14 @@ class ApiService {
   // --------------- Estado / Token ---------------
   String? _authToken; // cacheado en memoria
 
-  /// Devuelve la URL absoluta combinando base + endpoint relativo
+  /// Devuelve la URL absoluta combinando base + endpoint relativo.
+  /// Si `endpoint` ya es absoluto, lo devuelve tal cual.
   String _abs(String endpoint) {
-    // Si el endpoint ya es absoluto, lo regresamos tal cual
     if (endpoint.startsWith('http://') || endpoint.startsWith('https://')) {
       return endpoint;
     }
-    return '${ApiConfig.baseUrl}$endpoint';
+    // Usa el helper de ApiConfig para normalizar slashes
+    return ApiConfig.url(endpoint);
   }
 
   /// Lee el token del cache o de SharedPreferences
@@ -33,7 +34,7 @@ class ApiService {
     final prefs = await SharedPreferences.getInstance();
     _authToken = prefs.getString('auth_token');
     return _authToken;
-    }
+  }
 
   /// Persiste el token
   Future<void> saveAuthToken(String token) async {
@@ -66,14 +67,12 @@ class ApiService {
     final status = response.statusCode;
     final body = response.body;
 
-    // Intenta parsear JSON si hay body
     dynamic jsonBody;
     if (body.isNotEmpty) {
       try {
         jsonBody = json.decode(body);
       } catch (_) {
-        // Si no es JSON y fue 200/201, devuelve string
-        if (status == 200 || status == 201) return body;
+        if (status == 200 || status == 201) return body; // texto plano OK
       }
     }
 
@@ -112,13 +111,13 @@ class ApiService {
   // --------------- Métodos HTTP genéricos ---------------
   Future<dynamic> get(String endpoint, {bool auth = true}) async {
     try {
-      final r = await http
+      final response = await http
           .get(
             Uri.parse(_abs(endpoint)),
             headers: await _headers(withAuth: auth),
           )
           .timeout(ApiConfig.timeout);
-      return _handleResponse(r);
+      return _handleResponse(response);
     } on SocketException {
       throw ApiException('Sin conexión. Verifica tu internet.');
     } on HttpException catch (e) {
@@ -128,18 +127,18 @@ class ApiService {
     }
   }
 
+  /// POST JSON
+  /// Si [auth] es false, no se añade Authorization (útil para registro/login)
   Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
-      final url = _abs(endpoint);
-      final r = await http
+      final response = await http
           .post(
-            Uri.parse(url),
+            Uri.parse(_abs(endpoint)),
             headers: await _headers(withAuth: auth),
             body: json.encode(data),
           )
           .timeout(ApiConfig.timeout);
-
-      return _handleResponse(r);
+      return _handleResponse(response);
     } on SocketException {
       throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
@@ -150,15 +149,14 @@ class ApiService {
 
   Future<dynamic> put(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
-      final r = await http
+      final response = await http
           .put(
             Uri.parse(_abs(endpoint)),
             headers: await _headers(withAuth: auth),
             body: json.encode(data),
           )
           .timeout(ApiConfig.timeout);
-
-      return _handleResponse(r);
+      return _handleResponse(response);
     } on SocketException {
       throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
@@ -169,14 +167,13 @@ class ApiService {
 
   Future<dynamic> delete(String endpoint, {bool auth = true}) async {
     try {
-      final r = await http
+      final response = await http
           .delete(
             Uri.parse(_abs(endpoint)),
             headers: await _headers(withAuth: auth),
           )
           .timeout(ApiConfig.timeout);
-
-      return _handleResponse(r);
+      return _handleResponse(response);
     } on SocketException {
       throw ApiException('Sin conexión. Verifica tu internet.');
     } catch (e) {
@@ -189,10 +186,9 @@ class ApiService {
   /// Login JSON: { correo, password } → { access_token, token_type }
   Future<Map<String, dynamic>> loginWithEmail(String email, String password) async {
     final payload = {'correo': email, 'password': password};
-
     final resp = await post(ApiConfig.loginEndpoint, payload, auth: false);
 
-    final token = resp['access_token'];
+    final token = resp is Map<String, dynamic> ? resp['access_token'] : null;
     if (token is String && token.isNotEmpty) {
       await saveAuthToken(token);
     }
@@ -206,7 +202,7 @@ class ApiService {
         ..['Content-Type'] = 'application/x-www-form-urlencoded';
 
       final body = 'username=$email&password=$password';
-      final r = await http
+      final response = await http
           .post(
             Uri.parse(_abs(ApiConfig.loginFormEndpoint)),
             headers: headers,
@@ -214,7 +210,7 @@ class ApiService {
           )
           .timeout(ApiConfig.timeout);
 
-      final resp = _handleResponse(r);
+      final resp = _handleResponse(response);
       final token = (resp is Map<String, dynamic>) ? resp['access_token'] : null;
       if (token is String && token.isNotEmpty) {
         await saveAuthToken(token);
