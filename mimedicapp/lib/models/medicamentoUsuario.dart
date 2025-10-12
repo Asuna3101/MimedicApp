@@ -1,9 +1,11 @@
+import 'dart:ffi';
+
 class MedicamentoUsuario {
   final int? id;
   final String nombre;
-  final int dosis;
+  final double dosis;
   final String unidad;
-  final int frecuenciaHoras;
+  final double frecuenciaHoras;
   final DateTime fechaInicio;
   final DateTime fechaFin;
 

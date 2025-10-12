@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
@@ -112,9 +114,9 @@ class AgregarMedicamentoController extends GetxController {
     final nuevo = MedicamentoUsuario(
       id: null,
       nombre: nombreCtrl.text.trim(),
-      dosis: int.parse(dosisCtrl.text),
+      dosis: double.parse(dosisCtrl.text),
       unidad: unidadCtrl.text.trim(),
-      frecuenciaHoras: int.parse(frecuenciaCtrl.text),
+      frecuenciaHoras: double.parse(frecuenciaCtrl.text),
       fechaInicio: fechaHoraInicio,
       fechaFin: fechaFin.value!,
     );
@@ -125,6 +127,8 @@ class AgregarMedicamentoController extends GetxController {
 
       final mensaje =
           resultado.message ?? 'Medicamento guardado correctamente.';
+
+      resetForm();
 
       Get.back(result: true, id: 1);
       Get.snackbar(
@@ -149,5 +153,15 @@ class AgregarMedicamentoController extends GetxController {
     unidadCtrl.dispose();
     frecuenciaCtrl.dispose();
     super.onClose();
+  }
+  void resetForm() {
+    nombreCtrl.clear();
+    dosisCtrl.clear();
+    unidadCtrl.clear();
+    frecuenciaCtrl.clear();
+    fechaInicio.value = null;
+    fechaFin.value = null;
+    horaInicio.value = null;
+    isFormValid.value = false;
   }
 }
