@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/unidad.dart';
@@ -26,11 +27,10 @@ class FormAgregarMedicamento extends StatelessWidget {
               if (textEditingValue.text.isEmpty) {
                 return const Iterable<String>.empty();
               }
-              return c.medicamentos
-                  .map((m) => m.nombre)
-                  .where((nombre) => nombre
-                  .toLowerCase()
-                  .contains(textEditingValue.text.toLowerCase()));
+              return c.medicamentos.map((m) => m.nombre).where((nombre) =>
+                  nombre
+                      .toLowerCase()
+                      .contains(textEditingValue.text.toLowerCase()));
             },
             fieldViewBuilder: (context, textCtrl, focusNode, onFieldSubmitted) {
               textCtrl.addListener(() {
@@ -40,7 +40,7 @@ class FormAgregarMedicamento extends StatelessWidget {
                 controller: textCtrl,
                 focusNode: focusNode,
                 decoration:
-                const InputDecoration(labelText: 'Nombre del medicamento'),
+                    const InputDecoration(labelText: 'Nombre del medicamento'),
                 validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
               );
             },
@@ -51,7 +51,10 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           TextFormField(
             controller: c.dosisCtrl,
-            keyboardType: TextInputType.number,
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+            ],
             decoration: const InputDecoration(labelText: 'Dosis'),
             validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
           ),
@@ -78,7 +81,7 @@ class FormAgregarMedicamento extends StatelessWidget {
                 focusNode: focusNode,
                 decoration: const InputDecoration(labelText: 'Unidad'),
                 validator: (v) =>
-                v == null || v.trim().isEmpty ? 'Requerido' : null,
+                    v == null || v.trim().isEmpty ? 'Requerido' : null,
               );
             },
             onSelected: (Unidad sel) {
@@ -90,9 +93,11 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           TextFormField(
             controller: c.frecuenciaCtrl,
-            keyboardType: TextInputType.number,
-            decoration:
-            const InputDecoration(labelText: 'Frecuencia (horas)'),
+            keyboardType: const TextInputType.numberWithOptions(decimal: true),
+            inputFormatters: [
+              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+            ],
+            decoration: const InputDecoration(labelText: 'Frecuencia (horas)'),
             validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
           ),
 
@@ -100,61 +105,61 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           // 🔹 Fecha y hora
           Obx(() => Column(
-            children: [
-              ListTile(
-                title: Text(
-                  c.fechaInicio.value != null
-                      ? 'Inicio: ${c.fechaInicio.value!.toLocal().toString().split(' ')[0]}'
-                      : 'Seleccionar fecha de inicio',
-                  style: const TextStyle(color: AppColors.primary),
-                ),
-                trailing: const Icon(Icons.calendar_today,
-                    color: AppColors.accent),
-                onTap: () => c.seleccionarFecha(esInicio: true),
-              ),
-              ListTile(
-                title: Text(
-                  c.horaInicio.value != null
-                      ? 'Hora inicio: ${c.horaInicio.value!.format(context)}'
-                      : 'Seleccionar hora de inicio (opcional)',
-                  style: const TextStyle(color: AppColors.primary),
-                ),
-                trailing: const Icon(Icons.access_time,
-                    color: AppColors.accent),
-                onTap: () => c.seleccionarHoraInicio(),
-              ),
-              ListTile(
-                title: Text(
-                  c.fechaFin.value != null
-                      ? 'Fin: ${c.fechaFin.value!.toLocal().toString().split(' ')[0]}'
-                      : 'Seleccionar fecha de fin',
-                  style: const TextStyle(color: AppColors.primary),
-                ),
-                trailing: const Icon(Icons.calendar_today,
-                    color: AppColors.accent),
-                onTap: () => c.seleccionarFecha(esInicio: false),
-              ),
-            ],
-          )),
+                children: [
+                  ListTile(
+                    title: Text(
+                      c.fechaInicio.value != null
+                          ? 'Inicio: ${c.fechaInicio.value!.toLocal().toString().split(' ')[0]}'
+                          : 'Seleccionar fecha de inicio',
+                      style: const TextStyle(color: AppColors.primary),
+                    ),
+                    trailing: const Icon(Icons.calendar_today,
+                        color: AppColors.accent),
+                    onTap: () => c.seleccionarFecha(esInicio: true),
+                  ),
+                  ListTile(
+                    title: Text(
+                      c.horaInicio.value != null
+                          ? 'Hora inicio: ${c.horaInicio.value!.format(context)}'
+                          : 'Seleccionar hora de inicio (opcional)',
+                      style: const TextStyle(color: AppColors.primary),
+                    ),
+                    trailing:
+                        const Icon(Icons.access_time, color: AppColors.accent),
+                    onTap: () => c.seleccionarHoraInicio(),
+                  ),
+                  ListTile(
+                    title: Text(
+                      c.fechaFin.value != null
+                          ? 'Fin: ${c.fechaFin.value!.toLocal().toString().split(' ')[0]}'
+                          : 'Seleccionar fecha de fin',
+                      style: const TextStyle(color: AppColors.primary),
+                    ),
+                    trailing: const Icon(Icons.calendar_today,
+                        color: AppColors.accent),
+                    onTap: () => c.seleccionarFecha(esInicio: false),
+                  ),
+                ],
+              )),
 
           const SizedBox(height: 24),
 
           // 🔹 Botón Guardar reactivo
           Obx(() => ElevatedButton.icon(
-            onPressed: c.isFormValid.value ? c.guardar : null,
-            icon: const Icon(Icons.save),
-            label: const Text('Guardar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: c.isFormValid.value
-                  ? AppColors.accent
-                  : AppColors.grey400,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              textStyle: const TextStyle(
-                fontFamily: 'Titulo',
-                fontSize: 18,
-              ),
-            ),
-          )),
+                onPressed: c.isFormValid.value ? c.guardar : null,
+                icon: const Icon(Icons.save),
+                label: const Text('Guardar'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: c.isFormValid.value
+                      ? AppColors.accent
+                      : AppColors.grey400,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  textStyle: const TextStyle(
+                    fontFamily: 'Titulo',
+                    fontSize: 18,
+                  ),
+                ),
+              )),
         ],
       ),
     );
