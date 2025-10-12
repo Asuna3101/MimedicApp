@@ -25,7 +25,7 @@ class ApiConfig {
   static const String usersEndpoint = '/users/';
   static const String currentUserEndpoint = '/users/me';
   static const String medicamentosEndpoint = '/medicamentos';
-  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/1';
+  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
   static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
   static const String unidadesEndpoint = '/unidades';
   
