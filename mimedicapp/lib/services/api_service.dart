@@ -61,27 +61,36 @@ class ApiService {
     }
     return headers;
   }
-
-  // --------------- Manejo de respuestas ---------------
   dynamic _handleResponse(http.Response response) {
     final status = response.statusCode;
-    final body = response.body;
+    final raw = response.body;
 
-    dynamic jsonBody;
-    if (body.isNotEmpty) {
-      try {
-        jsonBody = json.decode(body);
-      } catch (_) {
-        if (status == 200 || status == 201) return body; // texto plano OK
-      }
+    dynamic data;
+    try {
+      data = raw.isEmpty ? null : json.decode(raw);
+    } catch (_) {
+      data = null;
     }
 
+    // Log útil para diagnósticos (mantenlo mientras depuras)
+    // ignore: avoid_print
+    print('[API] <- $status ${response.request?.method} ${response.request?.url}');
+    if (raw.isNotEmpty) {
+      // ignore: avoid_print
+      print('[API] RESP BODY: $raw');
+    }
+
+    // OK
+    if (status >= 200 && status < 300) {
+      return data ?? raw;
+    }
+
+    // Error: intenta extraer el "detail" de FastAPI
+    final msg = _extractDetail(data) ?? 'HTTP $status';
+
     switch (status) {
-      case 200:
-      case 201:
-        return jsonBody ?? {};
       case 400:
-        throw ApiException(_extractDetail(jsonBody) ?? 'Solicitud inválida');
+        throw ApiException(msg.isEmpty ? 'Solicitud inválida' : msg);
       case 401:
         throw ApiException('No autorizado - Token inválido o expirado');
       case 403:
@@ -89,9 +98,9 @@ class ApiService {
       case 404:
         throw ApiException('Recurso no encontrado');
       case 409:
-        throw ApiException(_extractDetail(jsonBody) ?? 'Conflicto: recurso en uso');
+        throw ApiException(msg.isEmpty ? 'Conflicto: recurso en uso' : msg);
       case 422:
-        throw ApiException(_extractDetail(jsonBody) ?? 'Error de validación');
+        throw ApiException(msg.isEmpty ? 'Error de validación' : msg);
       case 500:
         throw ApiException('Error interno del servidor');
       default:
@@ -101,23 +110,54 @@ class ApiService {
 
   String? _extractDetail(dynamic data) {
     try {
+      if (data == null) return null;
+
+      // FastAPI: {"detail": "..."} o {"detail": [{loc: [...], msg: "...", type: "..."}]}
       if (data is Map && data['detail'] != null) {
-        return data['detail'].toString();
+        final d = data['detail'];
+        if (d is String) return d;
+        if (d is List) {
+          // Junta los mensajes de validación: "clinic_id: field required | starts_at: invalid datetime ..."
+          return d.map((e) {
+            if (e is Map) {
+              final loc = (e['loc'] is List) ? (e['loc'] as List).join('.') : e['loc'];
+              final msg = e['msg'] ?? e.toString();
+              return loc != null ? '$loc: $msg' : msg.toString();
+            }
+            return e.toString();
+          }).join(' | ');
+        }
+        return d.toString();
+      }
+
+      // A veces FastAPI devuelve una lista directamente (p. ej. 422)
+      if (data is List) {
+        return data.map((e) {
+          if (e is Map) return e['msg'] ?? e.toString();
+          return e.toString();
+        }).join(' | ');
       }
     } catch (_) {}
     return null;
   }
 
-  // --------------- Métodos HTTP genéricos ---------------
+
   Future<dynamic> get(String endpoint, {bool auth = true}) async {
     try {
+      final url = _abs(endpoint);
+      final headers = await _headers(withAuth: auth);
+
+      // 👇 LOGS
+      // ignore: avoid_print
+      print('[API] -> GET  $url');
+      // ignore: avoid_print
+      print('[API] HEADERS: $headers');
+
       final response = await http
-          .get(
-            Uri.parse(_abs(endpoint)),
-            headers: await _headers(withAuth: auth),
-          )
+          .get(Uri.parse(url), headers: headers)
           .timeout(ApiConfig.timeout);
-      return _handleResponse(response);
+
+      return _handleResponse(response); // ya imprime RESP BODY
     } on SocketException {
       throw ApiException('Sin conexión. Verifica tu internet.');
     } on HttpException catch (e) {
@@ -127,16 +167,23 @@ class ApiService {
     }
   }
 
-  /// POST JSON
-  /// Si [auth] es false, no se añade Authorization (útil para registro/login)
+
   Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
+      final url = _abs(endpoint);
+      final headers = await _headers(withAuth: auth);
+      final body = json.encode(data);
+
+      // Logs de salida
+      // ignore: avoid_print
+      print('[API] -> POST $url');
+      // ignore: avoid_print
+      print('[API] HEADERS: $headers');
+      // ignore: avoid_print
+      print('[API] BODY   : $body');
+
       final response = await http
-          .post(
-            Uri.parse(_abs(endpoint)),
-            headers: await _headers(withAuth: auth),
-            body: json.encode(data),
-          )
+          .post(Uri.parse(url), headers: headers, body: body)
           .timeout(ApiConfig.timeout);
       return _handleResponse(response);
     } on SocketException {
@@ -149,12 +196,19 @@ class ApiService {
 
   Future<dynamic> put(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {
+      final url = _abs(endpoint);
+      final headers = await _headers(withAuth: auth);
+      final body = json.encode(data);
+
+      // ignore: avoid_print
+      print('[API] -> PUT  $url');
+      // ignore: avoid_print
+      print('[API] HEADERS: $headers');
+      // ignore: avoid_print
+      print('[API] BODY   : $body');
+
       final response = await http
-          .put(
-            Uri.parse(_abs(endpoint)),
-            headers: await _headers(withAuth: auth),
-            body: json.encode(data),
-          )
+          .put(Uri.parse(url), headers: headers, body: body)
           .timeout(ApiConfig.timeout);
       return _handleResponse(response);
     } on SocketException {
@@ -164,6 +218,7 @@ class ApiService {
       throw ApiException('Error inesperado: $e');
     }
   }
+
 
   Future<dynamic> delete(String endpoint, {bool auth = true}) async {
     try {

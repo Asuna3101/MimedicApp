@@ -1,89 +1,60 @@
 // lib/services/health_service.dart
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-
+import 'package:mimedicapp/services/api_service.dart';
 import 'package:mimedicapp/configs/api_config.dart';
 import 'package:mimedicapp/models/clinic.dart';
 import 'package:mimedicapp/models/specialty.dart';
 import 'package:mimedicapp/models/doctor.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
 
+/// Capa de dominio para catálogos y recordatorios de cita.
+/// Depende de ApiService para autenticación, headers y manejo de errores.
 class HealthService {
-  Future<Map<String, String>> _headers({bool auth = true}) async {
-    // Si tienes token, agréguelo aquí
-    final headers = Map<String, String>.from(ApiConfig.defaultHeaders);
-    // headers['Authorization'] = 'Bearer $token';
-    return headers;
-  }
+  HealthService([ApiService? api]) : _api = api ?? ApiService();
+  final ApiService _api;
 
-  // --- Catálogos ---
+  // ---------- Catálogos ----------
   Future<List<Clinic>> getClinics() async {
-    final r = await http.get(Uri.parse(ApiConfig.clinics()), headers: await _headers());
-    if (r.statusCode != 200) throw 'Error al obtener clínicas';
-    final List data = jsonDecode(r.body);
-    return data.map((e) => Clinic.fromJson(e)).toList();
+    final data = await _api.get(ApiConfig.clinics(), auth: true);
+    final list = (data as List).map((e) => Clinic.fromJson(e)).toList();
+    return list;
   }
 
   Future<List<Specialty>> getSpecialties(int clinicId) async {
-    final r = await http.get(Uri.parse(ApiConfig.specialties(clinicId)), headers: await _headers());
-    if (r.statusCode != 200) throw 'Error al obtener especialidades';
-    final List data = jsonDecode(r.body);
-    return data.map((e) => Specialty.fromJson(e)).toList();
+    final data = await _api.get(ApiConfig.specialties(clinicId), auth: true);
+    final list = (data as List).map((e) => Specialty.fromJson(e)).toList();
+    return list;
   }
 
   Future<List<Doctor>> getDoctors(int clinicId, int specialtyId) async {
-    final r = await http.get(Uri.parse(ApiConfig.doctors(clinicId, specialtyId)), headers: await _headers());
-    if (r.statusCode != 200) throw 'Error al obtener doctores';
-    final List data = jsonDecode(r.body);
-    return data.map((e) => Doctor.fromJson(e)).toList();
+    final data = await _api.get(ApiConfig.doctors(clinicId, specialtyId), auth: true);
+    final list = (data as List).map((e) => Doctor.fromJson(e)).toList();
+    return list;
   }
 
-  // --- Recordatorios de cita ---
+  // ---------- Recordatorios ----------
   Future<AppointmentReminder> createAppointmentReminder({
     required int clinicId,
     required int specialtyId,
     required int doctorId,
-    required DateTime startsAt, // solo inicio
+    required DateTime startsAt,
     String? notes,
   }) async {
-    final body = jsonEncode({
+    final payload = <String, dynamic>{
       'clinic_id': clinicId,
       'specialty_id': specialtyId,
       'doctor_id': doctorId,
-      'starts_at': startsAt.toIso8601String(),
-      'notes': notes,
-    });
+      // Enviar SIEMPRE en UTC (ISO-8601 con Z)
+      'starts_at': startsAt.toUtc().toIso8601String(),
+      if (notes != null) 'notes': notes,
+    };
 
-    final r = await http
-        .post(Uri.parse(ApiConfig.reminders()), headers: await _headers(auth: true), body: body)
-        .timeout(ApiConfig.timeout);
-
-    if (r.statusCode == 201) {
-      return AppointmentReminder.fromJson(jsonDecode(r.body));
-    }
-    if (r.statusCode == 409) {
-      final msg = _extractMsg(r.body) ?? 'Conflicto: cita duplicada o dentro de ±15 min del mismo doctor.';
-      throw msg;
-    }
-    throw 'Error al crear recordatorio (${r.statusCode})';
+    final data = await _api.post(ApiConfig.reminders(), payload, auth: true);
+    return AppointmentReminder.fromJson(data as Map<String, dynamic>);
   }
 
   Future<List<AppointmentReminder>> getMyAppointmentReminders() async {
-    final r = await http
-        .get(Uri.parse(ApiConfig.reminders()), headers: await _headers(auth: true))
-        .timeout(ApiConfig.timeout);
-
-    if (r.statusCode != 200) throw 'Error al obtener recordatorios (${r.statusCode})';
-    final List data = jsonDecode(r.body);
-    return data.map((e) => AppointmentReminder.fromJson(e)).toList();
-  }
-
-  String? _extractMsg(String body) {
-    try {
-      final m = jsonDecode(body);
-      return m['detail']?.toString();
-    } catch (_) {
-      return null;
-    }
+    final data = await _api.get(ApiConfig.reminders(), auth: true);
+    final list = (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
+    return list;
   }
 }

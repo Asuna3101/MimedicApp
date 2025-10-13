@@ -7,7 +7,7 @@ class CitaFormPage extends GetView<CitaFormController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CitaFormController());
+
     return Scaffold(
       appBar: AppBar(title: const Text('Registrar cita')),
       body: Padding(

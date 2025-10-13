@@ -7,7 +7,8 @@ import 'package:mimedicapp/models/doctor.dart';
 import 'package:mimedicapp/services/health_service.dart';
 
 class CitaFormController extends GetxController {
-  final _service = Get.find<HealthService>();
+  CitaFormController(this._service);
+  final HealthService _service;
 
   // combos
   final clinicas = <Clinic>[].obs;
@@ -33,22 +34,39 @@ class CitaFormController extends GetxController {
       : '${hora.value!.hour.toString().padLeft(2,'0')}:${hora.value!.minute.toString().padLeft(2,'0')}';
 
   @override
-  void onInit() { super.onInit(); _loadClinics(); }
+  void onInit() { 
+    super.onInit(); 
+    _loadClinics(); 
+  }
 
   Future<void> _loadClinics() async {
-    try { clinicas.assignAll(await _service.getClinics()); } catch (_) {}
+    try { 
+      clinicas.assignAll(await _service.getClinics()); 
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudieron cargar clínicas: $e');
+    }
   }
 
   Future<void> onClinicaChanged(Clinic? c) async {
     clinicaSel.value = c; especialidadSel.value=null; doctorSel.value=null;
     especialidades.clear(); doctores.clear();
-    if (c!=null) especialidades.assignAll(await _service.getSpecialties(c.id));
+    if (c!=null) {
+      try {
+        especialidades.assignAll(await _service.getSpecialties(c.id));
+      } catch (e) {
+        Get.snackbar('Error', 'No se pudieron cargar especialidades: $e');
+      }
+    }
   }
 
   Future<void> onEspecialidadChanged(Specialty? s) async {
     especialidadSel.value = s; doctorSel.value=null; doctores.clear();
     if (s!=null && clinicaSel.value!=null) {
-      doctores.assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
+      try {
+        doctores.assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
+      } catch (e) {
+        Get.snackbar('Error', 'No se pudieron cargar médicos: $e');
+      }
     }
   }
 
@@ -56,7 +74,7 @@ class CitaFormController extends GetxController {
     final hoy = DateTime.now();
     final picked = await showDatePicker(
       context: Get.context!, initialDate: fecha.value??hoy,
-      firstDate: hoy.subtract(const Duration(days:1)),
+      firstDate: hoy,
       lastDate: DateTime(hoy.year+1),
     );
     if (picked!=null) fecha.value=picked;
@@ -91,13 +109,18 @@ class CitaFormController extends GetxController {
         startsAt: startsAt,
         notes: notasCtrl.text.trim().isEmpty ? null : notasCtrl.text.trim(),
       );
-      Get.back(result: true); // señal para refrescar listado
+      Get.back(result: true);
       Get.snackbar('Guardado', 'Recordatorio creado');
     } catch (e) {
-      Get.snackbar('No se pudo guardar', e.toString()); // 409 dup/±15min
-    } finally { cargando.value = false; }
+      Get.snackbar('No se pudo guardar', e.toString());
+    } finally { 
+      cargando.value = false; 
+    }
   }
 
   @override
-  void onClose() { notasCtrl.dispose(); super.onClose(); }
+  void onClose() { 
+    notasCtrl.dispose(); 
+    super.onClose(); 
+  }
 }

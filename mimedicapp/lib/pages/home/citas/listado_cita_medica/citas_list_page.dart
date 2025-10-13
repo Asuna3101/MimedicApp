@@ -8,7 +8,9 @@ class CitasListPage extends GetView<CitasListController> {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(CitasListController()); // onInit() llama cargar()
+    // ❌ No registres controllers aquí:
+    // Get.put(CitasListController());
+
     return Scaffold(
       appBar: AppBar(title: const Text('Mis citas')),
       body: Obx(() {
@@ -42,7 +44,7 @@ class CitasListPage extends GetView<CitasListController> {
         onPressed: () async {
           final created = await Get.toNamed('/citas/nuevo');
           if (created == true) {
-            controller.cargar(); // refresca al volver
+            controller.cargar();
           }
         },
         icon: const Icon(Icons.add),
