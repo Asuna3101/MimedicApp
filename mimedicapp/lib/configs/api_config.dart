@@ -14,14 +14,13 @@ class ApiConfig {
     'Accept': 'application/json',
   };
 
-// ---------- AUTH ----------
-static const String loginEndpoint = '/auth/login';
-static const String loginFormEndpoint = '/auth/login';
-static const String registerEndpoint = '/auth/register';
-// sin slash final para evitar dobles “//”
-static const String usersEndpoint = '/users';
-static const String currentUserEndpoint = '/users/me';
-
+  // ---------- AUTH ----------
+  static const String loginEndpoint = '/auth/login';
+  static const String loginFormEndpoint = '/auth/login';
+  static const String registerEndpoint = '/auth/register';
+  // sin slash final para evitar dobles “//”
+  static const String usersEndpoint = '/users';
+  static const String currentUserEndpoint = '/users/me';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
@@ -32,19 +31,23 @@ static const String currentUserEndpoint = '/users/me';
     return '$base$p';
   }
 
-  // ---------- HEALTH ----------
-  static String clinics() => url('/health/clinicas');
+  // ---------- HEALTH (catálogos EN ESPAÑOL) ----------
+  static String clinics() => '$baseUrl/health/clinicas';
 
-  static String clinicSpecialties(int clinicaId) =>
-      url('/health/clinicas/$clinicaId/especialidades');
+  static String specialties(int clinicId) =>
+      '$baseUrl/health/clinicas/$clinicId/especialidades';
 
-  static String doctors({required int clinicaId, required int especialidadId}) =>
-      url('/health/doctores?clinica_id=$clinicaId&especialidad_id=$especialidadId');
+  // Backend espera query params: /health/doctores?clinica_id=&especialidad_id=
+  static String doctors(int clinicId, int specialtyId) =>
+      '$baseUrl/health/doctores?clinica_id=$clinicId&especialidad_id=$specialtyId';
 
-  static String availability({required int doctorId, required String fechaIso}) =>
-      url('/health/doctores/$doctorId/availability?fecha=$fechaIso');
+  // ---------- APPOINTMENT REMINDERS ----------
+  // Nombre explícito para evitar confusiones
+  static String appointmentReminders() => '$baseUrl/health/appointment-reminders';
 
-  static String get createAppointment => url('/health/citas');
+  // (Deprecado) Mantén temporalmente si ya usabas ApiConfig.reminders()
+  @Deprecated('Usa appointmentReminders()')
+  static String reminders() => appointmentReminders();
 
   /// Instrucciones rápidas para IP local
   static String getIpInstructions() => '''
