@@ -24,7 +24,11 @@ class ApiConfig {
   static const String registerEndpoint = '/auth/register';
   static const String usersEndpoint = '/users/';
   static const String currentUserEndpoint = '/users/me';
-
+  static const String medicamentosEndpoint = '/medicamentos';
+  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
+  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String unidadesEndpoint = '/unidades';
+  
   /// Obtener la URL base según el entorno
   static String getBaseUrl() {
     // Aquí puedes agregar lógica para diferentes entornos

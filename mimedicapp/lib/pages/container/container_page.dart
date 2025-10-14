@@ -4,8 +4,7 @@ import 'package:mimedicapp/components/bottomBar.dart';
 import 'package:mimedicapp/components/topBar.dart';
 import 'package:mimedicapp/navigation/tabs.dart';
 import 'package:mimedicapp/pages/container/container_controller.dart';
-import 'package:mimedicapp/pages/notificaciones/notificaciones_page.dart';
-import 'package:mimedicapp/pages/profile/profile_page.dart';
+
 
 class ContainerPage extends StatefulWidget {
   const ContainerPage({super.key});
@@ -32,10 +31,7 @@ class _ContainerPageState extends State<ContainerPage> {
         }
       },
       child: Scaffold(
-        appBar: Topbar(
-          onNotifications: () => Get.to(() => const NotificationsPage()),
-          onProfile: () => Get.to(() => const ProfilePage()),
-        ),
+        appBar: Topbar(),
         body: IndexedStack(
           index: allTabs.indexOf(current),
           children: controller.views,

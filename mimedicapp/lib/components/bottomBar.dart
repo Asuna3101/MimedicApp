@@ -6,13 +6,16 @@ class Bottombar extends StatelessWidget {
   final AppTab current;
   final ValueChanged<AppTab> onTap;
 
-  const Bottombar({super.key, required this.onTap, required this.current});
+  const Bottombar({
+    super.key,
+    required this.current,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    const tabs = allTabs;
-    final selected = tabs.indexOf(current);
-    final effectiveIndex = selected == -1 ? 0 : selected;
+    final tabs = allTabs;
+    final selectedIndex = tabs.indexOf(current);
 
     return Container(
       decoration: const BoxDecoration(
@@ -22,8 +25,8 @@ class Bottombar extends StatelessWidget {
         top: false,
         minimum: const EdgeInsets.only(top: 6),
         child: BottomNavigationBar(
-          currentIndex: effectiveIndex,
-          onTap: (i) => onTap(tabs[i]),
+          currentIndex: selectedIndex,
+          onTap: (index) => onTap(tabs[index]),
           backgroundColor: Colors.transparent,
           elevation: 0,
           type: BottomNavigationBarType.fixed,
@@ -32,9 +35,9 @@ class Bottombar extends StatelessWidget {
           showSelectedLabels: false,
           showUnselectedLabels: false,
           iconSize: 40,
-          items: tabs.map((t) {
+          items: tabs.map((tab) {
             return BottomNavigationBarItem(
-              icon: Icon(bottomTabIcons[t]),
+              icon: Icon(bottomTabIcons[tab]),
               label: '',
             );
           }).toList(),
