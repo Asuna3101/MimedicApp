@@ -24,6 +24,7 @@ class ApiConfig {
   static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
   static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
   static const String unidadesEndpoint = '/unidades';
+  static const String citasUsuarioEndpoint = '/citas/usuario/lista';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
@@ -33,6 +34,7 @@ class ApiConfig {
         : baseUrl;
     return '$base$p';
   }
+
 
     /// Obtener la URL base según el entorno
   static String getBaseUrl() {
