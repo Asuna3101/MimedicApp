@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:mimedicapp/pages/container/container_page.dart';
+import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
@@ -65,7 +66,7 @@ class MimedicApp extends StatelessWidget {
 
         // (Opcional) si navegas a estas rutas por nombre en otros flujos,
         // puedes dejarlas sin binding porque ya están lazy-registrados arriba.
-        GetPage(name: '/citas', page: () => const CitasListPage()),
+        GetPage(name: '/citas', page: () => const CitasPage()),
         GetPage(name: '/citas/nuevo', page: () => const CitaFormPage()),
       ],
     );
