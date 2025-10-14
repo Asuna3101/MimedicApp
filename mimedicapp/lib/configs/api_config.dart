@@ -18,9 +18,12 @@ class ApiConfig {
   static const String loginEndpoint = '/auth/login';
   static const String loginFormEndpoint = '/auth/login';
   static const String registerEndpoint = '/auth/register';
-  // sin slash final para evitar dobles “//”
   static const String usersEndpoint = '/users';
   static const String currentUserEndpoint = '/users/me';
+  static const String medicamentosEndpoint = '/medicamentos';
+  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
+  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String unidadesEndpoint = '/unidades';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
@@ -29,6 +32,13 @@ class ApiConfig {
         ? baseUrl.substring(0, baseUrl.length - 1)
         : baseUrl;
     return '$base$p';
+
+
+    /// Obtener la URL base según el entorno
+  static String getBaseUrl() {
+    // Aquí puedes agregar lógica para diferentes entornos
+    // Por ejemplo, verificar si estás en modo debug o release
+    return baseUrl;
   }
 
   // ---------- HEALTH (catálogos EN ESPAÑOL) ----------
