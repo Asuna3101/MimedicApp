@@ -6,7 +6,8 @@ import 'package:mimedicapp/models/unidad.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_controller.dart';
 
 class FormAgregarMedicamento extends StatelessWidget {
-  final AgregarMedicamentoController controller;
+  // Acepta cualquier controlador que exponga los mismos campos usados
+  final dynamic controller;
 
   const FormAgregarMedicamento({
     super.key,
@@ -15,7 +16,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = controller;
+  final c = controller;
 
     return Form(
       key: c.formKey,

@@ -19,7 +19,7 @@ class MedicacionController extends GetxController {
   }
 
   void goToEditarMedicacion(MedicamentoUsuario medicamento) =>
-      Get.toNamed(HomeRoutes.editarMedicamento, id: 1);
+    Get.toNamed(HomeRoutes.editarMedicamento, id: 1, arguments: medicamento);
 
   @override
   void onReady() {

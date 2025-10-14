@@ -44,4 +44,17 @@ class MedicacionService {
       throw ApiException('Error al registrar medicamento: $e');
     }
   }
+
+  Future<MedicamentoResponse> updateMedicamentoUsuario(int id, MedicamentoUsuario medicamento) async {
+    try {
+      // Usar el endpoint base definido en ApiConfig y concatenar el id
+      final endpoint = '${ApiConfig.actualizarMedicamentoEndpoint}/$id';
+      final response = await _apiService.put(endpoint, medicamento.toJson());
+
+      return MedicamentoResponse.fromJson(response);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al actualizar medicamento: $e');
+    }
+  }
 }

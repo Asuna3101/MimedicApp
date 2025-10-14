@@ -7,7 +7,7 @@ import 'package:mimedicapp/pages/home/citas/citas_page.dart';
 import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
-import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento.dart';
+import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_page.dart';
 

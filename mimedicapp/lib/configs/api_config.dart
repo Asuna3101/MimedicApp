@@ -27,6 +27,7 @@ class ApiConfig {
   static const String medicamentosEndpoint = '/medicamentos';
   static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
   static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String actualizarMedicamentoEndpoint = '/medicamentos/usuario/actualizar';
   static const String unidadesEndpoint = '/unidades';
   
   /// Obtener la URL base según el entorno
