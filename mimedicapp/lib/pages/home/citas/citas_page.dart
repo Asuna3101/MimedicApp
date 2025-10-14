@@ -36,7 +36,10 @@ class CitasPage extends StatelessWidget {
                     SizedBox(
                       width: double.infinity,
                       child: OutlinedButton.icon(
-                        onPressed: () => {}, // colocar ruta a agregar cita medica
+                        onPressed: () async {
+                          final created = await Get.toNamed('/citas/nuevo');
+                          if (created == true) controller.cargar();
+                        }, // colocar ruta a agregar cita medica
                         icon: const Icon(Icons.add,
                             color: AppColors.primary, size: 28),
                         label: const Text(
