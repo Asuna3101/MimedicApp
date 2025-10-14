@@ -2,10 +2,8 @@
 class ApiConfig {
   /// Inyecta la URL con: --dart-define=BASE_URL=...
   /// Fallback útil para emulador Android: 10.0.2.2 apunta al host
-  static const String baseUrl = String.fromEnvironment(
-    'BASE_URL',
-    defaultValue: 'http://10.0.2.2:8002/api/v1',
-  );
+  static const String baseUrl = String.fromEnvironment('BASE_URL',
+      defaultValue: 'http://192.168.0.6:8002/api/v1');
 
   // Timeouts y headers
   static const Duration timeout = Duration(seconds: 30);
@@ -21,8 +19,10 @@ class ApiConfig {
   static const String usersEndpoint = '/users';
   static const String currentUserEndpoint = '/users/me';
   static const String medicamentosEndpoint = '/medicamentos';
-  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
-  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String medicamentosUsuarioEndpoint =
+      '/medicamentos/usuario/lista';
+  static const String agregarMedicamentoEndpoint =
+      '/medicamentos/usuario/registrar';
   static const String unidadesEndpoint = '/unidades';
   // static const String citasUsuarioEndpoint = '/citas/usuario/lista';
 
@@ -35,8 +35,7 @@ class ApiConfig {
     return '$base$p';
   }
 
-
-    /// Obtener la URL base según el entorno
+  /// Obtener la URL base según el entorno
   static String getBaseUrl() {
     // Aquí puedes agregar lógica para diferentes entornos
     // Por ejemplo, verificar si estás en modo debug o release
@@ -55,7 +54,8 @@ class ApiConfig {
 
   // ---------- APPOINTMENT REMINDERS ----------
   // Nombre explícito para evitar confusiones
-  static String appointmentReminders() => '$baseUrl/health/appointment-reminders';
+  static String appointmentReminders() =>
+      '$baseUrl/health/appointment-reminders';
 
   // (Deprecado) Mantén temporalmente si ya usabas ApiConfig.reminders()
   @Deprecated('Usa appointmentReminders()')

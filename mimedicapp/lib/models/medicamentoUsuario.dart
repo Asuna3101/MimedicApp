@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class MedicamentoUsuario {
   final int? id;
   final String nombre;

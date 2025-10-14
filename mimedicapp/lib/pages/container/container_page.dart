@@ -5,7 +5,6 @@ import 'package:mimedicapp/components/topBar.dart';
 import 'package:mimedicapp/navigation/tabs.dart';
 import 'package:mimedicapp/pages/container/container_controller.dart';
 
-
 class ContainerPage extends StatefulWidget {
   const ContainerPage({super.key});
 
@@ -38,7 +37,16 @@ class _ContainerPageState extends State<ContainerPage> {
         ),
         bottomNavigationBar: Bottombar(
           current: current,
-          onTap: (tab) => setState(() => current = tab),
+          onTap: (tab) {
+            // If Home icon is tapped, ensure we return to HomePage in the nested navigator
+            if (tab == AppTab.home) {
+              final navigator = Get.nestedKey(1)?.currentState;
+              if (navigator != null) {
+                navigator.popUntil((route) => route.isFirst);
+              }
+            }
+            setState(() => current = tab);
+          },
         ),
       ),
     );
