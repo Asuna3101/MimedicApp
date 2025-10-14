@@ -28,7 +28,7 @@ class Header extends StatelessWidget {
           style: const TextStyle(
             fontFamily: 'Titulo',
             fontSize: 30,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.bold,
             color: AppColors.primary,
           ),
         ),

@@ -1,28 +1,32 @@
+// lib/pages/home/citas/citas_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/citas/components/cita_card.dart';
-
-import '../../../configs/colors.dart';
-import '../components/Header.dart';
-import 'citas_controller.dart';
+import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_list_controller.dart';
+import 'package:mimedicapp/pages/home/components/header.dart';
+import 'package:mimedicapp/services/health_service.dart';
 
 class CitasPage extends StatelessWidget {
   const CitasPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CitasController());
+    final controller =
+        Get.put(CitasListController(Get.find<HealthService>())); 
+    final fmt = DateFormat('dd/MM/yyyy – HH:mm');
 
     return WillPopScope(
       onWillPop: () async {
-        Get.offNamed('/home/inicio',
-            id: 1); // Volver al HomePage dentro del Navigator anidado
-        return false; // No salir
+        Get.offNamed('/home/inicio', id: 1);
+        return false;
       },
       child: Scaffold(
         body: SafeArea(
           child: Column(
             children: [
+              // 🔹 Encabezado con botón "Agregar"
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -39,9 +43,12 @@ class CitasPage extends StatelessWidget {
                         onPressed: () async {
                           final created = await Get.toNamed('/citas/nuevo');
                           if (created == true) controller.cargar();
-                        }, // colocar ruta a agregar cita medica
-                        icon: const Icon(Icons.add,
-                            color: AppColors.primary, size: 28),
+                        },
+                        icon: const Icon(
+                          Icons.add,
+                          color: AppColors.primary,
+                          size: 28,
+                        ),
                         label: const Text(
                           'Agregar',
                           style: TextStyle(
@@ -65,27 +72,22 @@ class CitasPage extends StatelessWidget {
                   ],
                 ),
               ),
+
+              // 🔹 Contenido dinámico (lista / cargando / vacío)
               Expanded(
                 child: Obx(() {
-                  if (controller.isLoading.value) {
+                  if (controller.cargando.value) {
                     return const Center(
-                      child:
-                      CircularProgressIndicator(color: AppColors.primary),
+                      child: CircularProgressIndicator(
+                        color: AppColors.primary,
+                      ),
                     );
                   }
 
-                  if (controller.citasUsuario.isEmpty) {
-                    return const Padding(
-                      padding: EdgeInsets.all(24),
-                      child: Text(
-                        'No tienes medicamentos registrados.',
-                        style: TextStyle(
-                          color: AppColors.primary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    );
+                  final citas = controller.citas;
+
+                  if (citas.isEmpty) {
+                    return const _Empty();
                   }
 
                   return Column(
@@ -97,29 +99,38 @@ class CitasPage extends StatelessWidget {
                           "Próximas Citas",
                           style: TextStyle(
                             fontFamily: 'Titulo',
-                            fontSize: 34,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: AppColors.primary,
                           ),
                         ),
                       ),
 
-                      // 🔹 Lista con scroll
+                      // 🔹 Lista con scroll y tarjetas personalizadas
                       Expanded(
                         child: SingleChildScrollView(
                           padding: const EdgeInsets.all(24),
                           child: Column(
-                            children: controller.citasUsuario
-                                .map(
-                                  (c) => Padding(
+                            children: citas.map((r) {
+                              // final fecha = fmt.format(r.startsAt);
+                              return Padding(
                                 padding: const EdgeInsets.only(bottom: 16),
                                 child: CitaMedicaCard(
-                                  cita: c,
-                                  onEdit: () => {},
+                                  cita: r,
+                                  onEdit: () async {
+                                    // final updated = await Get.toNamed(
+                                    //   '/citas/editar',
+                                    //   arguments: r,
+                                    // );
+                                    // if (updated == true) controller.cargar();
+                                  },
+                                  // extraInfo:
+                                  //     'Dr. ${r.doctor.nombre} • ${r.specialty.nombre}\n'
+                                  //     'Clínica ${r.clinic.nombre}\n'
+                                  //     '$fecha${r.notes == null ? "" : "\n${r.notes}"}',
                                 ),
-                              ),
-                            )
-                                .toList(),
+                              );
+                            }).toList(),
                           ),
                         ),
                       ),
@@ -133,4 +144,36 @@ class CitasPage extends StatelessWidget {
       ),
     );
   }
+}
+
+// 🔹 Widget para estado vacío
+class _Empty extends StatelessWidget {
+  const _Empty();
+
+  @override
+  Widget build(BuildContext context) => const Center(
+        child: Padding(
+          padding: EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.event_busy, size: 56, color: AppColors.primary),
+              SizedBox(height: 10),
+              Text(
+                'No tienes citas registradas',
+                style: TextStyle(
+                  color: AppColors.primary,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'Pulsa “Agregar” para registrar tu próxima cita.',
+                style: TextStyle(color: AppColors.primary),
+              ),
+            ],
+          ),
+        ),
+      );
 }

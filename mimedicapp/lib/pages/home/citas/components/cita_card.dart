@@ -1,10 +1,10 @@
+// lib/widgets/cita_medica_card.dart
 import 'package:flutter/material.dart';
-import 'package:mimedicapp/models/cita.dart';
-
-import '../../../../configs/colors.dart';
+import 'package:mimedicapp/configs/colors.dart';
+import 'package:mimedicapp/models/appointment_reminder.dart';
 
 class CitaMedicaCard extends StatelessWidget {
-  final Cita cita;
+  final AppointmentReminder cita;
   final VoidCallback onEdit;
 
   const CitaMedicaCard({
@@ -16,8 +16,18 @@ class CitaMedicaCard extends StatelessWidget {
   String _formatFecha(DateTime fecha) {
     // Ejemplo: "26 de junio 10:00"
     final meses = [
-      "enero", "febrero", "marzo", "abril", "mayo", "junio",
-      "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre"
     ];
     final mes = meses[fecha.month - 1];
     final hora = "${fecha.hour}:${fecha.minute.toString().padLeft(2, '0')}";
@@ -29,7 +39,7 @@ class CitaMedicaCard extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Card principal
+        // 🔹 Card principal
         Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
@@ -40,14 +50,14 @@ class CitaMedicaCard extends StatelessWidget {
           ),
           elevation: 1,
           child: Container(
-            width: double.infinity, // 🔹 ocupa todo el ancho disponible
+            width: double.infinity,
             padding: const EdgeInsets.all(18),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Especialidad
                 Text(
-                  cita.especialidad,
+                  cita.specialty.nombre,
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 28,
@@ -59,27 +69,48 @@ class CitaMedicaCard extends StatelessWidget {
 
                 // Fecha formateada
                 Text(
-                  _formatFecha(cita.fecha),
-                  style: const TextStyle(fontSize: 18, color: Colors.black87),
+                  _formatFecha(cita.startsAt),
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
                 ),
 
                 // Doctor
                 Text(
-                  "Dr. ${cita.doctor}",
-                  style: const TextStyle(fontSize: 18, color: Colors.black87),
+                  "Dr. / Dra. ${cita.doctor.nombre}",
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
                 ),
 
                 // Clínica
                 Text(
-                  cita.clinica,
-                  style: const TextStyle(fontSize: 18, color: Colors.black87),
+                  cita.clinic.nombre,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
                 ),
+
+                // Notas (opcional)
+                if (cita.notes != null && cita.notes!.isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    cita.notes!,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black54,
+                    ),
+                  ),
+                ],
               ],
             ),
           ),
         ),
 
-        // Botón editar flotante arriba a la derecha
+        // 🔹 Botón editar flotante
         Positioned(
           top: -18,
           right: -18,
@@ -87,7 +118,11 @@ class CitaMedicaCard extends StatelessWidget {
             style: ButtonStyle(
               backgroundColor: WidgetStateProperty.all(Colors.transparent),
             ),
-            icon: Icon(Icons.edit, color: AppColors.getButtonColor(context), size: 34),
+            icon: Icon(
+              Icons.edit,
+              color: AppColors.getButtonColor(context),
+              size: 34,
+            ),
             onPressed: onEdit,
           ),
         ),
