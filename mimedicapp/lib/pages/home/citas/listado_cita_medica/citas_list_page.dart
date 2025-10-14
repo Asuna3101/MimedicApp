@@ -1,3 +1,4 @@
+// lib/pages/home/citas/listado_cita_medica/citas_list_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -10,7 +11,6 @@ class CitasListPage extends GetView<CitasListController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Sin AppBar para parecerse a MedicacionPage
       body: SafeArea(
         child: Obx(() {
           if (controller.cargando.value) {
@@ -18,6 +18,7 @@ class CitasListPage extends GetView<CitasListController> {
           }
 
           final citas = controller.citas;
+          final fmt = DateFormat('dd/MM/yyyy – HH:mm');
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -25,17 +26,14 @@ class CitasListPage extends GetView<CitasListController> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 12),
-
-                // Título con icono a la izquierda (como MedicacionPage)
                 Stack(
                   alignment: Alignment.center,
                   children: [
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Image.asset(
-                        'assets/img/homeIcons/citas.png', // ajusta si tu asset tiene otro nombre
+                        'assets/img/homeIcons/citas.png',
                         height: 70,
-                        // Si no existe el asset, mostramos un ícono por defecto
                         errorBuilder: (_, __, ___) => const Icon(
                           Icons.calendar_month,
                           size: 56,
@@ -54,10 +52,8 @@ class CitasListPage extends GetView<CitasListController> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 30),
 
-                // Botón Agregar (igual estilo)
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
@@ -79,33 +75,29 @@ class CitasListPage extends GetView<CitasListController> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(25),
                       ),
-                      side: const BorderSide(
-                        color: AppColors.primary,
-                        width: 1.5,
-                      ),
+                      side: const BorderSide(color: AppColors.primary, width: 1.5),
                     ),
                   ),
                 ),
-
                 const SizedBox(height: 20),
 
-                if (citas.isEmpty) const _Empty() else ...[
-                  // Lista de citas
+                if (citas.isEmpty)
+                  const _Empty()
+                else ...[
                   ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    padding: const EdgeInsets.all(0),
                     itemCount: citas.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (_, i) {
                       final r = citas[i];
-                      final f = DateFormat('dd/MM/yyyy – HH:mm').format(r.startsAt);
+                      final f = fmt.format(r.startsAt);
                       return Card(
                         child: ListTile(
                           leading: const Icon(Icons.calendar_month),
-                          title: Text('Doctor ID: ${r.doctorId}  •  $f'),
+                          title: Text('${r.doctor.nombre}  •  $f'),
                           subtitle: Text(
-                            'Clínica ${r.clinicId} • Esp. ${r.specialtyId}'
+                            'Clínica ${r.clinic.nombre} • Esp. ${r.specialty.nombre}'
                             '${r.notes == null ? "" : "\n${r.notes}"}',
                           ),
                         ),
