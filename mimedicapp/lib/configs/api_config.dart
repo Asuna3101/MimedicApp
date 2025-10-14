@@ -32,7 +32,7 @@ class ApiConfig {
         ? baseUrl.substring(0, baseUrl.length - 1)
         : baseUrl;
     return '$base$p';
-
+  }
 
     /// Obtener la URL base según el entorno
   static String getBaseUrl() {

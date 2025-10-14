@@ -9,7 +9,7 @@ import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/home_controller.dart';
 import 'package:mimedicapp/pages/home/home_page.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
-import 'package:mimedicapp/pages/home/citas/citas_page.dart';
+// import 'package:mimedicapp/pages/home/citas/citas_page.dart';
 import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
@@ -34,7 +34,7 @@ class HomeNavigator extends StatelessWidget {
       HomeRoutes.reportes:   (_) => const ReportesPage(),
       HomeRoutes.agregarMedicamento: (_) => const AgregarMedicamentoPage(),
       HomeRoutes.editarMedicamento: (_) => const EditarMedicamentoPage(),
-      HomeRoutes.citas: (_) => const CitasPage(),
+      // HomeRoutes.citas: (_) => const CitasPage(),
     };
 
     return Navigator(
