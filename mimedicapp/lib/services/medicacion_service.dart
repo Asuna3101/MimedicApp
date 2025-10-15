@@ -47,10 +47,12 @@ class MedicacionService {
 
   Future<MedicamentoResponse> updateMedicamentoUsuario(int id, MedicamentoUsuario medicamento) async {
     try {
+      print("Paso 1");
       // Usar el endpoint base definido en ApiConfig y concatenar el id
       final endpoint = '${ApiConfig.actualizarMedicamentoEndpoint}/$id';
+      print("Paso 2");
       final response = await _apiService.put(endpoint, medicamento.toJson());
-
+      print("Paso 3");
       return MedicamentoResponse.fromJson(response);
     } catch (e) {
       if (e is ApiException) rethrow;
