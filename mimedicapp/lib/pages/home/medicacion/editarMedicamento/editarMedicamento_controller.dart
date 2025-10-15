@@ -36,6 +36,7 @@ class EditarMedicamentoController extends GetxController {
 
     // Si se pasó el medicamento por Get.arguments, inicializamos
     final arg = Get.arguments;
+    print('✳️ EditarMedicamentoController.onInit - Get.arguments: $arg');
     if (arg is MedicamentoUsuario) {
       initWith(arg);
     }
@@ -57,6 +58,7 @@ class EditarMedicamentoController extends GetxController {
 
   // Inicializar con el medicamento pasado por Get.arguments o constructor
   void initWith(MedicamentoUsuario medicamento) {
+    print('✳️ EditarMedicamentoController.initWith id=${medicamento.id}');
     medicamentoOriginal = medicamento;
     nombreCtrl.text = medicamento.nombre ?? '';
     dosisCtrl.text = medicamento.dosis?.toString() ?? '';
@@ -128,7 +130,8 @@ class EditarMedicamentoController extends GetxController {
     }
   }
 
-  Future<void> guardarCambios() async {
+  Future<void> guardar() async {
+    print('✳️ guardarCambios called - medicamentoOriginal?.id=${medicamentoOriginal?.id}');
     if (!isFormValid.value) {
       Get.snackbar('Campos incompletos', 'Completa todos los campos antes de guardar');
       return;
@@ -173,7 +176,9 @@ class EditarMedicamentoController extends GetxController {
 
       final mensaje = resultado.message ?? 'Medicamento actualizado correctamente.';
 
-      Get.back(result: true);
+      resetForm();
+      
+      Get.back(result: true, id: 1);
       Get.snackbar(
         'Éxito',
         mensaje,
@@ -189,6 +194,14 @@ class EditarMedicamentoController extends GetxController {
     }
   }
 
-  // Alias para reutilizar el formulario existente (llama a guardarCambios)
-  void guardar() => guardarCambios();
+  void resetForm() {
+    nombreCtrl.clear();
+    dosisCtrl.clear();
+    unidadCtrl.clear();
+    frecuenciaCtrl.clear();
+    fechaInicio.value = null;
+    fechaFin.value = null;
+    horaInicio.value = null;
+    isFormValid.value = false;
+  }
 }

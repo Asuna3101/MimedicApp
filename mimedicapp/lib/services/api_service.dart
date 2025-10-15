@@ -144,13 +144,23 @@ class ApiService {
   Future<dynamic> put(String endpoint, Map<String, dynamic> data) async {
     try {
       final headers = await _getAuthHeaders();
+      final url = '$baseUrl$endpoint';
+
+      // Logging para debugging (similar al POST)
+      print('🚀 PUT Request to: $url');
+      print('📋 Headers: $headers');
+      print('📦 Body: ${json.encode(data)}');
+
       final response = await http
           .put(
-            Uri.parse('$baseUrl$endpoint'),
+            Uri.parse(url),
             headers: headers,
             body: json.encode(data),
           )
           .timeout(const Duration(seconds: 30));
+
+      print('📡 Response Status: ${response.statusCode}');
+      print('📡 Response Body: ${response.body}');
 
       return _handleResponse(response);
     } on SocketException {

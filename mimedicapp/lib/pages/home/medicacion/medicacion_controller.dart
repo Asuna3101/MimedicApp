@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
+import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento_controller.dart';
 import '../../../models/medicamentoUsuario.dart';
 import '../../../services/medicacion_service.dart';
 
@@ -18,8 +19,18 @@ class MedicacionController extends GetxController {
     });
   }
 
-  void goToEditarMedicacion(MedicamentoUsuario medicamento) =>
-    Get.toNamed(HomeRoutes.editarMedicamento, id: 1, arguments: medicamento);
+  void goToEditarMedicacion(MedicamentoUsuario medicamento) {
+    // Asegurarnos de que el controlador de edición exista e inicializarlo
+    final editarCtrl = Get.put(EditarMedicamentoController());
+    editarCtrl.initWith(medicamento);
+
+    Get.toNamed(HomeRoutes.editarMedicamento, id: 1, arguments: medicamento)
+        ?.then((result) {
+      if (result == true) {
+        loadData();
+      }
+    });
+  }
 
   @override
   void onReady() {
