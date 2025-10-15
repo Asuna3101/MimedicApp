@@ -59,4 +59,18 @@ class MedicacionService {
       throw ApiException('Error al actualizar medicamento: $e');
     }
   }
+
+  /// Eliminar varios medicamentos de usuario enviando la lista de ids
+  /// al endpoint `/medicamentos/usuario/eliminar-lista` mediante POST.
+  ///
+  /// Body enviado: { 'ids': [1,2,3] }
+  Future<void> deleteMedicamentosUsuario(List<int> ids) async {
+    try {
+      final body = {'ids': ids};
+      await _apiService.post(ApiConfig.eliminarMedicamentosEndpoint, body);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al eliminar medicamentos: $e');
+    }
+  }
 }

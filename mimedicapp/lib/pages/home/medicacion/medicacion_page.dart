@@ -111,19 +111,50 @@ class MedicacionPage extends StatelessWidget {
               ],
               ),
 
-              // Botón fijo en la parte inferior
+              // Botón fijo en la parte inferior (reactivo)
               Positioned(
                 bottom: 20,
                 left: 0,
                 right: 0,
                 child: Center(
                   child: SizedBox(
-                    width: 200, // Ajusta el ancho del botón para hacerlo más pequeño
-                    child: CustomButton(
-                      title: 'Seleccionar',
-                      onPressed: () {},
-                      // isOutlined: true, // Usar como OutlinedButton
-                    ),
+                    width: 200,
+                    child: Obx(() {
+                      final inSelection = controller.selectionMode.value;
+                      return CustomButton(
+                        title: inSelection ? 'Eliminar' : 'Seleccionar',
+                        onPressed: inSelection
+                            ? () async {
+                                // Mostrar confirmación antes de eliminar
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Confirmar eliminación'),
+                                    content: Text('¿Eliminar ${controller.selectedIds.length} medicamento(s)?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Salir del modo selección y cerrar diálogo
+                                          controller.toggleSelectionMode();
+                                          Navigator.of(ctx).pop(false);
+                                        },
+                                        child: const Text('Cancelar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(true),
+                                        child: const Text('Eliminar'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  controller.deleteSelected();
+                                }
+                              }
+                            : () => controller.toggleSelectionMode(),
+                      );
+                    }),
                   ),
                 ),
               ),
