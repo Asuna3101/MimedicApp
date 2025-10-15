@@ -4,12 +4,12 @@ import 'colors.dart';
 class AppTheme {
   static ThemeData lightTheme() {
     const scheme = ColorScheme.light(
-      primary: AppColors.primary, // morado
-      onPrimary: AppColors.white, // texto sobre primario
-      secondary: AppColors.accent, // rosado
-      onSecondary: AppColors.white, // texto sobre rosado
-      surface: AppColors.white, // cards/sheets
-      onSurface: AppColors.primary, // texto morado
+      primary: AppColors.primary,      // morado
+      onPrimary: AppColors.white,      // texto sobre morado
+      secondary: AppColors.accent,     // rosado (para acentos/íconos)
+      onSecondary: AppColors.white,
+      surface: AppColors.white,
+      onSurface: AppColors.primary,
       error: AppColors.error,
       onError: AppColors.white,
     );
@@ -19,7 +19,7 @@ class AppTheme {
       colorScheme: scheme,
       scaffoldBackgroundColor: AppColors.white,
       textTheme: const TextTheme().apply(
-        bodyColor: AppColors.primary, // todos los textos morados
+        bodyColor: AppColors.primary,
         displayColor: AppColors.primary,
       ),
     );
@@ -33,23 +33,41 @@ class AppTheme {
         surfaceTintColor: Colors.transparent,
       ),
       iconTheme: const IconThemeData(color: AppColors.accent),
+
+      // 🔹 Botones rellenos: morado con texto blanco
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.accent,
+          backgroundColor: AppColors.primary,
           foregroundColor: AppColors.white,
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(14))),
+            borderRadius: BorderRadius.all(Radius.circular(14)),
+          ),
           padding: const EdgeInsets.symmetric(vertical: 14),
         ),
       ),
+      // (Material 3) por si usas FilledButton en algún lugar
+      filledButtonTheme: FilledButtonThemeData(
+        style: ButtonStyle(
+          backgroundColor: WidgetStateProperty.all(AppColors.primary),
+          foregroundColor: WidgetStateProperty.all(AppColors.white),
+          shape: WidgetStateProperty.all(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          ),
+          padding: WidgetStateProperty.all(
+            const EdgeInsets.symmetric(vertical: 14),
+          ),
+        ),
+      ),
+
+      // Outlined se mantiene con borde y texto morado
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: AppColors.primary,
           side: const BorderSide(color: AppColors.primary),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         ),
       ),
+
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.white,

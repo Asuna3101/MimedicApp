@@ -1,28 +1,22 @@
 /// Configuración de la API
 class ApiConfig {
-  // URL base del backend   192.168.0.6
-  // En desarrollo, usa tu IP local. Ejemplo: 'http://192.168.1.100:8001/api/v1'
-  // Para el emulador de Android: 'http://10.0.2.2:8001/api/v1'
-  // Para iOS Simulator: 'http://127.0.0.1:8001/api/v1'
-  static const String baseUrl = 'http://10.0.2.2:8002/api/v1';
+  /// Inyecta la URL con: --dart-define=BASE_URL=...
+  /// Fallback útil para emulador Android: 10.0.2.2 apunta al host
+  static const String baseUrl = String.fromEnvironment('BASE_URL',
+      defaultValue: 'http://10.0.2.2:8002/api/v1');
 
-  // Para dispositivos físicos, reemplaza con tu IP local:
-  // static const String baseUrl = 'http://TU_IP_LOCAL:8000/api/v1';
-
-  // Timeout para las peticiones HTTP
+  // Timeouts y headers
   static const Duration timeout = Duration(seconds: 30);
-
-  // Headers por defecto
   static const Map<String, String> defaultHeaders = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   };
 
-  // Endpoints
+  // ---------- AUTH ----------
   static const String loginEndpoint = '/auth/login';
   static const String loginFormEndpoint = '/auth/login';
   static const String registerEndpoint = '/auth/register';
-  static const String usersEndpoint = '/users/';
+  static const String usersEndpoint = '/users';
   static const String currentUserEndpoint = '/users/me';
   static const String medicamentosEndpoint = '/medicamentos';
   static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
@@ -30,7 +24,17 @@ class ApiConfig {
   static const String actualizarMedicamentoEndpoint = '/medicamentos/usuario/actualizar';
   static const String eliminarMedicamentosEndpoint = '/medicamentos/usuario/eliminar-lista';
   static const String unidadesEndpoint = '/unidades';
-  
+  // static const String citasUsuarioEndpoint = '/citas/usuario/lista';
+
+  // Helper para construir URLs absolutas (normaliza /)
+  static String url(String path) {
+    final p = path.startsWith('/') ? path : '/$path';
+    final base = baseUrl.endsWith('/')
+        ? baseUrl.substring(0, baseUrl.length - 1)
+        : baseUrl;
+    return '$base$p';
+  }
+
   /// Obtener la URL base según el entorno
   static String getBaseUrl() {
     // Aquí puedes agregar lógica para diferentes entornos
@@ -38,23 +42,43 @@ class ApiConfig {
     return baseUrl;
   }
 
-  /// Instrucciones para configurar la IP
-  static String getIpInstructions() {
-    return '''
+  // ---------- HEALTH (catálogos EN ESPAÑOL) ----------
+  static String clinics() => '$baseUrl/health/clinicas';
+
+  static String specialties(int clinicId) =>
+      '$baseUrl/health/clinicas/$clinicId/especialidades';
+
+  // Backend espera query params: /health/doctores?clinica_id=&especialidad_id=
+  static String doctors(int clinicId, int specialtyId) =>
+      '$baseUrl/health/doctores?clinica_id=$clinicId&especialidad_id=$specialtyId';
+
+  // ---------- APPOINTMENT REMINDERS ----------
+  // Nombre explícito para evitar confusiones
+  static String appointmentReminders() =>
+      '$baseUrl/health/appointment-reminders';
+
+  // (Deprecado) Mantén temporalmente si ya usabas ApiConfig.reminders()
+  @Deprecated('Usa appointmentReminders()')
+  static String reminders() => appointmentReminders();
+
+  /// Instrucciones rápidas para IP local
+  static String getIpInstructions() => '''
 Para conectar con tu backend local:
 
-1. Obtén tu IP local:
-   - Windows: Ejecuta 'ipconfig' en cmd
-   - macOS/Linux: Ejecuta 'ifconfig' en terminal
-   
-2. Busca tu dirección IP (ej: 192.168.1.100)
+1) Obtén tu IP:
+   - Windows: ipconfig
+   - macOS/Linux: ifconfig
 
-3. Actualiza ApiConfig.baseUrl con:
-   'http://TU_IP_LOCAL:8000/api/v1'
+2) Ejecuta la app con (ejemplos):
+   - Emulador Android:
+     flutter run --dart-define=BASE_URL=http://10.0.2.2:8002/api/v1
+   - Dispositivo físico (misma Wi-Fi):
+     flutter run --dart-define=BASE_URL=http://TU_IP_LOCAL:8002/api/v1
+   - iOS Simulator:
+     flutter run --dart-define=BASE_URL=http://127.0.0.1:8002/api/v1
 
-4. Asegúrate de que tu backend esté ejecutándose en el puerto 8000
-
-Nota: Para el emulador de Android usa: http://10.0.2.2:8000/api/v1
+Notas:
+- Evita hardcodear IPs en código; usa --dart-define.
+- Si usas HTTP en dev, permite tráfico claro en AndroidManifest (usesCleartextTraffic).
 ''';
-  }
 }
