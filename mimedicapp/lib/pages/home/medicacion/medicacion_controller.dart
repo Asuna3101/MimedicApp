@@ -10,6 +10,27 @@ class MedicacionController extends GetxController {
   final isLoading = false.obs;
 
   final medicamentosUsuario = <MedicamentoUsuario>[].obs;
+  // Modo de selección y lista de ids seleccionados
+  final selectionMode = false.obs;
+  final selectedIds = <int>[].obs;
+
+  void toggleSelectionMode() {
+    selectionMode.value = !selectionMode.value;
+    if (!selectionMode.value) {
+      // limpiar selección al salir del modo
+      selectedIds.clear();
+    }
+  }
+
+  void toggleSelect(MedicamentoUsuario medicamento) {
+    final id = medicamento.id;
+    if (id == null) return;
+    if (selectedIds.contains(id)) {
+      selectedIds.remove(id);
+    } else {
+      selectedIds.add(id);
+    }
+  }
 
   void goToAgregarMedicacion() {
     Get.toNamed(HomeRoutes.agregarMedicamento, id: 1)?.then((result) {

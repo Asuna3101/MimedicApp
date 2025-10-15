@@ -1,3 +1,4 @@
+import 'package:mimedicapp/components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
@@ -20,8 +21,10 @@ class MedicacionPage extends StatelessWidget {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
+              Column(
+                children: [
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -93,8 +96,10 @@ class MedicacionPage extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: MedicineCard(
                                 medicamento: m,
-                                onEdit: () =>
-                                    controller.goToEditarMedicacion(m),
+                                onEdit: () => controller.goToEditarMedicacion(m),
+                                selectionMode: controller.selectionMode.value,
+                                isSelected: m.id != null && controller.selectedIds.contains(m.id),
+                                onToggleSelect: () => controller.toggleSelect(m),
                               ),
                             ),
                           )
@@ -103,6 +108,44 @@ class MedicacionPage extends StatelessWidget {
                   );
                 }),
               ),
+              ],
+              ),
+
+              // // Botón fijo en la parte inferior
+              // Positioned(
+              //   left: 20,
+              //   right: 20,
+              //   bottom: 20,
+              //   child: Obx(() => ElevatedButton(
+              //         onPressed: () => controller.toggleSelectionMode(),
+              //         style: ElevatedButton.styleFrom(
+              //           backgroundColor: AppColors.primary,
+              //           padding: const EdgeInsets.symmetric(vertical: 16),
+              //           shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(12),
+              //           ),
+              //           elevation: 6,
+              //         ),
+              //         child: const Text(
+              //           'Seleccionar',
+              //           style: TextStyle(
+              //             color: AppColors.white,
+              //             fontSize: 18,
+              //             fontWeight: FontWeight.w600,
+              //           ),
+              //         ),
+              //       )),
+              // ),
+
+            //   SizedBox(
+            //   width: 200, // Ajusta el ancho del botón para hacerlo más pequeño
+            //   child: CustomButton(
+            //     title: 'Seleccionar',
+            //     onPressed: () {
+            //       Navigator.pushNamed(context, '/sign-up');
+            //     },
+            //   ),
+            // ),
             ],
           ),
         ),
