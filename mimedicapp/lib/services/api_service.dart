@@ -167,6 +167,33 @@ class ApiService {
     }
   }
 
+  Future<dynamic> patch(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
+    try {
+      final url = _abs(endpoint);
+      final headers = await _headers(withAuth: auth);
+      final body = json.encode(data);
+
+      // logs
+      // ignore: avoid_print
+      print('[API] -> PATCH $url');
+      // ignore: avoid_print
+      print('[API] HEADERS: $headers');
+      // ignore: avoid_print
+      print('[API] BODY   : $body');
+
+      final response = await http
+          .patch(Uri.parse(url), headers: headers, body: body)
+          .timeout(ApiConfig.timeout);
+
+      return _handleResponse(response);
+    } on SocketException {
+      throw ApiException('Sin conexión. Verifica tu internet.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error inesperado: $e');
+    }
+  }
+
 
   Future<dynamic> post(String endpoint, Map<String, dynamic> data, {bool auth = true}) async {
     try {

@@ -1,13 +1,14 @@
+// lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:mimedicapp/pages/container/container_page.dart';
-import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_page.dart';
+import 'package:mimedicapp/pages/home/citas/citas_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
 import 'package:mimedicapp/configs/app_theme.dart';
-import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_list_page.dart';
 import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_page.dart';
 
 /// imports de siempre...
@@ -18,7 +19,7 @@ import 'package:mimedicapp/services/api_service.dart';
 import 'package:mimedicapp/services/health_service.dart';
 
 // controllers de citas
-import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_list_controller.dart';
+import 'package:mimedicapp/pages/home/citas/citas_controller.dart';
 import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_controller.dart';
 
 void main() {
