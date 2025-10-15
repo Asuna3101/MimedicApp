@@ -3,7 +3,7 @@ class ApiConfig {
   /// Inyecta la URL con: --dart-define=BASE_URL=...
   /// Fallback útil para emulador Android: 10.0.2.2 apunta al host
   static const String baseUrl = String.fromEnvironment('BASE_URL',
-      defaultValue: 'http://192.168.0.6:8002/api/v1');
+      defaultValue: 'http://10.0.2.2:8002/api/v1');
 
   // Timeouts y headers
   static const Duration timeout = Duration(seconds: 30);

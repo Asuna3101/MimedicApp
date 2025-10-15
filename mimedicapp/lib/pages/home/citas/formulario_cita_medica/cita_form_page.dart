@@ -12,11 +12,10 @@ class CitaFormPage extends GetView<CitaFormController> {
     final scheme = Theme.of(context).colorScheme;
     final disabledColor = Theme.of(context).disabledColor;
 
-    Icon downIcon(bool enabled) =>
-        Icon(Icons.keyboard_arrow_down, color: enabled ? scheme.secondary : disabledColor);
+    Icon downIcon(bool enabled) => Icon(Icons.keyboard_arrow_down,
+        color: enabled ? scheme.secondary : disabledColor);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Registrar cita')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -33,7 +32,8 @@ class CitaFormPage extends GetView<CitaFormController> {
                   isExpanded: true,
                   value: controller.clinicaSel.value,
                   items: controller.clinicas
-                      .map((c) => DropdownMenuItem(value: c, child: Text(c.nombre)))
+                      .map((c) =>
+                          DropdownMenuItem(value: c, child: Text(c.nombre)))
                       .toList(),
                   onChanged: controller.onClinicaChanged,
                   hint: const Text('Selecciona clínica'),
@@ -41,39 +41,47 @@ class CitaFormPage extends GetView<CitaFormController> {
                   icon: downIcon(true),
                 ),
                 const SizedBox(height: 12),
-
                 _label(context, 'Especialidad'),
                 DropdownButtonFormField(
                   isExpanded: true,
-                  value: especialidadEnabled ? controller.especialidadSel.value : null,
+                  value: especialidadEnabled
+                      ? controller.especialidadSel.value
+                      : null,
                   items: controller.especialidades
-                      .map((e) => DropdownMenuItem(value: e, child: Text(e.nombre)))
+                      .map((e) =>
+                          DropdownMenuItem(value: e, child: Text(e.nombre)))
                       .toList(),
-                  onChanged: especialidadEnabled ? controller.onEspecialidadChanged : null, // ← desactiva
+                  onChanged: especialidadEnabled
+                      ? controller.onEspecialidadChanged
+                      : null, // ← desactiva
                   hint: const Text('Selecciona especialidad'),
                   disabledHint: Text('Selecciona especialidad',
-                      style: textTheme.bodyMedium?.copyWith(color: disabledColor)),
-                  decoration: InputDecoration(enabled: especialidadEnabled), // ← estilo gris
+                      style:
+                          textTheme.bodyMedium?.copyWith(color: disabledColor)),
+                  decoration: InputDecoration(
+                      enabled: especialidadEnabled), // ← estilo gris
                   icon: downIcon(especialidadEnabled),
                 ),
                 const SizedBox(height: 12),
-
                 _label(context, 'Médico'),
                 DropdownButtonFormField(
                   isExpanded: true,
                   value: medicoEnabled ? controller.doctorSel.value : null,
                   items: controller.doctores
-                      .map((d) => DropdownMenuItem(value: d, child: Text(d.nombre)))
+                      .map((d) =>
+                          DropdownMenuItem(value: d, child: Text(d.nombre)))
                       .toList(),
-                  onChanged: medicoEnabled ? (d) => controller.doctorSel.value = d as Doctor? : null,
+                  onChanged: medicoEnabled
+                      ? (d) => controller.doctorSel.value = d as Doctor?
+                      : null,
                   hint: const Text('Selecciona médico'),
                   disabledHint: Text('Selecciona médico',
-                      style: textTheme.bodyMedium?.copyWith(color: disabledColor)),
+                      style:
+                          textTheme.bodyMedium?.copyWith(color: disabledColor)),
                   decoration: InputDecoration(enabled: medicoEnabled),
                   icon: downIcon(medicoEnabled),
                 ),
                 const SizedBox(height: 12),
-
                 _label(context, 'Fecha'),
                 InkWell(
                   onTap: controller.seleccionarFecha,
@@ -82,14 +90,15 @@ class CitaFormPage extends GetView<CitaFormController> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(controller.fechaLabel, style: textTheme.bodyMedium),
-                        Icon(Icons.calendar_today_outlined, color: scheme.secondary),
+                        Text(controller.fechaLabel,
+                            style: textTheme.bodyMedium),
+                        Icon(Icons.calendar_today_outlined,
+                            color: scheme.secondary),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
-
                 _label(context, 'Hora'),
                 InkWell(
                   onTap: controller.seleccionarHora,
@@ -99,26 +108,29 @@ class CitaFormPage extends GetView<CitaFormController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(controller.horaLabel, style: textTheme.bodyMedium),
-                        Icon(Icons.access_time_outlined, color: scheme.secondary),
+                        Icon(Icons.access_time_outlined,
+                            color: scheme.secondary),
                       ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 12),
-
                 _label(context, 'Notas (opcional)'),
                 TextField(
                   controller: controller.notasCtrl,
                   maxLines: 3,
-                  decoration: const InputDecoration(hintText: 'Ej.: llevar resultados previos'),
+                  decoration: const InputDecoration(
+                      hintText: 'Ej.: llevar resultados previos'),
                 ),
                 const SizedBox(height: 20),
-
                 ElevatedButton(
-                  onPressed: controller.cargando.value ? null : controller.guardar,
+                  onPressed:
+                      controller.cargando.value ? null : controller.guardar,
                   child: controller.cargando.value
                       ? const SizedBox(
-                          height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2))
                       : const Text('Guardar'),
                 ),
               ],
@@ -133,8 +145,10 @@ class CitaFormPage extends GetView<CitaFormController> {
         padding: const EdgeInsets.only(bottom: 6),
         child: Text(
           t,
-          style:
-              Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context)
+              .textTheme
+              .titleSmall
+              ?.copyWith(fontWeight: FontWeight.w600),
         ),
       );
 }

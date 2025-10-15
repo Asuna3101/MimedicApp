@@ -21,36 +21,39 @@ class CitaFormController extends GetxController {
 
   // fecha/hora + notas
   final fecha = Rxn<DateTime>();
-  final hora  = Rxn<TimeOfDay>();
+  final hora = Rxn<TimeOfDay>();
   final notasCtrl = TextEditingController();
   final cargando = false.obs;
 
-  String get fechaLabel => fecha.value==null
+  String get fechaLabel => fecha.value == null
       ? 'Seleccionar fecha'
       : DateFormat('dd/MM/yyyy').format(fecha.value!);
 
-  String get horaLabel => hora.value==null
+  String get horaLabel => hora.value == null
       ? 'Seleccionar hora'
-      : '${hora.value!.hour.toString().padLeft(2,'0')}:${hora.value!.minute.toString().padLeft(2,'0')}';
+      : '${hora.value!.hour.toString().padLeft(2, '0')}:${hora.value!.minute.toString().padLeft(2, '0')}';
 
   @override
-  void onInit() { 
-    super.onInit(); 
-    _loadClinics(); 
+  void onInit() {
+    super.onInit();
+    _loadClinics();
   }
 
   Future<void> _loadClinics() async {
-    try { 
-      clinicas.assignAll(await _service.getClinics()); 
+    try {
+      clinicas.assignAll(await _service.getClinics());
     } catch (e) {
       Get.snackbar('Error', 'No se pudieron cargar clínicas: $e');
     }
   }
 
   Future<void> onClinicaChanged(Clinic? c) async {
-    clinicaSel.value = c; especialidadSel.value=null; doctorSel.value=null;
-    especialidades.clear(); doctores.clear();
-    if (c!=null) {
+    clinicaSel.value = c;
+    especialidadSel.value = null;
+    doctorSel.value = null;
+    especialidades.clear();
+    doctores.clear();
+    if (c != null) {
       try {
         especialidades.assignAll(await _service.getSpecialties(c.id));
       } catch (e) {
@@ -60,10 +63,13 @@ class CitaFormController extends GetxController {
   }
 
   Future<void> onEspecialidadChanged(Specialty? s) async {
-    especialidadSel.value = s; doctorSel.value=null; doctores.clear();
-    if (s!=null && clinicaSel.value!=null) {
+    especialidadSel.value = s;
+    doctorSel.value = null;
+    doctores.clear();
+    if (s != null && clinicaSel.value != null) {
       try {
-        doctores.assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
+        doctores
+            .assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
       } catch (e) {
         Get.snackbar('Error', 'No se pudieron cargar médicos: $e');
       }
@@ -73,31 +79,40 @@ class CitaFormController extends GetxController {
   Future<void> seleccionarFecha() async {
     final hoy = DateTime.now();
     final picked = await showDatePicker(
-      context: Get.context!, initialDate: fecha.value??hoy,
+      context: Get.context!,
+      initialDate: fecha.value ?? hoy,
       firstDate: hoy,
-      lastDate: DateTime(hoy.year+1),
+      lastDate: DateTime(hoy.year + 1),
     );
-    if (picked!=null) fecha.value=picked;
+    if (picked != null) fecha.value = picked;
   }
 
   Future<void> seleccionarHora() async {
     final picked = await showTimePicker(
-      context: Get.context!, initialTime: hora.value ?? TimeOfDay.now(),
+      context: Get.context!,
+      initialTime: hora.value ?? TimeOfDay.now(),
     );
-    if (picked!=null) hora.value=picked;
+    if (picked != null) hora.value = picked;
   }
 
   Future<void> guardar() async {
     if (cargando.value) return;
-    if (clinicaSel.value==null || especialidadSel.value==null ||
-        doctorSel.value==null || fecha.value==null || hora.value==null) {
-      Get.snackbar('Faltan datos','Selecciona clínica, especialidad, médico, fecha y hora');
+    if (clinicaSel.value == null ||
+        especialidadSel.value == null ||
+        doctorSel.value == null ||
+        fecha.value == null ||
+        hora.value == null) {
+      Get.snackbar('Faltan datos',
+          'Selecciona clínica, especialidad, médico, fecha y hora');
       return;
     }
 
     final startsAt = DateTime(
-      fecha.value!.year, fecha.value!.month, fecha.value!.day,
-      hora.value!.hour, hora.value!.minute,
+      fecha.value!.year,
+      fecha.value!.month,
+      fecha.value!.day,
+      hora.value!.hour,
+      hora.value!.minute,
     );
 
     cargando.value = true;
@@ -109,18 +124,18 @@ class CitaFormController extends GetxController {
         startsAt: startsAt,
         notes: notasCtrl.text.trim().isEmpty ? null : notasCtrl.text.trim(),
       );
-      Get.back(result: true);
+      Get.back(result: true, id: 1);
       Get.snackbar('Guardado', 'Recordatorio creado');
     } catch (e) {
       Get.snackbar('No se pudo guardar', e.toString());
-    } finally { 
-      cargando.value = false; 
+    } finally {
+      cargando.value = false;
     }
   }
 
   @override
-  void onClose() { 
-    notasCtrl.dispose(); 
-    super.onClose(); 
+  void onClose() {
+    notasCtrl.dispose();
+    super.onClose();
   }
 }

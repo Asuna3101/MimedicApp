@@ -6,6 +6,7 @@ import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/citas/components/cita_card.dart';
 import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_list_controller.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
+import 'package:mimedicapp/pages/home/home_routes.dart';
 import 'package:mimedicapp/services/health_service.dart';
 
 class CitasPage extends StatelessWidget {
@@ -13,8 +14,7 @@ class CitasPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller =
-        Get.put(CitasListController(Get.find<HealthService>())); 
+    final controller = Get.put(CitasListController(Get.find<HealthService>()));
     final fmt = DateFormat('dd/MM/yyyy – HH:mm');
 
     return WillPopScope(
@@ -41,7 +41,8 @@ class CitasPage extends StatelessWidget {
                       width: double.infinity,
                       child: OutlinedButton.icon(
                         onPressed: () async {
-                          final created = await Get.toNamed('/citas/nuevo');
+                          final created =
+                              await Get.toNamed(HomeRoutes.agregarCita, id: 1);
                           if (created == true) controller.cargar();
                         },
                         icon: const Icon(
