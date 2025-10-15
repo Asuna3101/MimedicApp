@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/citas/listado_cita_medica/citas_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
-import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento.dart';
+import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_page.dart';
 import 'home_controller.dart';
 import 'home_page.dart';

@@ -19,10 +19,10 @@ class ApiConfig {
   static const String usersEndpoint = '/users';
   static const String currentUserEndpoint = '/users/me';
   static const String medicamentosEndpoint = '/medicamentos';
-  static const String medicamentosUsuarioEndpoint =
-      '/medicamentos/usuario/lista';
-  static const String agregarMedicamentoEndpoint =
-      '/medicamentos/usuario/registrar';
+  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
+  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
+  static const String actualizarMedicamentoEndpoint = '/medicamentos/usuario/actualizar';
+  static const String eliminarMedicamentosEndpoint = '/medicamentos/usuario/eliminar-lista';
   static const String unidadesEndpoint = '/unidades';
   // static const String citasUsuarioEndpoint = '/citas/usuario/lista';
 

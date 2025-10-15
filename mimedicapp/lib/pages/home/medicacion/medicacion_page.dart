@@ -1,3 +1,4 @@
+import 'package:mimedicapp/components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
@@ -20,8 +21,10 @@ class MedicacionPage extends StatelessWidget {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
+              Column(
+                children: [
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -93,8 +96,10 @@ class MedicacionPage extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: MedicineCard(
                                 medicamento: m,
-                                onEdit: () =>
-                                    controller.goToEditarMedicacion(m),
+                                onEdit: () => controller.goToEditarMedicacion(m),
+                                selectionMode: controller.selectionMode.value,
+                                isSelected: m.id != null && controller.selectedIds.contains(m.id),
+                                onToggleSelect: () => controller.toggleSelect(m),
                               ),
                             ),
                           )
@@ -102,6 +107,56 @@ class MedicacionPage extends StatelessWidget {
                     ),
                   );
                 }),
+              ),
+              ],
+              ),
+
+              // Botón fijo en la parte inferior (reactivo)
+              Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: SizedBox(
+                    width: 200,
+                    child: Obx(() {
+                      final inSelection = controller.selectionMode.value;
+                      return CustomButton(
+                        title: inSelection ? 'Eliminar' : 'Seleccionar',
+                        onPressed: inSelection
+                            ? () async {
+                                // Mostrar confirmación antes de eliminar
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Confirmar eliminación'),
+                                    content: Text('¿Eliminar ${controller.selectedIds.length} medicamento(s)?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Salir del modo selección y cerrar diálogo
+                                          controller.toggleSelectionMode();
+                                          Navigator.of(ctx).pop(false);
+                                        },
+                                        child: const Text('Cancelar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(true),
+                                        child: const Text('Eliminar'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  controller.deleteSelected();
+                                }
+                              }
+                            : () => controller.toggleSelectionMode(),
+                      );
+                    }),
+                  ),
+                ),
               ),
             ],
           ),

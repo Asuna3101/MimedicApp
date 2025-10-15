@@ -44,4 +44,33 @@ class MedicacionService {
       throw ApiException('Error al registrar medicamento: $e');
     }
   }
+
+  Future<MedicamentoResponse> updateMedicamentoUsuario(int id, MedicamentoUsuario medicamento) async {
+    try {
+      print("Paso 1");
+      // Usar el endpoint base definido en ApiConfig y concatenar el id
+      final endpoint = '${ApiConfig.actualizarMedicamentoEndpoint}/$id';
+      print("Paso 2");
+      final response = await _apiService.put(endpoint, medicamento.toJson());
+      print("Paso 3");
+      return MedicamentoResponse.fromJson(response);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al actualizar medicamento: $e');
+    }
+  }
+
+  /// Eliminar varios medicamentos de usuario enviando la lista de ids
+  /// al endpoint `/medicamentos/usuario/eliminar-lista` mediante POST.
+  ///
+  /// Body enviado: { 'ids': [1,2,3] }
+  Future<void> deleteMedicamentosUsuario(List<int> ids) async {
+    try {
+      final body = {'ids': ids};
+      await _apiService.post(ApiConfig.eliminarMedicamentosEndpoint, body);
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error al eliminar medicamentos: $e');
+    }
+  }
 }

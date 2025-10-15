@@ -6,11 +6,18 @@ import '../../../../configs/colors.dart';
 class MedicineCard extends StatelessWidget {
   final MedicamentoUsuario medicamento;
   final VoidCallback onEdit;
+  // Opcional: muestra icono de selección
+  final bool selectionMode;
+  final bool isSelected;
+  final VoidCallback? onToggleSelect;
 
   const MedicineCard({
     super.key,
     required this.medicamento,
     required this.onEdit,
+    this.selectionMode = false,
+    this.isSelected = false,
+    this.onToggleSelect,
   });
 
   @override
@@ -66,12 +73,31 @@ class MedicineCard extends StatelessWidget {
           right: -18,
           child: IconButton(
             style: ButtonStyle(
-              backgroundColor: WidgetStateProperty.all(Colors.transparent),
+              backgroundColor: MaterialStateProperty.all(Colors.transparent),
             ),
             icon: Icon(Icons.edit, color: AppColors.getButtonColor(context), size: 30),
             onPressed: onEdit,
           ),
         ),
+
+        // Icono de selección (si el modo de selección está activo)
+        if (selectionMode)
+          Positioned(
+            top: -18,
+            left: -18,
+            child: IconButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                elevation: MaterialStateProperty.all(2),
+              ),
+              icon: Icon(
+                isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+                color: isSelected ? AppColors.primary : AppColors.grey400,
+                size: 26,
+              ),
+              onPressed: onToggleSelect,
+            ),
+          ),
       ],
     );
   }
