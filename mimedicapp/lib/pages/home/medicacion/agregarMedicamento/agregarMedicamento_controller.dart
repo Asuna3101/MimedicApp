@@ -4,9 +4,10 @@ import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/medicamento.dart';
 import 'package:mimedicapp/models/medicamentoUsuario.dart';
 import 'package:mimedicapp/models/unidad.dart';
+import '../medicamento_form_controller.dart';
 import 'package:mimedicapp/services/medicacion_service.dart';
 
-class AgregarMedicamentoController extends GetxController {
+class AgregarMedicamentoController extends GetxController implements MedicamentoFormController {
   final formKey = GlobalKey<FormState>();
   final MedicacionService _service = MedicacionService();
 

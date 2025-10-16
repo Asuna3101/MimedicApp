@@ -3,11 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/unidad.dart';
-import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_controller.dart';
+import '../../medicamento_form_controller.dart';
 
 class FormAgregarMedicamento extends StatelessWidget {
-  // Acepta cualquier controlador que exponga los mismos campos usados
-  final dynamic controller;
+  // Use a typed controller to avoid losing autocomplete suggestions when `dynamic` is passed
+  final MedicamentoFormController controller;
 
   const FormAgregarMedicamento({
     super.key,
@@ -16,7 +16,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final c = controller;
+  final MedicamentoFormController c = controller;
 
     return Form(
       key: c.formKey,

@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/medicamentoUsuario.dart';
+import 'package:mimedicapp/models/medicamento.dart';
+import 'package:mimedicapp/models/unidad.dart';
 import 'package:mimedicapp/services/medicacion_service.dart';
+import '../medicamento_form_controller.dart';
 
-class EditarMedicamentoController extends GetxController {
+class EditarMedicamentoController extends GetxController implements MedicamentoFormController {
   final formKey = GlobalKey<FormState>();
   final MedicacionService _service = MedicacionService();
 
@@ -26,8 +29,8 @@ class EditarMedicamentoController extends GetxController {
   MedicamentoUsuario? medicamentoOriginal;
 
   // Listas que pueden mostrar autocompletados (reutilizamos el servicio)
-  final medicamentos = <dynamic>[].obs;
-  final unidades = <dynamic>[].obs;
+  final RxList<Medicamento> medicamentos = <Medicamento>[].obs;
+  final RxList<Unidad> unidades = <Unidad>[].obs;
 
   @override
   void onInit() {
@@ -60,18 +63,16 @@ class EditarMedicamentoController extends GetxController {
   void initWith(MedicamentoUsuario medicamento) {
     print('✳️ EditarMedicamentoController.initWith id=${medicamento.id}');
     medicamentoOriginal = medicamento;
-    nombreCtrl.text = medicamento.nombre ?? '';
-    dosisCtrl.text = medicamento.dosis?.toString() ?? '';
-    unidadCtrl.text = medicamento.unidad ?? '';
-    frecuenciaCtrl.text = medicamento.frecuenciaHoras?.toString() ?? '';
+    nombreCtrl.text = medicamento.nombre;
+    dosisCtrl.text = medicamento.dosis.toString();
+    unidadCtrl.text = medicamento.unidad;
+    frecuenciaCtrl.text = medicamento.frecuenciaHoras.toString();
     fechaInicio.value = medicamento.fechaInicio;
     fechaFin.value = medicamento.fechaFin;
-    if (medicamento.fechaInicio != null) {
-      horaInicio.value = TimeOfDay(
-        hour: medicamento.fechaInicio!.hour,
-        minute: medicamento.fechaInicio!.minute,
-      );
-    }
+    horaInicio.value = TimeOfDay(
+      hour: medicamento.fechaInicio.hour,
+      minute: medicamento.fechaInicio.minute,
+    );
 
     // Listeners para validación
     nombreCtrl.addListener(_validarFormulario);

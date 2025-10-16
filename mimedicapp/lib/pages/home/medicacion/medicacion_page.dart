@@ -122,7 +122,7 @@ class MedicacionPage extends StatelessWidget {
                     child: Obx(() {
                       final inSelection = controller.selectionMode.value;
                       return CustomButton(
-                        title: inSelection ? 'Eliminar' : 'Seleccionar',
+                        title: inSelection ? 'Eliminar' : 'Eliminar',
                         onPressed: inSelection
                             ? () async {
                                 // Mostrar confirmación antes de eliminar
