@@ -147,7 +147,7 @@ class ApiService {
       final url = _abs(endpoint);
       final headers = await _headers(withAuth: auth);
 
-      // 👇 LOGS
+
       // ignore: avoid_print
       print('[API] -> GET  $url');
       // ignore: avoid_print

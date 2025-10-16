@@ -4,7 +4,7 @@ import 'package:mimedicapp/models/appointment_reminder.dart';
 class StatusBadge extends StatelessWidget {
   final AppointmentStatus status;
   final bool compact;
-  final VoidCallback? onTap;            // 👈 nuevo
+  final VoidCallback? onTap;
   const StatusBadge({super.key, required this.status, this.compact = false, this.onTap});
 
   static String label(AppointmentStatus s) {
@@ -41,7 +41,7 @@ class StatusBadge extends StatelessWidget {
 
     if (onTap == null) return child;
 
-    return MouseRegion(                       // cursor “mano” en web
+    return MouseRegion(
       cursor: SystemMouseCursors.click,
       child: InkWell(borderRadius: BorderRadius.circular(12), onTap: onTap, child: child),
     );

@@ -38,7 +38,6 @@ class HealthService {
       'clinic_id': clinicId,
       'specialty_id': specialtyId,
       'doctor_id': doctorId,
-      // Enviamos local, sin 'Z' (coherente con backend sin tz)
       'starts_at': startsAt.toIso8601String(),
       if (notes != null && notes.isNotEmpty) 'notes': notes,
     };
@@ -57,7 +56,6 @@ class HealthService {
     return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
   }
 
-  // Cambiar estado (cuando lo implementes en la UI)
   Future<void> updateAppointmentStatus({
     required int reminderId,
     required AppointmentStatus status,

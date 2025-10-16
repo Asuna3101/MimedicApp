@@ -46,13 +46,13 @@ String statusToString(AppointmentStatus s) {
 
 class AppointmentReminder {
   final int id;
-  final DateTime startsAt;          // local, sin "Z"
+  final DateTime startsAt;
   final String? notes;
   final ClinicMini clinic;
   final SpecialtyMini specialty;
   final DoctorMini doctor;
-  final AppointmentStatus status;   // nuevo
-  final bool isDueSoon;             // nuevo: faltan <=30 min (lo calcula backend)
+  final AppointmentStatus status;
+  final bool isDueSoon;
 
   AppointmentReminder({
     required this.id,
@@ -67,7 +67,7 @@ class AppointmentReminder {
 
   factory AppointmentReminder.fromJson(Map<String, dynamic> j) => AppointmentReminder(
     id: j['id'] as int,
-    startsAt: DateTime.parse(j['starts_at'] as String),
+    startsAt: DateTime.parse(j['starts_at'] as String).toLocal(),
     notes: j['notes'] as String?,
     clinic: ClinicMini.fromJson(j['clinic'] as Map<String, dynamic>),
     specialty: SpecialtyMini.fromJson(j['specialty'] as Map<String, dynamic>),
