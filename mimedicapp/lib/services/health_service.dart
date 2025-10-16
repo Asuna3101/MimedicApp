@@ -1,3 +1,4 @@
+// lib/services/health_service.dart
 import 'package:mimedicapp/services/api_service.dart';
 import 'package:mimedicapp/configs/api_config.dart';
 import 'package:mimedicapp/models/clinic.dart';
@@ -25,7 +26,7 @@ class HealthService {
     return (data as List).map((e) => Doctor.fromJson(e)).toList();
   }
 
-  // ---------- Recordatorios ----------
+  // ---------- Citas ----------
   Future<AppointmentReminder> createAppointmentReminder({
     required int clinicId,
     required int specialtyId,
@@ -40,13 +41,29 @@ class HealthService {
       'starts_at': startsAt.toIso8601String(),
       if (notes != null && notes.isNotEmpty) 'notes': notes,
     };
-
-    final data = await _api.post(ApiConfig.reminders(), payload, auth: true);
+    final data = await _api.post(ApiConfig.appointmentReminders(), payload, auth: true);
     return AppointmentReminder.fromJson(data as Map<String, dynamic>);
   }
 
-  Future<List<AppointmentReminder>> getMyAppointmentReminders() async {
-    final data = await _api.get(ApiConfig.reminders(), auth: true);
+  // Endpoints alineados al backend
+  Future<List<AppointmentReminder>> getUpcomingReminders() async {
+    final data = await _api.get('${ApiConfig.appointmentReminders()}/upcoming', auth: true);
     return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
+  }
+
+  Future<List<AppointmentReminder>> getHistoryReminders() async {
+    final data = await _api.get('${ApiConfig.appointmentReminders()}/history', auth: true);
+    return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
+  }
+
+  Future<void> updateAppointmentStatus({
+    required int reminderId,
+    required AppointmentStatus status,
+  }) async {
+    await _api.patch(
+      '${ApiConfig.appointmentReminders()}/$reminderId/status',
+      {'status': statusToString(status)},
+      auth: true,
+    );
   }
 }
