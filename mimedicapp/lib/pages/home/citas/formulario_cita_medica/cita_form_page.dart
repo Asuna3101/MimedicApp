@@ -1,11 +1,24 @@
-// lib/pages/home/citas/formulario_cita_medica/cita_form_page.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'cita_form_controller.dart';
-import 'package:mimedicapp/models/doctor.dart'; // <-- Import Doctor model if not already imported
+import 'package:mimedicapp/models/doctor.dart';
 
-class CitaFormPage extends GetView<CitaFormController> {
+class CitaFormPage extends StatefulWidget {
   const CitaFormPage({super.key});
+
+  @override
+  State<CitaFormPage> createState() => _CitaFormPageState();
+}
+
+class _CitaFormPageState extends State<CitaFormPage> {
+  late final CitaFormController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = Get.find<CitaFormController>();
+    controller.resetForm(keepCatalogs: true);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,8 +26,10 @@ class CitaFormPage extends GetView<CitaFormController> {
     final scheme = Theme.of(context).colorScheme;
     final disabledColor = Theme.of(context).disabledColor;
 
-    Icon downIcon(bool enabled) => Icon(Icons.keyboard_arrow_down,
-        color: enabled ? scheme.secondary : disabledColor);
+    Icon downIcon(bool enabled) => Icon(
+          Icons.keyboard_arrow_down,
+          color: enabled ? scheme.secondary : disabledColor,
+        );
 
     return Scaffold(
       body: Padding(
@@ -22,8 +37,7 @@ class CitaFormPage extends GetView<CitaFormController> {
         child: SingleChildScrollView(
           child: Obx(() {
             final especialidadEnabled = controller.clinicaSel.value != null;
-            final medicoEnabled =
-                especialidadEnabled && controller.especialidadSel.value != null;
+            final medicoEnabled = especialidadEnabled && controller.especialidadSel.value != null;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,8 +47,7 @@ class CitaFormPage extends GetView<CitaFormController> {
                   isExpanded: true,
                   value: controller.clinicaSel.value,
                   items: controller.clinicas
-                      .map((c) =>
-                          DropdownMenuItem(value: c, child: Text(c.nombre)))
+                      .map((c) => DropdownMenuItem(value: c, child: Text(c.nombre)))
                       .toList(),
                   onChanged: controller.onClinicaChanged,
                   hint: const Text('Selecciona clínica'),
@@ -45,22 +58,15 @@ class CitaFormPage extends GetView<CitaFormController> {
                 _label(context, 'Especialidad'),
                 DropdownButtonFormField(
                   isExpanded: true,
-                  value: especialidadEnabled
-                      ? controller.especialidadSel.value
-                      : null,
+                  value: especialidadEnabled ? controller.especialidadSel.value : null,
                   items: controller.especialidades
-                      .map((e) =>
-                          DropdownMenuItem(value: e, child: Text(e.nombre)))
+                      .map((e) => DropdownMenuItem(value: e, child: Text(e.nombre)))
                       .toList(),
-                  onChanged: especialidadEnabled
-                      ? controller.onEspecialidadChanged
-                      : null, // ← desactiva
+                  onChanged: especialidadEnabled ? controller.onEspecialidadChanged : null,
                   hint: const Text('Selecciona especialidad'),
                   disabledHint: Text('Selecciona especialidad',
-                      style:
-                          textTheme.bodyMedium?.copyWith(color: disabledColor)),
-                  decoration: InputDecoration(
-                      enabled: especialidadEnabled), // ← estilo gris
+                      style: textTheme.bodyMedium?.copyWith(color: disabledColor)),
+                  decoration: InputDecoration(enabled: especialidadEnabled),
                   icon: downIcon(especialidadEnabled),
                 ),
                 const SizedBox(height: 12),
@@ -69,16 +75,12 @@ class CitaFormPage extends GetView<CitaFormController> {
                   isExpanded: true,
                   value: medicoEnabled ? controller.doctorSel.value : null,
                   items: controller.doctores
-                      .map((d) =>
-                          DropdownMenuItem(value: d, child: Text(d.nombre)))
+                      .map((d) => DropdownMenuItem(value: d, child: Text(d.nombre)))
                       .toList(),
-                  onChanged: medicoEnabled
-                      ? (d) => controller.doctorSel.value = d as Doctor?
-                      : null,
+                  onChanged: medicoEnabled ? (d) => controller.doctorSel.value = d as Doctor? : null,
                   hint: const Text('Selecciona médico'),
                   disabledHint: Text('Selecciona médico',
-                      style:
-                          textTheme.bodyMedium?.copyWith(color: disabledColor)),
+                      style: textTheme.bodyMedium?.copyWith(color: disabledColor)),
                   decoration: InputDecoration(enabled: medicoEnabled),
                   icon: downIcon(medicoEnabled),
                 ),
@@ -91,10 +93,8 @@ class CitaFormPage extends GetView<CitaFormController> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(controller.fechaLabel,
-                            style: textTheme.bodyMedium),
-                        Icon(Icons.calendar_today_outlined,
-                            color: scheme.secondary),
+                        Text(controller.fechaLabel, style: textTheme.bodyMedium),
+                        Icon(Icons.calendar_today_outlined, color: scheme.secondary),
                       ],
                     ),
                   ),
@@ -109,8 +109,7 @@ class CitaFormPage extends GetView<CitaFormController> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(controller.horaLabel, style: textTheme.bodyMedium),
-                        Icon(Icons.access_time_outlined,
-                            color: scheme.secondary),
+                        Icon(Icons.access_time_outlined, color: scheme.secondary),
                       ],
                     ),
                   ),
@@ -120,18 +119,13 @@ class CitaFormPage extends GetView<CitaFormController> {
                 TextField(
                   controller: controller.notasCtrl,
                   maxLines: 3,
-                  decoration: const InputDecoration(
-                      hintText: 'Ej.: llevar resultados previos'),
+                  decoration: const InputDecoration(hintText: 'Ej.: llevar resultados previos'),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
-                  onPressed:
-                      controller.cargando.value ? null : controller.guardar,
+                  onPressed: controller.cargando.value ? null : controller.guardar,
                   child: controller.cargando.value
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2))
+                      ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(strokeWidth: 2))
                       : const Text('Guardar'),
                 ),
               ],
@@ -146,10 +140,7 @@ class CitaFormPage extends GetView<CitaFormController> {
         padding: const EdgeInsets.only(bottom: 6),
         child: Text(
           t,
-          style: Theme.of(context)
-              .textTheme
-              .titleSmall
-              ?.copyWith(fontWeight: FontWeight.w600),
+          style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
         ),
       );
 }

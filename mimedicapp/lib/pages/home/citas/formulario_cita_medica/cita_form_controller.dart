@@ -40,6 +40,33 @@ class CitaFormController extends GetxController {
     _loadClinics();
   }
 
+  /// 🔄 Limpia el estado del formulario.
+  /// keepCatalogs=true mantiene los catálogos en memoria.
+  void resetForm({bool keepCatalogs = true}) {
+    // Selecciones
+    clinicaSel.value = null;
+    especialidadSel.value = null;
+    doctorSel.value = null;
+
+    // Fechas y hora
+    fecha.value = null;
+    hora.value = null;
+
+    // Notas
+    notasCtrl.clear();
+
+    // Limpiar listas dependientes
+    if (!keepCatalogs) {
+      clinicas.clear();
+      especialidades.clear();
+      doctores.clear();
+    } else {
+      // Si mantengo catálogos, al menos vacío las dependencias para que no queden valores colgados
+      especialidades.clear();
+      doctores.clear();
+    }
+  }
+
   Future<void> _loadClinics() async {
     try {
       clinicas.assignAll(await _service.getClinics());
@@ -69,8 +96,7 @@ class CitaFormController extends GetxController {
     doctores.clear();
     if (s != null && clinicaSel.value != null) {
       try {
-        doctores
-            .assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
+        doctores.assignAll(await _service.getDoctors(clinicaSel.value!.id, s.id));
       } catch (e) {
         Get.snackbar('Error', 'No se pudieron cargar médicos: $e');
       }
@@ -125,6 +151,8 @@ class CitaFormController extends GetxController {
         startsAt: startsAt,
         notes: notasCtrl.text.trim().isEmpty ? null : notasCtrl.text.trim(),
       );
+      // Limpia después de guardar por si el usuario vuelve a abrir la pantalla
+      resetForm();
       Get.back(result: true, id: 1);
       Get.snackbar('Guardado', 'Recordatorio creado');
     } catch (e) {
