@@ -22,7 +22,7 @@ class FormAgregarMedicamento extends StatelessWidget {
       key: c.formKey,
       child: ListView(
         children: [
-          // 🔹 Autocompletado de nombre
+          // Autocompletado de nombre
           Autocomplete<String>(
             optionsBuilder: (textEditingValue) {
               if (textEditingValue.text.isEmpty) {
@@ -62,7 +62,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          // 🔹 Autocompletado de unidad
+          // Autocompletado de unidad
           Autocomplete<Unidad>(
             displayStringForOption: (u) => u.nombre,
             optionsBuilder: (textEditingValue) {
@@ -104,7 +104,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // 🔹 Fecha y hora
+          // Fecha y hora
           Obx(() => Column(
                 children: [
                   ListTile(
@@ -145,7 +145,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
           const SizedBox(height: 24),
 
-          // 🔹 Botón Guardar reactivo
+          // Botón Guardar
           Obx(() => ElevatedButton.icon(
                 onPressed: c.isFormValid.value ? c.guardar : null,
                 icon: const Icon(Icons.save),

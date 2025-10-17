@@ -74,7 +74,7 @@ class ContainerController extends GetxController {
         _shownPast.addAll(pendingPast.map((e) => e.id));
         await _showAlert(pendingPast, mode: AppointmentAlertMode.past);
       }
-    } catch (_) {/* silencioso */}
+    } catch (_) {}
   }
 
   Future<void> _showAlert(List<AppointmentReminder> citas, {required AppointmentAlertMode mode}) async {

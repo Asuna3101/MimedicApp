@@ -17,7 +17,7 @@ class MedicacionPage extends StatelessWidget {
       onWillPop: () async {
         Get.offNamed('/home/inicio',
             id: 1); // Volver al HomePage dentro del Navigator anidado
-        return false; // No salir
+        return false;
       },
       child: Scaffold(
         body: SafeArea(
@@ -111,7 +111,7 @@ class MedicacionPage extends StatelessWidget {
               ],
               ),
 
-              // Botón fijo en la parte inferior (reactivo)
+              // Botón fijo en la parte inferior
               Positioned(
                 bottom: 20,
                 left: 0,

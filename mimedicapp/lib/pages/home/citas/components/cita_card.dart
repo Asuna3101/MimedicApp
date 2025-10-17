@@ -5,7 +5,7 @@ import 'package:mimedicapp/widgets/status_badge.dart';
 
 class CitaMedicaCard extends StatelessWidget {
   final AppointmentReminder cita;
-  final VoidCallback? onEdit; // placeholder (sin acción aun)
+  final VoidCallback? onEdit;
 
   const CitaMedicaCard({
     super.key,
@@ -31,7 +31,6 @@ class CitaMedicaCard extends StatelessWidget {
         Card(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
-            // 👇 Borde discreto siempre (sin naranja ni “en 30 min”)
             side: BorderSide(
               color: AppColors.getButtonColor(context).withOpacity(0.35),
               width: 0.8,
@@ -80,7 +79,7 @@ class CitaMedicaCard extends StatelessWidget {
             ),
           ),
         ),
-        // Lápiz (placeholder)
+        // Lapiz
         Positioned(
           top: -12,
           right: -8,

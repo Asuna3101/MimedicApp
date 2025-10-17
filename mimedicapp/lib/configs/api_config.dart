@@ -12,7 +12,7 @@ class ApiConfig {
     'Accept': 'application/json',
   };
 
-  // ---------- AUTH ----------
+  // ---------- ROUTES ----------
   static const String loginEndpoint = '/auth/login';
   static const String loginFormEndpoint = '/auth/login';
   static const String registerEndpoint = '/auth/register';
@@ -24,7 +24,6 @@ class ApiConfig {
   static const String actualizarMedicamentoEndpoint = '/medicamentos/usuario/actualizar';
   static const String eliminarMedicamentosEndpoint = '/medicamentos/usuario/eliminar-lista';
   static const String unidadesEndpoint = '/unidades';
-  // static const String citasUsuarioEndpoint = '/citas/usuario/lista';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {

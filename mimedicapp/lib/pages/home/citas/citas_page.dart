@@ -23,7 +23,6 @@ class CitasPage extends StatelessWidget {
         body: SafeArea(
           child: Column(
             children: [
-              // Header + agregar
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -52,7 +51,7 @@ class CitasPage extends StatelessWidget {
                 ),
               ),
 
-              // Contenido: SOLO próximas
+              // Proximas citas
               Expanded(
                 child: Obx(() {
                   if (controller.cargando.value) {
@@ -82,7 +81,7 @@ class CitasPage extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: CitaMedicaCard(
                                 cita: r,
-                                onEdit: () {}, // vacío (placeholder)
+                                onEdit: () {},
                               ),
                             )),
                         const SizedBox(height: 24),

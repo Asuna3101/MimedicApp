@@ -11,8 +11,8 @@ class CitasListController extends GetxController {
   final proximas = <AppointmentReminder>[].obs;
 
   @override
-  void onInit() {
-    super.onInit();
+  void onReady() {
+    super.onReady();
     cargar();
   }
 

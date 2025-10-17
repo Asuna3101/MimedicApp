@@ -26,7 +26,7 @@ class AgregarMedicamentoController extends GetxController implements Medicamento
   final unidades = <Unidad>[].obs;
 
   final isLoading = false.obs;
-  final isFormValid = false.obs; // ✅ Nuevo
+  final isFormValid = false.obs;
 
   @override
   void onInit() {
@@ -54,7 +54,7 @@ class AgregarMedicamentoController extends GetxController implements Medicamento
     }
   }
 
-  // ✅ Verifica si todos los campos están llenos
+  // Verifica si todos los campos están llenos
   void _validarFormulario() {
     final valid = nombreCtrl.text.trim().isNotEmpty &&
         dosisCtrl.text.trim().isNotEmpty &&

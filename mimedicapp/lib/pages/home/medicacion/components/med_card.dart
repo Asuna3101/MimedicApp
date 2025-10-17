@@ -24,7 +24,7 @@ class MedicineCard extends StatelessWidget {
     return Stack(
       clipBehavior: Clip.none,
       children: [
-        // Card principal (tap -> ver detalles)
+        // Card principal
         InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () => showMedicineDetailsDialog(context, medicamento),
@@ -67,7 +67,7 @@ class MedicineCard extends StatelessWidget {
           ),
         ),
 
-        // Lápiz SOLO en la tarjeta
+        // Lapiz
         Positioned(
           top: -18,
           right: -18,

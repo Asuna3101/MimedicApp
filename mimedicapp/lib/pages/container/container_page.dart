@@ -38,7 +38,6 @@ class _ContainerPageState extends State<ContainerPage> {
         bottomNavigationBar: Bottombar(
           current: current,
           onTap: (tab) {
-            // If Home icon is tapped, ensure we return to HomePage in the nested navigator
             if (tab == AppTab.home) {
               final navigator = Get.nestedKey(1)?.currentState;
               if (navigator != null) {
