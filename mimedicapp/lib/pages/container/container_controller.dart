@@ -18,10 +18,21 @@ class ContainerController extends GetxController {
   final List<AppTab> tabHistory = [];
   final List<Widget> views = const [HomeNavigator(), TasksPage(), SettingsPage()];
 
-  void changeTab(AppTab tab) {
+  // ALERTS control
+  final _health = Get.find<HealthService>();
+  final Set<int> _shownDueSoon = {}; // evita repetir las mismas proximas en esta sesión
+  Timer? _poller;
+  bool _isAlertOpen = false;
+
+  void changeTab(AppTab tab) async {
     if (tab != currentTab.value) {
       tabHistory.add(currentTab.value);
       currentTab.value = tab;
+
+      // 👉 Fuerza chequeo al ir a HOME
+      if (tab == AppTab.home) {
+        await triggerAlertsCheck();
+      }
     }
   }
 
@@ -33,16 +44,10 @@ class ContainerController extends GetxController {
     return true;
   }
 
-  // ---------- Alerts lógica ----------
-  final _health = Get.find<HealthService>();
-  final Set<int> _shownDueSoon = {};
-  final Set<int> _shownPast = {};
-  Timer? _poller;
-
   @override
   void onReady() {
     super.onReady();
-    _checkAlerts();
+    _checkAlerts(); // primer chequeo al abrir
     _poller = Timer.periodic(const Duration(minutes: 5), (_) => _checkAlerts());
   }
 
@@ -52,9 +57,13 @@ class ContainerController extends GetxController {
     super.onClose();
   }
 
-  Future<void> _checkAlerts() async {
-    try {
+  /// 👉 Llama a esto desde otras pantallas (p.ej. al volver de "Agregar Cita")
+  Future<void> triggerAlertsCheck() => _checkAlerts();
 
+  Future<void> _checkAlerts() async {
+    if (_isAlertOpen) return; // evita abrir múltiples diálogos a la vez
+    try {
+      // 1) Próximas (<=30 min), el backend service marca is_due_soon
       final ups = await _health.getUpcomingReminders();
       final dueSoon = ups.where((e) => e.isDueSoon && !_shownDueSoon.contains(e.id)).toList();
       if (dueSoon.isNotEmpty) {
@@ -62,35 +71,39 @@ class ContainerController extends GetxController {
         await _showAlert(dueSoon, mode: AppointmentAlertMode.dueSoon);
       }
 
-      final hist = await _health.getHistoryReminders();
-      final now = DateTime.now();
-      final pendingPast = hist.where((e) =>
-        e.status == AppointmentStatus.pendiente &&
-        e.startsAt.isBefore(now) &&
-        !_shownPast.contains(e.id)
-      ).toList();
-
-      if (pendingPast.isNotEmpty) {
-        _shownPast.addAll(pendingPast.map((e) => e.id));
-        await _showAlert(pendingPast, mode: AppointmentAlertMode.past);
+      // 2) Pasadas (últimos 30 min) aún PENDIENTES
+      final overdue = await _health.getOverdueReminders();
+      if (overdue.isNotEmpty) {
+        await _showAlert(overdue, mode: AppointmentAlertMode.past);
       }
-    } catch (_) {/* silencioso */}
+    } catch (_) {
+      // silencioso
+    }
   }
 
   Future<void> _showAlert(List<AppointmentReminder> citas, {required AppointmentAlertMode mode}) async {
-    await Get.dialog(
-      AppointmentAlertDialog(citas: citas, mode: mode, onAction: _handleAction),
-      barrierDismissible: true,
-    );
+    if (_isAlertOpen) return;
+    _isAlertOpen = true;
+    try {
+      await Get.dialog(
+        AppointmentAlertDialog(
+          citas: citas,
+          mode: mode,
+          onAction: _handleAction,
+        ),
+        barrierDismissible: true, // solo se cierra con X o cuando no queden ítems
+      );
+    } finally {
+      _isAlertOpen = false;
+    }
   }
 
   Future<void> _handleAction(AppointmentReminder cita, AppointmentStatus newStatus) async {
     try {
       await _health.updateAppointmentStatus(reminderId: cita.id, status: newStatus);
       if (Get.isRegistered<CitasListController>()) {
-        await Get.find<CitasListController>().cargar();
+        await Get.find<CitasListController>().cargar(); // refresca “Próximas”
       }
-
       Get.snackbar(
         'Estado actualizado',
         _statusMsg(newStatus),
@@ -106,8 +119,7 @@ class ContainerController extends GetxController {
     switch (s) {
       case AppointmentStatus.asistido: return 'Marcaste: Asistido';
       case AppointmentStatus.noAsistido: return 'Marcaste: No asistido';
-      case AppointmentStatus.pendiente:
-      default: return 'Marcaste: Pendiente';
+      case AppointmentStatus.pendiente: return 'Marcaste: Pendiente';
     }
   }
 }

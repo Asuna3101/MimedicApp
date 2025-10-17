@@ -7,6 +7,9 @@ import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
 import 'package:mimedicapp/services/health_service.dart';
 
+// 👇 importa el ContainerController para forzar las alertas
+import 'package:mimedicapp/pages/container/container_controller.dart';
+
 class CitasPage extends StatelessWidget {
   const CitasPage({super.key});
 
@@ -16,6 +19,10 @@ class CitasPage extends StatelessWidget {
 
     return WillPopScope(
       onWillPop: () async {
+        // 👉 fuerza chequeo de upcoming + overdue al ir a Home
+        if (Get.isRegistered<ContainerController>()) {
+          await Get.find<ContainerController>().triggerAlertsCheck();
+        }
         Get.offNamed('/home/inicio', id: 1);
         return false;
       },
@@ -36,11 +43,19 @@ class CitasPage extends StatelessWidget {
                       child: OutlinedButton.icon(
                         onPressed: () async {
                           final created = await Get.toNamed(HomeRoutes.agregarCita, id: 1);
-                          if (created == true) controller.cargar();
+                          if (created == true) {
+                            await controller.cargar(); // refresca la lista
+                            // 👉 fuerza chequeo inmediato (upcoming + overdue)
+                            if (Get.isRegistered<ContainerController>()) {
+                              await Get.find<ContainerController>().triggerAlertsCheck();
+                            }
+                          }
                         },
                         icon: const Icon(Icons.add, color: AppColors.primary, size: 28),
-                        label: const Text('Agregar',
-                          style: TextStyle(fontFamily: 'Titulo', fontSize: 18, color: AppColors.primary)),
+                        label: const Text(
+                          'Agregar',
+                          style: TextStyle(fontFamily: 'Titulo', fontSize: 18, color: AppColors.primary),
+                        ),
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
@@ -78,13 +93,15 @@ class CitasPage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        ...proximas.map((r) => Padding(
-                              padding: const EdgeInsets.only(bottom: 16),
-                              child: CitaMedicaCard(
-                                cita: r,
-                                onEdit: () {}, // vacío (placeholder)
-                              ),
-                            )),
+                        ...proximas.map(
+                          (r) => Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: CitaMedicaCard(
+                              cita: r,
+                              onEdit: () {}, // placeholder
+                            ),
+                          ),
+                        ),
                         const SizedBox(height: 24),
                       ],
                     ),

@@ -51,11 +51,11 @@ class HealthService {
     return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
   }
 
-  Future<List<AppointmentReminder>> getHistoryReminders() async {
-    final data = await _api.get('${ApiConfig.appointmentReminders()}/history', auth: true);
-    return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
+  Future<List<AppointmentReminder>> getOverdueReminders() async {
+  final data = await _api.get('${ApiConfig.appointmentReminders()}/overdue', auth: true);
+  return (data as List).map((e) => AppointmentReminder.fromJson(e)).toList();
   }
-
+  
   Future<void> updateAppointmentStatus({
     required int reminderId,
     required AppointmentStatus status,
@@ -67,3 +67,5 @@ class HealthService {
     );
   }
 }
+
+
