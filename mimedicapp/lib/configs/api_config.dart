@@ -56,6 +56,11 @@ class ApiConfig {
   static String appointmentReminders() =>
       '$baseUrl/health/appointment-reminders';
 
+  // ---------- TOMAS (medicamentos) ----------
+  static String tomas() => '$baseUrl/tomas';
+  static String tomasPending() => '${tomas()}/pending';
+  static String tomasPostpone(int tomaId, int minutes) => '${tomas()}/$tomaId/postpone?minutes=$minutes';
+
   // (Deprecado) Mantén temporalmente si ya usabas ApiConfig.reminders()
   @Deprecated('Usa appointmentReminders()')
   static String reminders() => appointmentReminders();

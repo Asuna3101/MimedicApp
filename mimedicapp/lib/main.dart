@@ -12,6 +12,8 @@ import 'package:mimedicapp/services/api_service.dart';
 import 'package:mimedicapp/services/health_service.dart';
 import 'package:mimedicapp/pages/home/citas/citas_controller.dart';
 import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_controller.dart';
+import 'package:mimedicapp/widgets/global_toma_listener.dart';
+import 'package:mimedicapp/repositories/toma_repository.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +42,13 @@ class MimedicApp extends StatelessWidget {
         GetPage(name: '/sign-in', page: () => const PaginaLogin()),
         GetPage(
           name: '/app',
-          page: () => const ContainerPage(),
+          page: () => Stack(
+            children: [
+              const ContainerPage(),
+              // Global listener only active while inside the main app
+              GlobalTomaListener(repo: TomaRepository()),
+            ],
+          ),
           binding: BindingsBuilder(() {
             Get.put<ContainerController>(ContainerController(), permanent: true);
             Get.lazyPut<CitasListController>(() => CitasListController(Get.find<HealthService>()), fenix: true,);
