@@ -45,6 +45,28 @@ class HealthService {
     return AppointmentReminder.fromJson(data as Map<String, dynamic>);
   }
 
+  /// Actualiza una cita existente usando el endpoint PUT /update/{reminder_id}
+  Future<AppointmentReminder> updateAppointmentReminder({
+    required int reminderId,
+    required int clinicId,
+    required int specialtyId,
+    required int doctorId,
+    required DateTime startsAt,
+    String? notes,
+  }) async {
+    final payload = <String, dynamic>{
+      'clinic_id': clinicId,
+      'specialty_id': specialtyId,
+      'doctor_id': doctorId,
+      'starts_at': startsAt.toIso8601String(),
+      if (notes != null && notes.isNotEmpty) 'notes': notes,
+    };
+
+    final endpoint = '${ApiConfig.appointmentReminders()}/update/$reminderId';
+    final data = await _api.put(endpoint, payload, auth: true);
+    return AppointmentReminder.fromJson(data as Map<String, dynamic>);
+  }
+
   // Endpoints alineados al backend
   Future<List<AppointmentReminder>> getUpcomingReminders() async {
     final data = await _api.get('${ApiConfig.appointmentReminders()}/upcoming', auth: true);

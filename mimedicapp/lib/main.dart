@@ -6,12 +6,10 @@ import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
 import 'package:mimedicapp/configs/app_theme.dart';
-import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_page.dart';
 import 'package:mimedicapp/pages/container/container_controller.dart';
 import 'package:mimedicapp/services/api_service.dart';
 import 'package:mimedicapp/services/health_service.dart';
 import 'package:mimedicapp/pages/home/citas/citas_controller.dart';
-import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_controller.dart';
 import 'package:mimedicapp/widgets/global_toma_listener.dart';
 import 'package:mimedicapp/repositories/toma_repository.dart';
 
@@ -52,11 +50,12 @@ class MimedicApp extends StatelessWidget {
           binding: BindingsBuilder(() {
             Get.put<ContainerController>(ContainerController(), permanent: true);
             Get.lazyPut<CitasListController>(() => CitasListController(Get.find<HealthService>()), fenix: true,);
-            Get.lazyPut<CitaFormController>(() => CitaFormController(Get.find<HealthService>()),fenix: true,);
+            // Registrar la implementación bajo la interfaz para que páginas busquen por la interfaz
+            //Get.lazyPut<CitaFormInterface>(() => AgregarCitaFormController(Get.find<HealthService>()), fenix: true,);
           }),
         ),
         GetPage(name: '/citas', page: () => const CitasPage()),
-        GetPage(name: '/citas/nuevo', page: () => const CitaFormPage()),
+        //GetPage(name: '/citas/nuevo', page: () => const AgregarCitaPage()),
       ],
     );
   }

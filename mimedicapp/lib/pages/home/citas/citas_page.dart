@@ -81,7 +81,9 @@ class CitasPage extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 16),
                               child: CitaMedicaCard(
                                 cita: r,
-                                onEdit: () {},
+                                onEdit: () async {
+                                  await controller.goEditarCita(r);
+                                },
                               ),
                             )),
                         const SizedBox(height: 24),

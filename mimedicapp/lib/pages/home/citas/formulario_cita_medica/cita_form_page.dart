@@ -1,23 +1,48 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'cita_form_controller.dart';
+import 'cita_form_interface.dart';
+import 'agregar_cita_form_controller.dart';
+import 'editar_cita_form_controller.dart';
 import 'package:mimedicapp/models/doctor.dart';
 
 class CitaFormPage extends StatefulWidget {
-  const CitaFormPage({super.key});
+  const CitaFormPage({super.key, required this.controller});
+
+  final CitaFormInterface controller;
 
   @override
   State<CitaFormPage> createState() => _CitaFormPageState();
 }
 
 class _CitaFormPageState extends State<CitaFormPage> {
-  late final CitaFormController controller;
+  late final CitaFormInterface controller;
 
   @override
   void initState() {
     super.initState();
-    controller = Get.find<CitaFormController>();
+    // Usar el controller pasado por parámetro en lugar de buscarlo globalmente.
+    controller = widget.controller;
     controller.resetForm(keepCatalogs: true);
+  }
+
+  @override
+  void dispose() {
+    // Intentar eliminar el controller registrado en GetX si existe y
+    // corresponde a uno de los controladores concretos.
+    try {
+      if (controller is AgregarCitaFormController) {
+        if (Get.isRegistered<AgregarCitaFormController>()) {
+          Get.delete<AgregarCitaFormController>();
+        }
+      } else if (controller is EditarCitaFormController) {
+        if (Get.isRegistered<EditarCitaFormController>()) {
+          Get.delete<EditarCitaFormController>();
+        }
+      }
+    } catch (_) {
+      // No hacemos nada; borrado es un intento de limpieza opcional.
+    }
+    super.dispose();
   }
 
   @override
