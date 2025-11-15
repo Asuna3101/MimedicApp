@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
 import 'package:mimedicapp/widgets/status_badge.dart';
+import 'package:mimedicapp/pages/home/citas/components/cita_details.dart';
 
 class CitaMedicaCard extends StatelessWidget {
   final AppointmentReminder cita;
@@ -43,10 +44,13 @@ class CitaMedicaCard extends StatelessWidget {
             ),
           ),
           elevation: 0.5,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
-            child: Column(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => showCitaDetailsDialog(context, cita),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -84,6 +88,7 @@ class CitaMedicaCard extends StatelessWidget {
               ],
             ),
           ),
+        ),
         ),
         // Lapiz
         Positioned(
