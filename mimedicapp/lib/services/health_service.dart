@@ -88,4 +88,11 @@ class HealthService {
       auth: true,
     );
   }
+
+  /// Elimina múltiples recordatorios de cita usando el endpoint POST /delete
+  Future<void> deleteAppointmentReminders(List<int> reminderIds) async {
+    if (reminderIds.isEmpty) return;
+    final payload = <String, dynamic>{'reminder_ids': reminderIds};
+    await _api.post('${ApiConfig.appointmentReminders()}/delete', payload, auth: true);
+  }
 }

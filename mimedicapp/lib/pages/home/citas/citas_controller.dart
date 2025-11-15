@@ -11,6 +11,27 @@ class CitasListController extends GetxController {
   final cargando = false.obs;
   final proximas = <AppointmentReminder>[].obs;
 
+  // Modo de selección y lista de ids seleccionados
+  final selectionMode = false.obs;
+  final selectedIds = <int>[].obs;
+
+  void toggleSelectionMode() {
+    selectionMode.value = !selectionMode.value;
+    if (!selectionMode.value) {
+      // limpiar selección al salir del modo
+      selectedIds.clear();
+    }
+  }
+
+  void toggleSelect(AppointmentReminder appointment) {
+    final id = appointment.id;
+    if (selectedIds.contains(id)) {
+      selectedIds.remove(id);
+    } else {
+      selectedIds.add(id);
+    }
+  }
+
   @override
   void onReady() {
     super.onReady();
@@ -81,6 +102,29 @@ class CitasListController extends GetxController {
       }
     } catch (e) {
       Get.snackbar('Error', 'No se pudo abrir editor: $e');
+    }
+  }
+
+  /// Eliminar las citas seleccionadas.
+  /// Muestra confirmación y luego llama al servicio.
+  Future<void> deleteSelected() async {
+    if (selectedIds.isEmpty) {
+      Get.snackbar('Atención', 'No hay citas seleccionadas');
+      return;
+    }
+    // Esta función sólo ejecuta la eliminación cuando ya se confirmó.
+    try {
+      cargando.value = true;
+      await _service.deleteAppointmentReminders(selectedIds.toList());
+      Get.snackbar('Eliminado', 'Citas eliminadas correctamente');
+      // Salir del modo selección y recargar
+      selectionMode.value = false;
+      selectedIds.clear();
+      await cargar();
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudieron eliminar: $e');
+    } finally {
+      cargando.value = false;
     }
   }
 }

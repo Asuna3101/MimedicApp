@@ -1,3 +1,4 @@
+import 'package:mimedicapp/components/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
@@ -21,8 +22,10 @@ class CitasPage extends StatelessWidget {
       },
       child: Scaffold(
         body: SafeArea(
-          child: Column(
+          child: Stack(
             children: [
+              Column(
+                children: [
               Padding(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -84,6 +87,9 @@ class CitasPage extends StatelessWidget {
                                 onEdit: () async {
                                   await controller.goEditarCita(r);
                                 },
+                                selectionMode: controller.selectionMode.value,
+                                isSelected: controller.selectedIds.contains(r.id),
+                                onToggleSelect: () => controller.toggleSelect(r),
                               ),
                             )),
                         const SizedBox(height: 24),
@@ -91,6 +97,56 @@ class CitasPage extends StatelessWidget {
                     ),
                   );
                 }),
+              ),
+              ],
+              ),
+
+              // Botón fijo en la parte inferior
+              Positioned(
+                bottom: 20,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: SizedBox(
+                    width: 200,
+                    child: Obx(() {
+                      final inSelection = controller.selectionMode.value;
+                      return CustomButton(
+                        title: inSelection ? 'Eliminar' : 'Eliminar',
+                        onPressed: inSelection
+                            ? () async {
+                                // Mostrar confirmación antes de eliminar
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder: (ctx) => AlertDialog(
+                                    title: const Text('Confirmar eliminación'),
+                                    content: Text('¿Eliminar ${controller.selectedIds.length} cita(s)?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Salir del modo selección y cerrar diálogo
+                                          controller.toggleSelectionMode();
+                                          Navigator.of(ctx).pop(false);
+                                        },
+                                        child: const Text('Cancelar'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () => Navigator.of(ctx).pop(true),
+                                        child: const Text('Eliminar'),
+                                      ),
+                                    ],
+                                  ),
+                                );
+
+                                if (confirm == true) {
+                                  controller.deleteSelected();
+                                }
+                              }
+                            : () => controller.toggleSelectionMode(),
+                      );
+                    }),
+                  ),
+                ),
               ),
             ],
           ),
