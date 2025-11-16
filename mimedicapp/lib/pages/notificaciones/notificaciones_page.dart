@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 // intl not required in this file (tile handles formatting)
 import 'package:mimedicapp/configs/colors.dart';
-import 'package:mimedicapp/models/appointment_reminder.dart';
+import 'package:mimedicapp/models/notification_item.dart';
 // service access moved to controller
 import 'package:mimedicapp/pages/notificaciones/notificaciones_controller.dart';
 import 'package:mimedicapp/repositories/health_reminder_repository.dart';
+import 'package:mimedicapp/repositories/toma_repository.dart';
 import 'package:mimedicapp/widgets/notification_tile.dart';
 
 class NotificationsPage extends StatefulWidget {
@@ -20,7 +21,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
   @override
   void initState() {
     super.initState();
-  _controller = NotificationsController(repo: HealthReminderRepository());
+    _controller = NotificationsController(repo: HealthReminderRepository(), tomaRepo: TomaRepository());
     _controller.addListener(() => setState(() {}));
     _controller.init();
   }
@@ -53,8 +54,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: FutureBuilder<List<AppointmentReminder>>(
-        future: _controller.futureReminders,
+      body: FutureBuilder<List<NotificationItem>>(
+        future: _controller.futureNotifications,
         builder: (context, snap) {
           if (snap.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -75,7 +76,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
             );
           }
 
-          // use controller's visibleReminders
+          // use controller's visibleReminders (now NotificationItem)
           final reminders = _controller.visibleReminders;
 
           if (reminders.isEmpty) {
@@ -98,19 +99,23 @@ class _NotificationsPageState extends State<NotificationsPage> {
               itemCount: reminders.length,
               separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemBuilder: (context, i) {
-                final r = reminders[i];
-                return NotificationTile.fromAppointment(
-                  reminder: r,
+                final item = reminders[i];
+                return NotificationTile(
+                  item: item,
                   onMarkAttended: () async {
                     final messenger = ScaffoldMessenger.of(context);
                     try {
-                      await _controller.markAttended(r.id);
+                      if (item.source == 'appointment') {
+                        await _controller.markAttended(item.id);
+                      } else if (item.source == 'toma') {
+                        await _controller.markTomado(item.id);
+                      }
                     } catch (e) {
-                      messenger.showSnackBar(const SnackBar(content: Text('No se pudo marcar como asistido')));
+                      messenger.showSnackBar(const SnackBar(content: Text('No se pudo completar la acción')));
                     }
                   },
                   onDeleteFromView: () async {
-                    await _controller.deleteFromView(r.id);
+                    await _controller.deleteFromView(item.source, item.id);
                   },
                 );
               },

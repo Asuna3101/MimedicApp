@@ -1,4 +1,5 @@
 import 'package:mimedicapp/models/appointment_reminder.dart';
+import 'package:mimedicapp/models/toma.dart';
 
 class NotificationItem {
   final int id;
@@ -30,5 +31,16 @@ class NotificationItem {
     isDueSoon: r.isDueSoon,
     source: 'appointment',
     payload: r,
+  );
+
+  factory NotificationItem.fromToma(Toma t) => NotificationItem(
+    id: t.id,
+    title: 'Toma: ${t.medicamentoNombre}',
+    subtitle: '${t.dosis} ${t.unidad}',
+    startsAt: t.adquired.toLocal(),
+    status: null,
+    isDueSoon: true,
+    source: 'toma',
+    payload: t,
   );
 }

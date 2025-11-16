@@ -85,7 +85,13 @@ class NotificationTile extends StatelessWidget {
                     }
                   },
                   itemBuilder: (_) => [
-                    const PopupMenuItem(value: 1, child: Text('Marcar como Asistí')),
+                    PopupMenuItem(
+                      value: 1,
+                      enabled: (item.source == 'toma' || item.source == 'appointment'),
+                      child: Text(item.source == 'toma'
+                          ? 'Marcar como Tomado'
+                          : (item.source == 'appointment' ? 'Marcar como Asistí' : 'Marcar')),
+                    ),
                     const PopupMenuItem(value: 2, child: Text('Eliminar')),
                   ],
                 ),

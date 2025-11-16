@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:mimedicapp/repositories/toma_repository.dart';
 import 'package:mimedicapp/models/toma.dart';
+import 'package:mimedicapp/utils/event_bus.dart';
 
 /// Widget que debe colocarse en la raíz de la aplicación (por ejemplo dentro
 /// del `home` o del `Scaffold` principal) para vigilar tomas pendientes. Si
@@ -100,6 +101,16 @@ class _GlobalTomaListenerState extends State<GlobalTomaListener> with WidgetsBin
                 // Postpone by 5 minutes
                 try {
                   await widget.repo.postponeTomas(toma.id, 5);
+                  // notify UI that the toma was postponed so notifications page can show it
+                  EventBus().emit({
+                    'type': 'toma_event',
+                    'action': 'postponed',
+                    'tomaId': toma.id,
+                    'medicamentoNombre': toma.medicamentoNombre,
+                    'dosis': toma.dosis,
+                    'unidad': toma.unidad,
+                    'timestamp': DateTime.now().toUtc().toIso8601String(),
+                  });
                 } catch (e) {
                   // ignore errors, optionally show a SnackBar
                 }
@@ -111,6 +122,16 @@ class _GlobalTomaListenerState extends State<GlobalTomaListener> with WidgetsBin
               onPressed: () async {
                 try {
                   await widget.repo.markTomado(toma.id, true);
+                  // notify UI that the toma was marked as taken
+                  EventBus().emit({
+                    'type': 'toma_event',
+                    'action': 'tomado',
+                    'tomaId': toma.id,
+                    'medicamentoNombre': toma.medicamentoNombre,
+                    'dosis': toma.dosis,
+                    'unidad': toma.unidad,
+                    'timestamp': DateTime.now().toUtc().toIso8601String(),
+                  });
                 } catch (e) {
                   // ignore
                 }
