@@ -2,15 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
 import 'package:mimedicapp/widgets/status_badge.dart';
+import 'package:mimedicapp/pages/home/citas/components/cita_details.dart';
 
 class CitaMedicaCard extends StatelessWidget {
   final AppointmentReminder cita;
   final VoidCallback? onEdit;
+  final bool selectionMode;
+  final bool isSelected;
+  final VoidCallback? onToggleSelect;
 
   const CitaMedicaCard({
     super.key,
     required this.cita,
     this.onEdit,
+    this.selectionMode = false,
+    this.isSelected = false,
+    this.onToggleSelect,
   });
 
   String _formatFecha(DateTime fecha) {
@@ -37,10 +44,13 @@ class CitaMedicaCard extends StatelessWidget {
             ),
           ),
           elevation: 0.5,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(18),
-            child: Column(
+          child: InkWell(
+            borderRadius: BorderRadius.circular(12),
+            onTap: () => showCitaDetailsDialog(context, cita),
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -79,6 +89,7 @@ class CitaMedicaCard extends StatelessWidget {
             ),
           ),
         ),
+        ),
         // Lapiz
         Positioned(
           top: -12,
@@ -90,6 +101,25 @@ class CitaMedicaCard extends StatelessWidget {
             onPressed: onEdit ?? () {},
           ),
         ),
+
+        // Check de selección (opcional)
+        if (selectionMode)
+          Positioned(
+            top: -18,
+            left: -18,
+            child: IconButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(Colors.white),
+                elevation: MaterialStateProperty.all(2),
+              ),
+              icon: Icon(
+                isSelected ? Icons.check_box : Icons.check_box_outline_blank,
+                color: isSelected ? AppColors.primary : AppColors.grey400,
+                size: 26,
+              ),
+              onPressed: onToggleSelect,
+            ),
+          ),
       ],
     );
   }

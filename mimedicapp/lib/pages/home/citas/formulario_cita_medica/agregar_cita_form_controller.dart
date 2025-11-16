@@ -1,4 +1,4 @@
-// lib/pages/home/citas/formulario_cita_medica/cita_form_controller.dart
+// lib/pages/home/citas/formulario_cita_medica/crear_cita_form_controller.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -6,9 +6,10 @@ import 'package:mimedicapp/models/clinic.dart';
 import 'package:mimedicapp/models/specialty.dart';
 import 'package:mimedicapp/models/doctor.dart';
 import 'package:mimedicapp/services/health_service.dart';
+import 'cita_form_interface.dart';
 
-class CitaFormController extends GetxController {
-  CitaFormController(this._service);
+class AgregarCitaFormController extends GetxController implements CitaFormInterface {
+  AgregarCitaFormController(this._service);
   final HealthService _service;
 
   // combos
@@ -36,6 +37,7 @@ class CitaFormController extends GetxController {
 
   @override
   void onInit() {
+    print('[AGREGAR CITA] onInit called for reminder');
     super.onInit();
     _loadClinics();
   }
