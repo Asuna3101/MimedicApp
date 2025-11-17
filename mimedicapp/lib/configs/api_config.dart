@@ -19,11 +19,17 @@ class ApiConfig {
   static const String usersEndpoint = '/users';
   static const String currentUserEndpoint = '/users/me';
   static const String medicamentosEndpoint = '/medicamentos';
-  static const String medicamentosUsuarioEndpoint = '/medicamentos/usuario/lista';
-  static const String agregarMedicamentoEndpoint = '/medicamentos/usuario/registrar';
-  static const String actualizarMedicamentoEndpoint = '/medicamentos/usuario/actualizar';
-  static const String eliminarMedicamentosEndpoint = '/medicamentos/usuario/eliminar-lista';
+  static const String medicamentosUsuarioEndpoint =
+      '/medicamentos/usuario/lista';
+  static const String agregarMedicamentoEndpoint =
+      '/medicamentos/usuario/registrar';
+  static const String actualizarMedicamentoEndpoint =
+      '/medicamentos/usuario/actualizar';
+  static const String eliminarMedicamentosEndpoint =
+      '/medicamentos/usuario/eliminar-lista';
   static const String unidadesEndpoint = '/unidades';
+  static const String ejerciciosEndpoint = '/ejercicios';
+  static const String ejerciciosUsuarioEndpoint = '/ejercicios/usuario';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
@@ -59,7 +65,8 @@ class ApiConfig {
   // ---------- TOMAS (medicamentos) ----------
   static String tomas() => '$baseUrl/tomas';
   static String tomasPending() => '${tomas()}/pending';
-  static String tomasPostpone(int tomaId, int minutes) => '${tomas()}/$tomaId/postpone?minutes=$minutes';
+  static String tomasPostpone(int tomaId, int minutes) =>
+      '${tomas()}/$tomaId/postpone?minutes=$minutes';
 
   // (Deprecado) Mantén temporalmente si ya usabas ApiConfig.reminders()
   @Deprecated('Usa appointmentReminders()')

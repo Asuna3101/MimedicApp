@@ -9,4 +9,6 @@ abstract class HomeRoutes {
   static const editarMedicamento = '/home/medicacion/editar';
   static const agregarCita = '/home/citas/agregar';
   static const editarCita = '/home/citas/editar';
+  static const agregarEjercicio = '/home/ejercicio/agregar';
+  static const editarEjercicio = '/home/ejercicio/editar';
 }
