@@ -149,7 +149,7 @@ class EjercicioPage extends StatelessWidget {
                                 );
 
                                 if (confirm == true) {
-                                  //controller.deleteSelected();
+                                  controller.deleteSelected();
                                 }
                               }
                             : () => controller.toggleSelectionMode(),

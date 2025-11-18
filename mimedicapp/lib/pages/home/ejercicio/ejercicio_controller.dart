@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/ejercicio/editarEjercicio/editarEjercicio_controller.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
@@ -68,26 +70,28 @@ class EjercicioController extends GetxController {
     }
   }
 
-  /// Eliminar los medicamentos seleccionados.
+  /// Eliminar los ejercicios seleccionados.
   /// Muestra confirmación y luego llama al servicio.
-  // Future<void> deleteSelected() async {
-  //   if (selectedIds.isEmpty) {
-  //     Get.snackbar('Atención', 'No hay medicamentos seleccionados');
-  //     return;
-  //   }
-  //   // Esta función sólo ejecuta la eliminación cuando ya se confirmó.
-  //   try {
-  //     isLoading.value = true;
-  //     await _service.deleteMedicamentosUsuario(selectedIds.toList());
-  //     Get.snackbar('Eliminado', 'Medicamentos eliminados correctamente');
-  //     // Salir del modo selección y recargar
-  //     selectionMode.value = false;
-  //     selectedIds.clear();
-  //     await loadData();
-  //   } catch (e) {
-  //     Get.snackbar('Error', 'No se pudieron eliminar: $e');
-  //   } finally {
-  //     isLoading.value = false;
-  //   }
-  // }
+  Future<void> deleteSelected() async {
+    if (selectedIds.isEmpty) {
+      Get.snackbar('Atención', 'No hay ejercicios seleccionados');
+      return;
+    }
+    // Esta función sólo ejecuta la eliminación cuando ya se confirmó.
+    try {
+      isLoading.value = true;
+      await _service.deleteEjerciciosUsuario(selectedIds.toList());
+      Get.snackbar('Eliminado', 'Ejercicios eliminados correctamente',
+        backgroundColor: Colors.green[100],
+        colorText: AppColors.success,);
+      // Salir del modo selección y recargar
+      selectionMode.value = false;
+      selectedIds.clear();
+      await loadData();
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudieron eliminar: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

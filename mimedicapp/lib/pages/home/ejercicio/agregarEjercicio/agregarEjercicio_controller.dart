@@ -104,14 +104,14 @@ class AgregarEjercicioUsuarioController extends GetxController
 
     final h = hora.value!;
     final horaStr =
-        "${h.hour.toString().padLeft(2, '0')}:${h.minute.toString().padLeft(2, '0')}";
+        "${h.hour.toString().padLeft(2, '0')}:${h.minute.toString().padLeft(2, '0')}:00";
 
     final nuevo = EjercicioUsuario(
-      nombre: nombreCtrl.text.trim(),
-      notas: notasCtrl.text.trim(),
-      duracionMin: int.parse(duracionCtrl.text.trim()),
-      horario: horaStr,
-    );
+        nombre: nombreCtrl.text.trim(),
+        notas: notasCtrl.text.trim(),
+        duracionMin: int.parse(duracionCtrl.text.trim()),
+        horario: horaStr,
+        realizado: false);
 
     try {
       isLoading.value = true;

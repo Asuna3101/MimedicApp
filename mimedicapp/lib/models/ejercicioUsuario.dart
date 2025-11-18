@@ -4,6 +4,7 @@ class EjercicioUsuario {
   final String? notas;
   final String? horario;
   final int? duracionMin;
+  final bool? realizado;
 
   EjercicioUsuario({
     this.id,
@@ -11,6 +12,7 @@ class EjercicioUsuario {
     this.notas,
     this.horario,
     this.duracionMin,
+    this.realizado
   });
 
   factory EjercicioUsuario.fromJson(Map<String, dynamic> json) {
@@ -18,8 +20,9 @@ class EjercicioUsuario {
       id: json['id'] as int?,
       nombre: json['nombre'] as String?,
       notas: json['notas'] as String?,
-      horario: json['horario'] as String?,  // <<--- CAMBIAR AQUÍ
+      horario: json['horario'] as String?,  
       duracionMin: json['duracion_min'] as int?,
+      realizado: json['realizado'] as bool?,
     );
   }
 
@@ -28,8 +31,9 @@ class EjercicioUsuario {
       if (id != null) 'id': id,
       if (nombre != null) 'nombre': nombre,
       if (notas != null) 'notas': notas,
-      if (horario != null) 'horario': horario,   // <<--- CAMBIAR AQUÍ
+      if (horario != null) 'horario': horario,
       if (duracionMin != null) 'duracion_min': duracionMin,
+      if (realizado != null) 'realizado': realizado,
     };
   }
 }

@@ -17,7 +17,9 @@ class EjercicioService {
     final List data = response as List;
     return data.map((e) => EjercicioUsuario.fromJson(e)).toList();
   }
-  Future<EjercicioUsuario> createEjercicioUsuario(EjercicioUsuario ejercicioUsuario) async {
+
+  Future<EjercicioUsuario> createEjercicioUsuario(
+      EjercicioUsuario ejercicioUsuario) async {
     try {
       final response = await _apiService.post(
         ApiConfig.ejerciciosUsuarioEndpoint,
@@ -36,7 +38,7 @@ class EjercicioService {
     try {
       final response = await _apiService.put(
         "${ApiConfig.ejerciciosUsuarioEndpoint}/$id",
-        data.toJson(), 
+        data.toJson(),
       );
 
       return EjercicioUsuario.fromJson(response);
@@ -49,10 +51,13 @@ class EjercicioService {
   Future<void> deleteEjerciciosUsuario(List<int> ids) async {
     try {
       final body = {'ids': ids};
-      await _apiService.post(ApiConfig.ejerciciosUsuarioEndpoint, body);
+      await _apiService.deleteRest(
+        ApiConfig.ejerciciosUsuarioEndpoint,
+        body: body
+      );
     } catch (e) {
       if (e is ApiException) rethrow;
-      throw ApiException('Error al eliminar medicamentos: $e');
+      throw ApiException('Error al eliminar ejercicios: $e');
     }
   }
 }
