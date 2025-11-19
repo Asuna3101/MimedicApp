@@ -2,6 +2,7 @@
 import 'package:get/get.dart';
 import 'package:mimedicapp/services/health_service.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
+import 'package:mimedicapp/pages/home/home_routes.dart';
 
 class CitasListController extends GetxController {
   CitasListController(this._service);
@@ -9,6 +10,27 @@ class CitasListController extends GetxController {
 
   final cargando = false.obs;
   final proximas = <AppointmentReminder>[].obs;
+
+  // Modo de selección y lista de ids seleccionados
+  final selectionMode = false.obs;
+  final selectedIds = <int>[].obs;
+
+  void toggleSelectionMode() {
+    selectionMode.value = !selectionMode.value;
+    if (!selectionMode.value) {
+      // limpiar selección al salir del modo
+      selectedIds.clear();
+    }
+  }
+
+  void toggleSelect(AppointmentReminder appointment) {
+    final id = appointment.id;
+    if (selectedIds.contains(id)) {
+      selectedIds.remove(id);
+    } else {
+      selectedIds.add(id);
+    }
+  }
 
   @override
   void onReady() {
@@ -55,6 +77,54 @@ class CitasListController extends GetxController {
       } catch (e) {
         rethrow;
       }
+    }
+  }
+
+  /// Navega a la página de edición e inicializa el controlador de edición
+  /// con la cita seleccionada. Si la edición retorna `true`, recarga la lista.
+  Future<void> goEditarCita(AppointmentReminder? r) async {
+    // Log para depuración: comprobar si recibimos un reminder válido
+    // Esto ayuda a detectar llamadas incorrectas desde la UI
+    // ignore: avoid_print
+    print('[CITAS] goEditarCita called with reminder == ${r == null ? 'null' : r.id}');
+
+    if (r == null) {
+      Get.snackbar('Error', 'No se proporcionó la cita a editar');
+      return;
+    }
+
+    try {
+      // Pasamos la cita como argumento y dejamos que la página de edición
+      // cree su propio controller (y lo gestione localmente).
+      final edited = await Get.toNamed(HomeRoutes.editarCita, id: 1, arguments: r);
+      if (edited == true) {
+        await cargar();
+      }
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudo abrir editor: $e');
+    }
+  }
+
+  /// Eliminar las citas seleccionadas.
+  /// Muestra confirmación y luego llama al servicio.
+  Future<void> deleteSelected() async {
+    if (selectedIds.isEmpty) {
+      Get.snackbar('Atención', 'No hay citas seleccionadas');
+      return;
+    }
+    // Esta función sólo ejecuta la eliminación cuando ya se confirmó.
+    try {
+      cargando.value = true;
+      await _service.deleteAppointmentReminders(selectedIds.toList());
+      Get.snackbar('Eliminado', 'Citas eliminadas correctamente');
+      // Salir del modo selección y recargar
+      selectionMode.value = false;
+      selectedIds.clear();
+      await cargar();
+    } catch (e) {
+      Get.snackbar('Error', 'No se pudieron eliminar: $e');
+    } finally {
+      cargando.value = false;
     }
   }
 }

@@ -11,7 +11,8 @@ import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
 import 'package:mimedicapp/pages/home/comidas/agregarComida_page.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
-import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_page.dart';
+import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/agregar_cita_page.dart';
+import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/editar_cita_page.dart';
 
 class HomeNavigator extends StatelessWidget {
   const HomeNavigator({super.key});
@@ -31,7 +32,8 @@ class HomeNavigator extends StatelessWidget {
       HomeRoutes.agregarMedicamento: (_) => const AgregarMedicamentoPage(),
       HomeRoutes.editarMedicamento: (_) => const EditarMedicamentoPage(),
       HomeRoutes.citas: (_) => const CitasPage(),
-      HomeRoutes.agregarCita: (_) => const CitaFormPage(),
+  HomeRoutes.agregarCita: (_) => const AgregarCitaPage(),
+  HomeRoutes.editarCita: (_) => const EditarCitaPage(),
     };
 
     return Navigator(
