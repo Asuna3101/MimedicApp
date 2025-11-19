@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/pages/home/ejercicio/agregarEjercicio/agregarEjercicio_controller.dart';
-import 'package:mimedicapp/pages/home/ejercicio/agregarEjercicio/components/form_agregarEjercicio.dart';
+import 'package:mimedicapp/pages/home/ejercicio/components/formEjercicio.dart';
 
 class AgregarEjercicioUsuarioPage extends StatelessWidget {
   const AgregarEjercicioUsuarioPage({super.key});
