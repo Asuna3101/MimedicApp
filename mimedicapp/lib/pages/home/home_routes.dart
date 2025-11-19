@@ -4,6 +4,7 @@ abstract class HomeRoutes {
   static const agregarMedicamento = '/home/medicacion/agregar';
   static const citas = '/home/citas';
   static const comidas = '/home/comidas';
+  static const agregarComida = '/home/comidas/agregar';
   static const ejercicio = '/home/ejercicio';
   static const reportes = '/home/reportes';
   static const editarMedicamento = '/home/medicacion/editar';

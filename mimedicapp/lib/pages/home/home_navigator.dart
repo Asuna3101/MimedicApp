@@ -9,6 +9,7 @@ import 'home_page.dart';
 import 'home_routes.dart';
 import 'package:mimedicapp/pages/home/medicacion/medicacion_page.dart';
 import 'package:mimedicapp/pages/home/comidas/comidas_page.dart';
+import 'package:mimedicapp/pages/home/comidas/agregarComida_page.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_page.dart';
 import 'package:mimedicapp/pages/home/citas/formulario_cita_medica/cita_form_page.dart';
 
@@ -24,6 +25,7 @@ class HomeNavigator extends StatelessWidget {
       HomeRoutes.medicacion: (_) => const MedicacionPage(),
       // HomeRoutes.citas:      (_) => const CitasListPage(),
       HomeRoutes.comidas: (_) => const ComidasPage(),
+      HomeRoutes.agregarComida: (_) => const AgregarComidaPage(),
       HomeRoutes.ejercicio: (_) => const EjercicioPage(),
       HomeRoutes.reportes: (_) => const ReportesPage(),
       HomeRoutes.agregarMedicamento: (_) => const AgregarMedicamentoPage(),
