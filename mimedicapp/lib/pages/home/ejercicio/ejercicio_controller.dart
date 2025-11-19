@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
+import 'package:mimedicapp/pages/container/container_controller.dart';
 import 'package:mimedicapp/pages/home/ejercicio/editarEjercicio/editarEjercicio_controller.dart';
 import 'package:mimedicapp/pages/home/home_routes.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
@@ -8,6 +9,7 @@ import 'package:mimedicapp/services/ejercicio_service.dart';
 
 class EjercicioController extends GetxController {
   final EjercicioService _service = EjercicioService();
+  final container = Get.find<ContainerController>();
 
   final isLoading = false.obs;
 
@@ -61,8 +63,9 @@ class EjercicioController extends GetxController {
   Future<void> loadData() async {
     try {
       isLoading.value = true;
-      final meds = await _service.getEjerciciosUsuario();
-      ejerciciosUsuario.assignAll(meds);
+      final ejs = await _service.getEjerciciosUsuario();
+      ejerciciosUsuario.assignAll(ejs);
+      container.cargarEjercicios(ejs);
     } catch (e) {
       Get.snackbar('Error', 'No se pudieron cargar los datos: $e');
     } finally {
@@ -81,9 +84,12 @@ class EjercicioController extends GetxController {
     try {
       isLoading.value = true;
       await _service.deleteEjerciciosUsuario(selectedIds.toList());
-      Get.snackbar('Eliminado', 'Ejercicios eliminados correctamente',
+      Get.snackbar(
+        'Eliminado',
+        'Ejercicios eliminados correctamente',
         backgroundColor: Colors.green[100],
-        colorText: AppColors.success,);
+        colorText: AppColors.success,
+      );
       // Salir del modo selección y recargar
       selectionMode.value = false;
       selectedIds.clear();
