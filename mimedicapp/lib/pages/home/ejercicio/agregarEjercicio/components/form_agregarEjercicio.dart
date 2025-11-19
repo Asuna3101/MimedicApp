@@ -4,10 +4,10 @@ import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_form_controller.dart';
 
-class FormAgregarEjercicioUsuario extends StatelessWidget {
+class FormEjercicioUsuario extends StatelessWidget {
   final EjercicioUsuarioFormController controller;
 
-  const FormAgregarEjercicioUsuario({
+  const FormEjercicioUsuario({
     super.key,
     required this.controller,
   });
@@ -84,7 +84,8 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
               controller: c.notasCtrl,
               decoration:
                   const InputDecoration(labelText: 'Descripción (opcional)'),
-              maxLines: 4),
+              maxLines: null,
+              maxLength: 255),
           const SizedBox(height: 30),
           Obx(() => ElevatedButton.icon(
                 onPressed: c.isFormValid.value ? c.guardar : null,

@@ -4,7 +4,6 @@ import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/pages/home/ejercicio/agregarEjercicio/agregarEjercicio_controller.dart';
 import 'package:mimedicapp/pages/home/ejercicio/agregarEjercicio/components/form_agregarEjercicio.dart';
 
-
 class AgregarEjercicioUsuarioPage extends StatelessWidget {
   const AgregarEjercicioUsuarioPage({super.key});
 
@@ -29,7 +28,7 @@ class AgregarEjercicioUsuarioPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Expanded(
-                child: FormAgregarEjercicioUsuario(controller: c),
+                child: FormEjercicioUsuario(controller: c),
               ),
             ],
           ),

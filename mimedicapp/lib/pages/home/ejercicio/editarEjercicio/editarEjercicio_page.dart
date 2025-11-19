@@ -28,7 +28,7 @@ class EditarEjercicioUsuarioPage extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               Expanded(
-                child: FormAgregarEjercicioUsuario(controller: c),
+                child: FormEjercicioUsuario(controller: c),
               ),
             ],
           ),
