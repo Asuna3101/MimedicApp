@@ -1,4 +1,5 @@
 import 'package:mimedicapp/models/appointment_reminder.dart';
+import 'package:mimedicapp/models/ejercicioUsuario.dart';
 import 'package:mimedicapp/models/toma.dart';
 
 class NotificationItem {
@@ -22,25 +23,47 @@ class NotificationItem {
     this.payload,
   });
 
-  factory NotificationItem.fromAppointmentReminder(AppointmentReminder r) => NotificationItem(
-    id: r.id,
-    title: 'Cita con ${r.doctor.nombre}',
-    subtitle: r.notes ?? '-',
-    startsAt: r.startsAt,
-    status: r.status,
-    isDueSoon: r.isDueSoon,
-    source: 'appointment',
-    payload: r,
-  );
+  factory NotificationItem.fromAppointmentReminder(AppointmentReminder r) =>
+      NotificationItem(
+        id: r.id,
+        title: 'Cita con ${r.doctor.nombre}',
+        subtitle: r.notes ?? '-',
+        startsAt: r.startsAt,
+        status: r.status,
+        isDueSoon: r.isDueSoon,
+        source: 'appointment',
+        payload: r,
+      );
 
   factory NotificationItem.fromToma(Toma t) => NotificationItem(
-    id: t.id,
-    title: 'Toma: ${t.medicamentoNombre}',
-    subtitle: '${t.dosis} ${t.unidad}',
-    startsAt: t.adquired.toLocal(),
-    status: null,
-    isDueSoon: true,
-    source: 'toma',
-    payload: t,
-  );
+        id: t.id,
+        title: 'Toma: ${t.medicamentoNombre}',
+        subtitle: '${t.dosis} ${t.unidad}',
+        startsAt: t.adquired.toLocal(),
+        status: null,
+        isDueSoon: true,
+        source: 'toma',
+        payload: t,
+      );
+
+  factory NotificationItem.fromEjercicio(EjercicioUsuario e) {
+    return NotificationItem(
+      id: e.id!,
+      title: 'Ejercicio pendiente',
+      subtitle: e.nombre ?? '',
+      startsAt: _parseHorario(e.horario),
+      status: null,
+      isDueSoon: false,
+      source: 'exercise',
+      payload: e,
+    );
+  }
+
+  static DateTime _parseHorario(String? hhmm) {
+    if (hhmm == null || hhmm.length < 5) return DateTime.now();
+    final parts = hhmm.split(':');
+    final now = DateTime.now();
+    return DateTime(
+        now.year, now.month, now.day, int.parse(parts[0]), int.parse(parts[1]));
+  }
 }

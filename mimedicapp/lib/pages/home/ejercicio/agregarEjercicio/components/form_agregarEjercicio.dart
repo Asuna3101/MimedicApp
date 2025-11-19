@@ -26,13 +26,15 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
                 return const Iterable<String>.empty();
               }
 
-              return c.ejercicios
-                  .map((e) => e.nombre)
-                  .where((nombre) => nombre
-                      .toLowerCase()
-                      .contains(textEditingValue.text.toLowerCase()));
+              return c.ejercicios.map((e) => e.nombre).where((nombre) => nombre
+                  .toLowerCase()
+                  .contains(textEditingValue.text.toLowerCase()));
             },
             fieldViewBuilder: (context, textCtrl, focusNode, onFieldSubmitted) {
+              if (textCtrl.text.isEmpty && c.nombreCtrl.text.isNotEmpty) {
+                textCtrl.text = c.nombreCtrl.text;
+              }
+
               textCtrl.addListener(() {
                 c.nombreCtrl.text = textCtrl.text;
               });
@@ -40,8 +42,7 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
               return TextFormField(
                 controller: textCtrl,
                 focusNode: focusNode,
-                decoration:
-                    const InputDecoration(labelText: 'Ejercicio'),
+                decoration: const InputDecoration(labelText: 'Ejercicio'),
                 validator: (v) {
                   if (v == null || v.trim().isEmpty) return 'Requerido';
                   return null;
@@ -52,15 +53,12 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
               c.nombreCtrl.text = selection;
             },
           ),
-
           const SizedBox(height: 18),
-
           TextFormField(
             controller: c.duracionCtrl,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration:
-                const InputDecoration(labelText: 'Duración (minutos)'),
+            decoration: const InputDecoration(labelText: 'Duración (minutos)'),
             validator: (v) {
               if (v == null || v.trim().isEmpty) return 'Requerido';
               final num? parsed = num.tryParse(v);
@@ -69,9 +67,7 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
               return null;
             },
           ),
-
           const SizedBox(height: 22),
-
           Obx(() => ListTile(
                 title: Text(
                   c.hora.value != null
@@ -83,17 +79,13 @@ class FormAgregarEjercicioUsuario extends StatelessWidget {
                     const Icon(Icons.access_time, color: AppColors.accent),
                 onTap: () => c.seleccionarHora(),
               )),
-
           const SizedBox(height: 22),
-
           TextFormField(
-            controller: c.notasCtrl,
-            decoration: const InputDecoration(labelText: 'Descripción (opcional)'),
-            maxLines: 4
-          ),
-
+              controller: c.notasCtrl,
+              decoration:
+                  const InputDecoration(labelText: 'Descripción (opcional)'),
+              maxLines: 4),
           const SizedBox(height: 30),
-
           Obx(() => ElevatedButton.icon(
                 onPressed: c.isFormValid.value ? c.guardar : null,
                 icon: const Icon(Icons.save),
