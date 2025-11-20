@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
+import 'package:mimedicapp/pages/container/container_controller.dart';
+import 'package:mimedicapp/pages/home/ejercicio/ejercicio_controller.dart';
 import 'package:mimedicapp/services/ejercicio_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
@@ -221,7 +224,7 @@ class NotificationsController extends ChangeNotifier {
     try {
       final key = _keyFor('exercise', ejercicioId);
       final cached = _cachedNotifications[key];
-      
+
       if (cached != null && cached.payload is EjercicioUsuario) {
         final e = cached.payload as EjercicioUsuario;
         final updated = EjercicioUsuario(
@@ -232,11 +235,27 @@ class NotificationsController extends ChangeNotifier {
           duracionMin: e.duracionMin,
           realizado: true,
         );
-        
+
         await EjercicioService().updateEjercicioUsuario(ejercicioId, updated);
         _cachedNotifications[key] = NotificationItem.fromEjercicio(updated);
       }
+      await refresh();
+
+      EjercicioController ejercicioController;
+      ContainerController containerController;
+
+      try {
+        ejercicioController = Get.find<EjercicioController>();
+      } catch (_) {
+        ejercicioController = Get.put(EjercicioController());
+      }
       
+      containerController = Get.find<ContainerController>();
+
+      await ejercicioController.loadData();
+      containerController
+          .cargarEjercicios(ejercicioController.ejerciciosUsuario);
+
       notifyListeners();
     } catch (e) {
       rethrow;

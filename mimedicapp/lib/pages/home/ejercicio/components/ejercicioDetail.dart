@@ -36,6 +36,10 @@ Future<void> showEjercicioDetailsDialog(
                   'Descripción',
                   e.notas?.isNotEmpty == true ? e.notas! : '—',
                 ),
+                ResumeRow(
+                  'Estado',
+                  e.realizado == true ? 'Realizado' : 'Pendiente',
+                ),
               ],
             ),
           ),

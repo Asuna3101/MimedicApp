@@ -56,7 +56,7 @@ class EjercicioCard extends StatelessWidget {
 
                 const SizedBox(width: 24),
 
-                // DERECHA: horario + duración
+                // horario + duración
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,6 +71,14 @@ class EjercicioCard extends StatelessWidget {
                       const SizedBox(height: 4),
                       Text(
                         "Duración: ${ejercicio.duracionMin ?? 0} min",
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: AppColors.primary,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        "Estado: ${(ejercicio.realizado ?? false) ? 'Realizado' : 'Pendiente'}",
                         style: const TextStyle(
                           fontSize: 14,
                           color: AppColors.primary,
