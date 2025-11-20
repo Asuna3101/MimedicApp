@@ -53,13 +53,14 @@ class NotificationTile extends StatelessWidget {
                   const SizedBox(height: 4),
                   Text('Notas: ${item.subtitle}'),
                   const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      StatusBadge(status: item.status ?? AppointmentStatus.pendiente),
-                      const SizedBox(width: 8),
-                      if (item.isDueSoon) const Text('¡Próximo!', style: TextStyle(color: Colors.orange)),
-                    ],
-                  ),
+                  if (item.status != null)
+                    Row(
+                      children: [
+                        StatusBadge(status: item.status!),
+                        const SizedBox(width: 8),
+                        if (item.isDueSoon) const Text('¡Próximo!', style: TextStyle(color: Colors.orange)),
+                      ],
+                    ),
                 ],
               ),
             ),
@@ -87,10 +88,16 @@ class NotificationTile extends StatelessWidget {
                   itemBuilder: (_) => [
                     PopupMenuItem(
                       value: 1,
-                      enabled: (item.source == 'toma' || item.source == 'appointment'),
-                      child: Text(item.source == 'toma'
+                      enabled: (item.source == 'toma' || item.source == 'appointment' || item.source == 'exercise'),
+                      child: Text(
+                        item.source == 'toma'
                           ? 'Marcar como Tomado'
-                          : (item.source == 'appointment' ? 'Marcar como Asistí' : 'Marcar')),
+                          : (item.source == 'appointment' 
+                              ? 'Marcar como Asistí' 
+                              : (item.source == 'exercise' 
+                                  ? 'Marcar como Realizado' 
+                                  : 'Marcar'))
+                      ),
                     ),
                     const PopupMenuItem(value: 2, child: Text('Eliminar')),
                   ],

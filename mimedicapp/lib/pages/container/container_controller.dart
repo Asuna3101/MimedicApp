@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
@@ -12,6 +11,7 @@ import 'package:mimedicapp/pages/configuracion/settings_page.dart';
 
 import 'package:mimedicapp/services/health_service.dart';
 import 'package:mimedicapp/models/appointment_reminder.dart';
+import 'package:mimedicapp/models/status.dart';
 import 'package:mimedicapp/pages/home/citas/components/alerts/appointment_alert_dialog.dart';
 import 'package:mimedicapp/pages/home/citas/citas_controller.dart';
 
@@ -182,13 +182,12 @@ class ContainerController extends GetxController {
   }
 
   String _statusMsg(AppointmentStatus s) {
-    switch (s) {
-      case AppointmentStatus.asistido:
+    switch (s.type) {
+      case AppointmentStatusType.asistido:
         return 'Marcaste: Asistido';
-      case AppointmentStatus.noAsistido:
+      case AppointmentStatusType.noAsistido:
         return 'Marcaste: No asistido';
-      case AppointmentStatus.pendiente:
-      default:
+      case AppointmentStatusType.pendiente:
         return 'Marcaste: Pendiente';
     }
   }

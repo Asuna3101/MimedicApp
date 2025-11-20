@@ -1,13 +1,14 @@
 import 'package:mimedicapp/models/appointment_reminder.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
 import 'package:mimedicapp/models/toma.dart';
+import 'package:mimedicapp/models/status.dart';
 
 class NotificationItem {
   final int id;
   final String title;
   final String subtitle;
   final DateTime startsAt;
-  final AppointmentStatus? status;
+  final Status? status;
   final bool isDueSoon;
   final String source; // e.g. 'appointment', 'medication'
   final dynamic payload;
@@ -47,12 +48,24 @@ class NotificationItem {
       );
 
   factory NotificationItem.fromEjercicio(EjercicioUsuario e) {
+    Status? ejercicioStatus;
+    if (e.realizado == false) {
+      final now = DateTime.now();
+      final horarioDateTime = _parseHorario(e.horario);
+      
+      if (horarioDateTime.isBefore(now)) {
+        ejercicioStatus = EjercicioStatus.noRealizado;
+      } else {
+        ejercicioStatus = EjercicioStatus.pendiente;
+      }
+    }
+    
     return NotificationItem(
       id: e.id!,
-      title: 'Ejercicio pendiente',
+      title: 'Ejercicio',
       subtitle: e.nombre ?? '',
       startsAt: _parseHorario(e.horario),
-      status: null,
+      status: ejercicioStatus,
       isDueSoon: false,
       source: 'exercise',
       payload: e,

@@ -124,7 +124,7 @@ class NotificationsController extends ChangeNotifier {
       final ejercicios = await EjercicioService().getEjerciciosUsuario();
 
       for (final e in ejercicios) {
-        if (e.realizado == false && _isExerciseForTodayAndUpcoming(e)) {
+        if (e.realizado != true) {
           final item = NotificationItem.fromEjercicio(e);
           final key = _keyFor('exercise', e.id!);
           _cachedNotifications[key] = item;
@@ -217,33 +217,29 @@ class NotificationsController extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool _isExerciseForTodayAndUpcoming(EjercicioUsuario e) {
-    if (e.horario == null) return false;
-
-    final now = DateTime.now();
-    final parts = e.horario!.split(':');
-
-    if (parts.length < 2) return false;
-
-    final hour = int.tryParse(parts[0]);
-    final minute = int.tryParse(parts[1]);
-
-    if (hour == null || minute == null) return false;
-
-    final exerciseTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      hour,
-      minute,
-    );
-
-    final isToday = exerciseTime.year == now.year &&
-        exerciseTime.month == now.month &&
-        exerciseTime.day == now.day;
-
-    final hasPassed = exerciseTime.isBefore(now);
-
-    return isToday && !hasPassed;
+  Future<void> markEjercicioRealizado(int ejercicioId) async {
+    try {
+      final key = _keyFor('exercise', ejercicioId);
+      final cached = _cachedNotifications[key];
+      
+      if (cached != null && cached.payload is EjercicioUsuario) {
+        final e = cached.payload as EjercicioUsuario;
+        final updated = EjercicioUsuario(
+          id: e.id,
+          nombre: e.nombre,
+          notas: e.notas,
+          horario: e.horario,
+          duracionMin: e.duracionMin,
+          realizado: true,
+        );
+        
+        await EjercicioService().updateEjercicioUsuario(ejercicioId, updated);
+        _cachedNotifications[key] = NotificationItem.fromEjercicio(updated);
+      }
+      
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

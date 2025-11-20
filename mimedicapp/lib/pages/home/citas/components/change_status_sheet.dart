@@ -29,7 +29,7 @@ class _ChangeStatusSheetState extends State<ChangeStatusSheet> {
         children: [
           StatusBadge(status: s, compact: true),
           const SizedBox(width: 10),
-          Text(StatusBadge.label(s)),
+          Text(s.label),
         ],
       ),
     );
