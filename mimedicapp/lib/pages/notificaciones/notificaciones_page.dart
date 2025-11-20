@@ -109,6 +109,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                         await _controller.markAttended(item.id);
                       } else if (item.source == 'toma') {
                         await _controller.markTomado(item.id);
+                      } else if (item.source == 'exercise') {
+                        await _controller.markEjercicioRealizado(item.id);
                       }
                     } catch (e) {
                       messenger.showSnackBar(const SnackBar(content: Text('No se pudo completar la acción')));

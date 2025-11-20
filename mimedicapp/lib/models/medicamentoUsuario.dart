@@ -22,7 +22,6 @@ class MedicamentoUsuario {
         'nombre': nombre,
         'dosis': dosis,
         'unidad': unidad,
-        // Enviamos snake_case (consistente con el backend esperado)
         'frecuencia_horas': frecuenciaHoras,
         'fecha_inicio': fechaInicio.toIso8601String(),
         'fecha_fin': fechaFin.toIso8601String(),

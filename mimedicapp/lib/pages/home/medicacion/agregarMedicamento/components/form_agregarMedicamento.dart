@@ -16,7 +16,7 @@ class FormAgregarMedicamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final MedicamentoFormController c = controller;
+    final MedicamentoFormController c = controller;
 
     return Form(
       key: c.formKey,
@@ -38,12 +38,14 @@ class FormAgregarMedicamento extends StatelessWidget {
                 c.nombreCtrl.text = textCtrl.text;
               });
               return TextFormField(
-                controller: textCtrl,
-                focusNode: focusNode,
-                decoration:
-                    const InputDecoration(labelText: 'Nombre del medicamento'),
-                validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
-              );
+                  controller: textCtrl,
+                  focusNode: focusNode,
+                  decoration: const InputDecoration(
+                      labelText: 'Nombre del medicamento'),
+                  validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
+                  maxLines: null,
+                  maxLength: 30,
+                  buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,);
             },
             onSelected: (selection) => c.nombreCtrl.text = selection,
           ),
@@ -51,14 +53,17 @@ class FormAgregarMedicamento extends StatelessWidget {
           const SizedBox(height: 16),
 
           TextFormField(
-            controller: c.dosisCtrl,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-            ],
-            decoration: const InputDecoration(labelText: 'Dosis'),
-            validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
-          ),
+              controller: c.dosisCtrl,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+              ],
+              decoration: const InputDecoration(labelText: 'Dosis'),
+              validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
+              maxLines: null,
+              maxLength: 4,
+              buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,),
 
           const SizedBox(height: 16),
 
@@ -78,12 +83,14 @@ class FormAgregarMedicamento extends StatelessWidget {
                 c.unidadCtrl.text = textCtrl.text;
               });
               return TextFormField(
-                controller: textCtrl,
-                focusNode: focusNode,
-                decoration: const InputDecoration(labelText: 'Unidad'),
-                validator: (v) =>
-                    v == null || v.trim().isEmpty ? 'Requerido' : null,
-              );
+                  controller: textCtrl,
+                  focusNode: focusNode,
+                  decoration: const InputDecoration(labelText: 'Unidad'),
+                  validator: (v) =>
+                      v == null || v.trim().isEmpty ? 'Requerido' : null,
+                  maxLines: null,
+                  maxLength: 20,
+                  buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,);
             },
             onSelected: (Unidad sel) {
               c.unidadCtrl.text = sel.nombre;
@@ -93,14 +100,18 @@ class FormAgregarMedicamento extends StatelessWidget {
           const SizedBox(height: 16),
 
           TextFormField(
-            controller: c.frecuenciaCtrl,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-            ],
-            decoration: const InputDecoration(labelText: 'Frecuencia (horas)'),
-            validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
-          ),
+              controller: c.frecuenciaCtrl,
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
+              ],
+              decoration:
+                  const InputDecoration(labelText: 'Frecuencia (horas)'),
+              validator: (v) => v == null || v.isEmpty ? 'Requerido' : null,
+              maxLines: null,
+              maxLength: 2,
+              buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,),
 
           const SizedBox(height: 24),
 

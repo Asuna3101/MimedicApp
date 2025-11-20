@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/citas/citas_page.dart';
+import 'package:mimedicapp/pages/home/ejercicio/agregarEjercicio/agregarEjercicio_page.dart';
+import 'package:mimedicapp/pages/home/ejercicio/editarEjercicio/editarEjercicio_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/agregarMedicamento/agregarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/medicacion/editarMedicamento/editarMedicamento_page.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_page.dart';
@@ -32,8 +34,10 @@ class HomeNavigator extends StatelessWidget {
       HomeRoutes.agregarMedicamento: (_) => const AgregarMedicamentoPage(),
       HomeRoutes.editarMedicamento: (_) => const EditarMedicamentoPage(),
       HomeRoutes.citas: (_) => const CitasPage(),
-  HomeRoutes.agregarCita: (_) => const AgregarCitaPage(),
-  HomeRoutes.editarCita: (_) => const EditarCitaPage(),
+      HomeRoutes.agregarCita: (_) => const AgregarCitaPage(),
+      HomeRoutes.editarCita: (_) => const EditarCitaPage(),
+      HomeRoutes.agregarEjercicio: (_) => const AgregarEjercicioUsuarioPage(),
+      HomeRoutes.editarEjercicio: (_) => const EditarEjercicioUsuarioPage(),
     };
 
     return Navigator(

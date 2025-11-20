@@ -31,6 +31,8 @@ class ApiConfig {
   static const String comidasEndpoint = '/comidas';
   static const String categoriasEndpoint = '/categorias';
   static const String comidasSectionsEndpoint = '/comidas/sections';
+  static const String ejerciciosEndpoint = '/ejercicios';
+  static const String ejerciciosUsuarioEndpoint = '/ejercicios/usuario';
 
   // Helper para construir URLs absolutas (normaliza /)
   static String url(String path) {
