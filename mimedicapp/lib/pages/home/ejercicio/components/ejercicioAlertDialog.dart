@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
+import 'package:mimedicapp/services/ejercicio_service.dart';
 
 class EjercicioAlertDialog extends StatelessWidget {
   final EjercicioUsuario ejercicio;
@@ -65,7 +66,7 @@ class EjercicioAlertDialog extends StatelessWidget {
                         const SizedBox(height: 8),
 
                         Text(
-                          "Tu ejercicio empieza en 5 minutos.",
+                          "Tu ejercicio empieza ahora.",
                           style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
@@ -74,28 +75,73 @@ class EjercicioAlertDialog extends StatelessWidget {
 
                         const SizedBox(height: 16),
 
-                        // ---------- BOTÓN ENTENDIDO ----------
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              if (Navigator.of(context).canPop()) {
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 12),
-                              backgroundColor: AppColors.primary,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
+                        // ---------- BOTONES ----------
+                        Row(
+                          children: [
+                            // BOTÓN ENTENDIDO
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  backgroundColor: Colors.grey[600],
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                ),
+                                child: const Text(
+                                  "Entendido",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ),
                             ),
-                            child: const Text(
-                              "Entendido",
-                              style:
-                                  TextStyle(fontWeight: FontWeight.w600),
+                            const SizedBox(width: 12),
+                            // BOTÓN COMPLETAR
+                            Expanded(
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    if (ejercicio.id != null) {
+                                      final updated = EjercicioUsuario(
+                                        id: ejercicio.id,
+                                        nombre: ejercicio.nombre,
+                                        notas: ejercicio.notas,
+                                        horario: ejercicio.horario,
+                                        duracionMin: ejercicio.duracionMin,
+                                        realizado: true,
+                                      );
+                                      await EjercicioService().updateEjercicioUsuario(
+                                        ejercicio.id!,
+                                        updated,
+                                      );
+                                    }
+                                  } catch (e) {
+                                    // Manejo de error silencioso
+                                  }
+                                  if (Navigator.of(context).canPop()) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  backgroundColor: AppColors.primary,
+                                  foregroundColor: Colors.white,
+                                  elevation: 0,
+                                ),
+                                child: const Text(
+                                  "Completar",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w600),
+                                ),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),

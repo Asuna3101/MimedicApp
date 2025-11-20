@@ -112,7 +112,7 @@ class ContainerController extends GetxController {
         final horario = parseHorarioHoy(e.horario!);
         final diff = horario.difference(now).inMinutes;
 
-        if (diff == 4 && horario.isAfter(now)) {
+        if (diff == 0 && horario.isAfter(now.subtract(const Duration(minutes: 1)))) {
           _mostrarNotificacion(e);
         }
       }
