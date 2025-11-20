@@ -47,6 +47,13 @@ class FormEjercicioUsuario extends StatelessWidget {
                   if (v == null || v.trim().isEmpty) return 'Requerido';
                   return null;
                 },
+                maxLines: null,
+                maxLength: 20,
+                buildCounter: (_,
+                        {required currentLength,
+                        required isFocused,
+                        maxLength}) =>
+                    null,
               );
             },
             onSelected: (selection) {
@@ -55,18 +62,21 @@ class FormEjercicioUsuario extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           TextFormField(
-            controller: c.duracionCtrl,
-            keyboardType: TextInputType.number,
-            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            decoration: const InputDecoration(labelText: 'Duración (minutos)'),
-            validator: (v) {
-              if (v == null || v.trim().isEmpty) return 'Requerido';
-              final num? parsed = num.tryParse(v);
-              if (parsed == null) return 'Debe ser número';
-              if (parsed <= 0) return 'Debe ser mayor que 0';
-              return null;
-            },
-          ),
+              controller: c.duracionCtrl,
+              keyboardType: TextInputType.number,
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+              decoration:
+                  const InputDecoration(labelText: 'Duración (minutos)'),
+              validator: (v) {
+                if (v == null || v.trim().isEmpty) return 'Requerido';
+                final num? parsed = num.tryParse(v);
+                if (parsed == null) return 'Debe ser número';
+                if (parsed <= 0) return 'Debe ser mayor que 0';
+                return null;
+              },
+              maxLines: null,
+              maxLength: 3,
+              buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,),
           const SizedBox(height: 22),
           Obx(() => ListTile(
                 title: Text(
