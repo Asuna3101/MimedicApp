@@ -4,17 +4,18 @@ import 'package:mimedicapp/components/custom_button.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/pages/home/comidas/comidas_controller.dart';
-import 'package:mimedicapp/pages/home/home_routes.dart';
+import 'components/comida_card.dart';
 
 class ComidasPage extends StatelessWidget {
   const ComidasPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(ComidasController());
+    final controller = Get.put(ComidasController(), tag: 'comidas_list');
 
     return WillPopScope(
       onWillPop: () async {
+        Get.delete<ComidasController>(tag: 'comidas_list');
         Get.offNamed('/home/inicio', id: 1);
         return false;
       },
@@ -37,8 +38,7 @@ class ComidasPage extends StatelessWidget {
                         SizedBox(
                           width: double.infinity,
                           child: OutlinedButton.icon(
-                            onPressed: () =>
-                                Get.toNamed(HomeRoutes.agregarComida),
+                            onPressed: () => controller.goToAgregarComida(),
                             icon: const Icon(Icons.add,
                                 color: AppColors.primary, size: 28),
                             label: const Text(
@@ -94,56 +94,16 @@ class ComidasPage extends StatelessWidget {
                               .map(
                                 (c) => Padding(
                                   padding: const EdgeInsets.only(bottom: 16),
-                                  child: GestureDetector(
-                                    onLongPress: () =>
-                                        controller.toggleSelectionMode(),
-                                    child: Stack(
-                                      children: [
-                                        Card(
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(12),
-                                          ),
-                                          child: ListTile(
-                                            title: Text(c.nombre),
-                                            subtitle: c.detalles != null
-                                                ? Text(c.detalles!)
-                                                : null,
-                                            trailing: Icon(
-                                              c.recomendable == 1
-                                                  ? Icons.thumb_up
-                                                  : Icons.thumb_down,
-                                              color: c.recomendable == 1
-                                                  ? Colors.green
-                                                  : Colors.red,
-                                            ),
-                                            onTap: () {
-                                              if (controller
-                                                  .selectionMode.value) {
-                                                controller.toggleSelect(c);
-                                              } else {
-                                                // Open detalles / editar - placeholder
-                                                Get.toNamed(
-                                                    '/home/detalleComida',
-                                                    arguments: c);
-                                              }
-                                            },
-                                          ),
-                                        ),
-                                        if (controller.selectionMode.value)
-                                          Positioned(
-                                            top: 8,
-                                            right: 8,
-                                            child: Checkbox(
-                                              value: c.id != null &&
-                                                  controller.selectedIds
-                                                      .contains(c.id),
-                                              onChanged: (_) =>
-                                                  controller.toggleSelect(c),
-                                            ),
-                                          ),
-                                      ],
-                                    ),
+                                  child: ComidaCard(
+                                    comida: c,
+                                    onEdit: () =>
+                                        controller.goToEditarComida(c),
+                                    selectionMode:
+                                        controller.selectionMode.value,
+                                    isSelected: c.id != null &&
+                                        controller.selectedIds.contains(c.id),
+                                    onToggleSelect: () =>
+                                        controller.toggleSelect(c),
                                   ),
                                 ),
                               )

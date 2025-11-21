@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:mimedicapp/models/comida.dart';
 import 'package:mimedicapp/services/comidas_service.dart';
+import 'package:mimedicapp/pages/home/comidas/editarComida/editarComida_controller.dart';
 
 class ComidasController extends GetxController {
   final ComidasService _service = ComidasService();
@@ -18,10 +19,11 @@ class ComidasController extends GetxController {
   void toggleSelect(Comida c) {
     final id = c.id;
     if (id == null) return;
-    if (selectedIds.contains(id))
+    if (selectedIds.contains(id)) {
       selectedIds.remove(id);
-    else
+    } else {
       selectedIds.add(id);
+    }
   }
 
   @override
@@ -33,7 +35,7 @@ class ComidasController extends GetxController {
   Future<void> loadData() async {
     try {
       isLoading.value = true;
-      final items = await _service.getComidas();
+      final items = await _service.getComidasUsuario();
       comidas.assignAll(items);
     } catch (e) {
       Get.snackbar('Error', 'No se pudieron cargar comidas: $e');
@@ -49,10 +51,7 @@ class ComidasController extends GetxController {
     }
     try {
       isLoading.value = true;
-      // eliminar uno a uno
-      for (final id in List<int>.from(selectedIds)) {
-        await _service.deleteComida(id);
-      }
+      await _service.eliminarComidas(selectedIds.toList());
       Get.snackbar('Eliminado', 'Comidas eliminadas correctamente');
       selectionMode.value = false;
       selectedIds.clear();
@@ -62,5 +61,17 @@ class ComidasController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void goToAgregarComida() {
+    Get.toNamed('/home/comidas/agregar', id: 1)?.then((_) => loadData());
+  }
+
+  void goToEditarComida(Comida comida) {
+    final editarCtrl = Get.put(EditarComidaController());
+    editarCtrl.initWith(comida);
+
+    Get.toNamed('/home/comidas/editar', id: 1, arguments: comida)
+        ?.then((_) => loadData());
   }
 }
