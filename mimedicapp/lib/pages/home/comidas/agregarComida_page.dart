@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/pages/home/comidas/agregarComida_controller.dart';
 import 'package:mimedicapp/components/custom_button.dart';
-import 'package:mimedicapp/configs/colors.dart';
 
 class AgregarComidaPage extends StatelessWidget {
   const AgregarComidaPage({super.key});
