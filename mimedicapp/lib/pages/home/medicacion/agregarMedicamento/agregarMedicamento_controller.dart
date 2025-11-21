@@ -67,22 +67,29 @@ class AgregarMedicamentoController extends GetxController implements Medicamento
   }
 
   Future<void> seleccionarFecha({required bool esInicio}) async {
-    final seleccionada = await showDatePicker(
-      context: Get.context!,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2100),
-    );
+  final hoy = DateTime.now();
+  final fecha = await showDatePicker(
+    context: Get.context!,
+    initialDate: esInicio 
+        ? (fechaInicio.value ?? hoy)
+        : (fechaFin.value ?? hoy),
+    firstDate: hoy,                  // 👈 Bloquea fechas pasadas
+    lastDate: DateTime(2100),
 
-    if (seleccionada != null) {
-      if (esInicio) {
-        fechaInicio.value = seleccionada;
-      } else {
-        fechaFin.value = seleccionada;
-      }
-      _validarFormulario();
+    // 👇 Esto bloquea manualmente las fechas anteriores a hoy
+    selectableDayPredicate: (day) {
+      return !day.isBefore(DateTime(hoy.year, hoy.month, hoy.day));
+    },
+  );
+
+  if (fecha != null) {
+    if (esInicio) {
+      fechaInicio.value = fecha;
+    } else {
+      fechaFin.value = fecha;
     }
   }
+}
 
   Future<void> seleccionarHoraInicio() async {
     final seleccionada = await showTimePicker(

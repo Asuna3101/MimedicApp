@@ -264,6 +264,35 @@ class ApiService {
     }
   }
 
+    Future<dynamic> deleteRest(
+      String endpoint, {
+      bool auth = true,
+      Map<String, dynamic>? body,
+    })async {
+    try {
+      final request = http.Request(
+        'DELETE',
+        Uri.parse(_abs(endpoint)),
+      );
+
+      request.headers.addAll(await _headers(withAuth: auth));
+
+      if (body != null) {
+        request.body = jsonEncode(body);
+      }
+
+      final streamed = await request.send().timeout(ApiConfig.timeout);
+      final response = await http.Response.fromStream(streamed);
+
+      return _handleResponse(response);
+    } on SocketException {
+      throw ApiException('Sin conexión. Verifica tu internet.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error inesperado: $e');
+    }
+  }
+
   // --------------- Login / Logout ---------------
   /// Login JSON: { correo, password } → { access_token, token_type }
   Future<Map<String, dynamic>> loginWithEmail(String email, String password) async {

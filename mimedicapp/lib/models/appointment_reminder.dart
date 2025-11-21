@@ -1,3 +1,6 @@
+import 'package:mimedicapp/models/status.dart';
+export 'package:mimedicapp/models/status.dart' show AppointmentStatus, statusFromString, statusToString;
+
 // lib/models/appointment_reminder.dart
 class ClinicMini {
   final int id;
@@ -21,27 +24,6 @@ class DoctorMini {
   DoctorMini({required this.id, required this.nombre});
   factory DoctorMini.fromJson(Map<String, dynamic> j) =>
       DoctorMini(id: j['id'] as int, nombre: j['nombre'] as String);
-}
-
-// Estados del backend: PENDIENTE | ASISTIDO | NO_ASISTIDO
-enum AppointmentStatus { pendiente, asistido, noAsistido }
-
-AppointmentStatus statusFromString(String s) {
-  switch (s) {
-    case 'ASISTIDO': return AppointmentStatus.asistido;
-    case 'NO_ASISTIDO': return AppointmentStatus.noAsistido;
-    case 'PENDIENTE':
-    default: return AppointmentStatus.pendiente;
-  }
-}
-
-String statusToString(AppointmentStatus s) {
-  switch (s) {
-    case AppointmentStatus.asistido: return 'ASISTIDO';
-    case AppointmentStatus.noAsistido: return 'NO_ASISTIDO';
-    case AppointmentStatus.pendiente:
-    default: return 'PENDIENTE';
-  }
 }
 
 class AppointmentReminder {
