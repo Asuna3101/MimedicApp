@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:mimedicapp/services/user_service.dart';
-import 'package:mimedicapp/models/usuario.dart';
 
 class ProfileController extends GetxController {
   final UserService _userService = UserService();
