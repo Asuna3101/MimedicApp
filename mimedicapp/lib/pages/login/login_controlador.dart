@@ -120,14 +120,7 @@ class LoginControlador extends GetxController {
 
   /// Recuperar contraseña (placeholder)
   void recuperarContrasena() {
-    Get.snackbar(
-      'Recuperar contraseña',
-      'Esta funcionalidad estará disponible pronto',
-      backgroundColor: Colors.blue[100],
-      colorText: Colors.blue[800],
-      icon: const Icon(Icons.info, color: Colors.blue),
-      duration: const Duration(seconds: 3),
-    );
+    Get.toNamed('/recover', arguments: correoController.text);
   }
 
   // Validadores para los campos
@@ -152,4 +145,5 @@ class LoginControlador extends GetxController {
     }
     return null;
   }
+
 }

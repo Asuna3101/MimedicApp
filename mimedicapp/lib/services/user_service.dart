@@ -127,4 +127,15 @@ class UserService {
     final token = await _apiService.getAuthToken();
     return token != null && token.isNotEmpty;
   }
+
+  Future<void> requestRecover(String email) async {
+    await _apiService.post('/auth/recover/request', {'email': email}, auth: false);
+  }
+
+  Future<void> confirmRecover(
+      {required String email, required String code, required String newPassword}) async {
+    await _apiService.post('/auth/recover/confirm',
+        {'email': email, 'code': code, 'new_password': newPassword},
+        auth: false);
+  }
 }

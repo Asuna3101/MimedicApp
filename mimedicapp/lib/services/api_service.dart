@@ -264,6 +264,30 @@ class ApiService {
     }
   }
 
+  /// Subir archivo multipart (solo mobile/desktop).
+  Future<dynamic> uploadFile(String endpoint, String fieldName, File file,
+      {bool auth = true, Map<String, String>? extraFields, String method = 'POST'}) async {
+    try {
+      final uri = Uri.parse(_abs(endpoint));
+      final request = http.MultipartRequest(method, uri);
+      request.headers.addAll(await _headers(withAuth: auth));
+      request.files.add(await http.MultipartFile.fromPath(fieldName, file.path));
+      extraFields?.forEach((k, v) => request.fields[k] = v);
+
+      // ignore: avoid_print
+      print('[API] -> UPLOAD $uri (${file.path})');
+
+      final streamed = await request.send().timeout(ApiConfig.timeout);
+      final response = await http.Response.fromStream(streamed);
+      return _handleResponse(response);
+    } on SocketException {
+      throw ApiException('Sin conexión. Verifica tu internet.');
+    } catch (e) {
+      if (e is ApiException) rethrow;
+      throw ApiException('Error inesperado: $e');
+    }
+  }
+
     Future<dynamic> deleteRest(
       String endpoint, {
       bool auth = true,

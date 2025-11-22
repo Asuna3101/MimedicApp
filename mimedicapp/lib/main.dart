@@ -5,6 +5,7 @@ import 'package:mimedicapp/pages/home/citas/citas_page.dart';
 import 'package:mimedicapp/pages/inicio/inicio_pantalla.dart';
 import 'package:mimedicapp/pages/registro/registro_pantalla.dart';
 import 'package:mimedicapp/pages/login/login_pantalla.dart';
+import 'package:mimedicapp/pages/login/recover_page.dart';
 import 'package:mimedicapp/configs/app_theme.dart';
 import 'package:mimedicapp/pages/container/container_controller.dart';
 import 'package:mimedicapp/services/api_service.dart';
@@ -12,6 +13,7 @@ import 'package:mimedicapp/services/health_service.dart';
 import 'package:mimedicapp/pages/home/citas/citas_controller.dart';
 import 'package:mimedicapp/widgets/global_toma_listener.dart';
 import 'package:mimedicapp/repositories/toma_repository.dart';
+import 'package:mimedicapp/pages/login/recover_controller.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,13 @@ class MimedicApp extends StatelessWidget {
         GetPage(name: '/inicio', page: () => PaginaInicio()),
         GetPage(name: '/sign-up', page: () => const PaginaRegistro()),
         GetPage(name: '/sign-in', page: () => const PaginaLogin()),
+        GetPage(
+            name: '/recover',
+            page: () => const RecoverPage(),
+            binding: BindingsBuilder(() {
+              Get.lazyPut<RecoverController>(() => RecoverController(),
+                  fenix: true);
+            })),
         GetPage(
           name: '/app',
           page: () => Stack(
