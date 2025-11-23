@@ -25,99 +25,90 @@ class EjercicioPage extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Padding(
+              Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 12),
+                    const Header(
+                      titulo: "Ejercicios",
+                      imagePath: "assets/img/homeIcons/ejercicios.png",
+                    ),
+                    const SizedBox(height: 30),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () => controller.goToAgregarEjercicio(),
+                        icon: const Icon(Icons.add,
+                            color: AppColors.primary, size: 28),
+                        label: const Text(
+                          'Agregar',
+                          style: TextStyle(
+                            fontFamily: 'Titulo',
+                            fontSize: 18,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          side: const BorderSide(
+                            color: AppColors.primary,
+                            width: 1.5,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child:
+                          CircularProgressIndicator(color: AppColors.primary),
+                    );
+                  }
+
+                  if (controller.ejerciciosUsuario.isEmpty) {
+                    return const Padding(
+                      padding: EdgeInsets.all(24),
+                      child: Text(
+                        'No tienes ejercicios registrados.',
+                        style: TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    );
+                  }
+
+                  return SingleChildScrollView(
                     padding: const EdgeInsets.all(24),
                     child: Column(
-                      children: [
-                        const SizedBox(height: 12),
-                        const Header(
-                          titulo: "Ejercicios",
-                          imagePath: "assets/img/homeIcons/ejercicios.png",
-                        ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: () => controller.goToAgregarEjercicio(),
-                            icon: const Icon(Icons.add,
-                                color: AppColors.primary, size: 28),
-                            label: const Text(
-                              'Agregar',
-                              style: TextStyle(
-                                fontFamily: 'Titulo',
-                                fontSize: 18,
-                                color: AppColors.primary,
+                      children: controller.ejerciciosUsuario
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: EjercicioCard(
+                                ejercicio: e,
+                                onEdit: () => controller.goToEditarEjercicio(e),
+                                selectionMode: controller.selectionMode.value,
+                                isSelected: e.id != null && controller.selectedIds.contains(e.id),
+                                onToggleSelect: () => controller.toggleSelect(e),
                               ),
                             ),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(vertical: 16),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              side: const BorderSide(
-                                color: AppColors.primary,
-                                width: 1.5,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          )
+                          .toList(),
                     ),
-                  ),
-                  Expanded(
-                    child: Obx(() {
-                      if (controller.isLoading.value) {
-                        return const Center(
-                          child: CircularProgressIndicator(
-                              color: AppColors.primary),
-                        );
-                      }
-
-                      if (controller.ejerciciosUsuario.isEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.all(24),
-                          child: Text(
-                            'No tienes ejercicios registrados.',
-                            style: TextStyle(
-                              color: AppColors.primary,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        );
-                      }
-
-                      return SingleChildScrollView(
-                        padding: const EdgeInsets.only(
-                          left: 24,
-                          right: 24,
-                          top: 24,
-                          bottom: 140, 
-                        ),
-                        child: Column(
-                          children: controller.ejerciciosUsuario
-                              .map(
-                                (e) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 16),
-                                  child: EjercicioCard(
-                                    ejercicio: e,
-                                    onEdit: () =>
-                                        controller.goToEditarEjercicio(e),
-                                    selectionMode:
-                                        controller.selectionMode.value,
-                                    isSelected: e.id != null &&
-                                        controller.selectedIds.contains(e.id),
-                                    onToggleSelect: () =>
-                                        controller.toggleSelect(e),
-                                  ),
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      );
-                    }),
-                  ),
-                ],
+                  );
+                }),
+              ),
+              ],
               ),
 
               // Botón fijo en la parte inferior
@@ -139,8 +130,7 @@ class EjercicioPage extends StatelessWidget {
                                   context: context,
                                   builder: (ctx) => AlertDialog(
                                     title: const Text('Confirmar eliminación'),
-                                    content: Text(
-                                        '¿Eliminar ${controller.selectedIds.length} ejercicio(s)?'),
+                                    content: Text('¿Eliminar ${controller.selectedIds.length} ejercicio(s)?'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
@@ -151,8 +141,7 @@ class EjercicioPage extends StatelessWidget {
                                         child: const Text('Cancelar'),
                                       ),
                                       TextButton(
-                                        onPressed: () =>
-                                            Navigator.of(ctx).pop(true),
+                                        onPressed: () => Navigator.of(ctx).pop(true),
                                         child: const Text('Eliminar'),
                                       ),
                                     ],

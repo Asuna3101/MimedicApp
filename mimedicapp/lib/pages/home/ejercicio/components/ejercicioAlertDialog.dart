@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
-import 'package:mimedicapp/pages/home/ejercicio/ejercicio_controller.dart';
 import 'package:mimedicapp/services/ejercicio_service.dart';
 
 class EjercicioAlertDialog extends StatelessWidget {
@@ -28,9 +26,9 @@ class EjercicioAlertDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ---------- TÍTULO ----------
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
+                    children: const [
                       Text(
                         "Ejercicio próximo",
                         textAlign: TextAlign.center,
@@ -67,9 +65,9 @@ class EjercicioAlertDialog extends StatelessWidget {
 
                         const SizedBox(height: 8),
 
-                        const Text(
+                        Text(
                           "Tu ejercicio empieza ahora.",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
                           ),
@@ -80,6 +78,7 @@ class EjercicioAlertDialog extends StatelessWidget {
                         // ---------- BOTONES ----------
                         Row(
                           children: [
+                            // BOTÓN ENTENDIDO
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -96,33 +95,33 @@ class EjercicioAlertDialog extends StatelessWidget {
                                 ),
                                 child: const Text(
                                   "Entendido",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),
                             const SizedBox(width: 12),
+                            // BOTÓN COMPLETAR
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () async {
                                   try {
                                     if (ejercicio.id != null) {
                                       final updated = EjercicioUsuario(
-                                        realizado: true
+                                        id: ejercicio.id,
+                                        nombre: ejercicio.nombre,
+                                        notas: ejercicio.notas,
+                                        horario: ejercicio.horario,
+                                        duracionMin: ejercicio.duracionMin,
+                                        realizado: true,
                                       );
-                                      await EjercicioService()
-                                          .updateEjercicioUsuario(
+                                      await EjercicioService().updateEjercicioUsuario(
                                         ejercicio.id!,
                                         updated,
                                       );
-                                      final controllerEj =
-                                          Get.find<EjercicioController>();
-                                      final lista = await EjercicioService()
-                                          .getEjerciciosUsuario();
-                                      controllerEj.ejerciciosUsuario
-                                          .assignAll(lista);
                                     }
                                   } catch (e) {
-                                    // Manejo de errores
+                                    // Manejo de error silencioso
                                   }
                                   if (Navigator.of(context).canPop()) {
                                     Navigator.of(context).pop();
@@ -137,7 +136,8 @@ class EjercicioAlertDialog extends StatelessWidget {
                                 ),
                                 child: const Text(
                                   "Completar",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),

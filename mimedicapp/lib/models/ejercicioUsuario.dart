@@ -5,7 +5,6 @@ class EjercicioUsuario {
   final String? horario;
   final int? duracionMin;
   final bool? realizado;
-  bool notificado;
 
   EjercicioUsuario({
     this.id,
@@ -13,8 +12,7 @@ class EjercicioUsuario {
     this.notas,
     this.horario,
     this.duracionMin,
-    this.realizado,
-    this.notificado = false
+    this.realizado
   });
 
   factory EjercicioUsuario.fromJson(Map<String, dynamic> json) {

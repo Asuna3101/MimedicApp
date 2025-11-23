@@ -121,30 +121,40 @@ class EditarEjercicioUsuarioController extends GetxController
       );
       return;
     }
+
     final h = hora.value!;
     final horaStr =
         "${h.hour.toString().padLeft(2, '0')}:${h.minute.toString().padLeft(2, '0')}";
+
     final actualizado = EjercicioUsuario(
       id: ejercicioOriginal.id,
+
       nombre: nombreCtrl.text.trim() != (ejercicioOriginal.nombre ?? "")
           ? nombreCtrl.text.trim()
           : null,
+
       notas: notasCtrl.text.trim() != (ejercicioOriginal.notas ?? "")
           ? notasCtrl.text.trim()
           : null,
+
       duracionMin:
           int.parse(duracionCtrl.text.trim()) != ejercicioOriginal.duracionMin
               ? int.parse(duracionCtrl.text.trim())
               : null,
+
       horario: horaStr != ejercicioOriginal.horario ? horaStr : null,
     );
+
     try {
       isLoading.value = true;
+
       await _service.updateEjercicioUsuario(
         ejercicioOriginal.id!,
         actualizado,
       );
+
       Get.back(result: true, id: 1);
+
       Get.snackbar(
         'Éxito',
         'Ejercicio actualizado correctamente.',
