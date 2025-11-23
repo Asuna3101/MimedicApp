@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:get/get.dart';
 import 'package:mimedicapp/models/report_event.dart';
@@ -8,6 +9,7 @@ import 'package:mimedicapp/services/reportes_service.dart';
 import 'package:mimedicapp/services/user_service.dart';
 import 'package:mimedicapp/utils/event_bus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ReportesController extends GetxController {
   final _userService = UserService();

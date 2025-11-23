@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mimedicapp/models/report_event.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_controller.dart';
 import 'package:open_filex/open_filex.dart';
