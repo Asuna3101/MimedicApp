@@ -72,18 +72,28 @@ class ReportesController extends GetxController {
     }
   }
 
-  Future<String?> descargarModulo(ReportEventType type) async {
+  Future<DownloadFileResult?> downloadToFile(
+      {required ReportEventType type, String format = 'txt'}) async {
     try {
       descargando.value = true;
       final mod = reportEventTypeToString(type);
-      final res = await _reportes.downloadModule(mod);
-      return res;
+      final res =
+          await _reportes.downloadModule(module: mod, format: format);
+      final path = await _saveToTemp(res.bytes, res.filename);
+      return DownloadFileResult(path: path, mime: res.mime, name: res.filename);
     } catch (e) {
       error.value = 'No se pudo descargar: $e';
       return null;
     } finally {
       descargando.value = false;
     }
+  }
+
+  Future<String> _saveToTemp(List<int> bytes, String filename) async {
+    final dir = await getTemporaryDirectory();
+    final file = File('${dir.path}/$filename');
+    await file.writeAsBytes(bytes, flush: true);
+    return file.path;
   }
 
   Future<List<Map<String, dynamic>>> _readMedicationEvents() async {
@@ -136,4 +146,11 @@ class ReportesController extends GetxController {
     }
     return res;
   }
+}
+
+class DownloadFileResult {
+  final String path;
+  final String mime;
+  final String name;
+  DownloadFileResult({required this.path, required this.mime, required this.name});
 }

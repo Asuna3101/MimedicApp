@@ -288,7 +288,7 @@ class ApiService {
     }
   }
 
-    Future<dynamic> deleteRest(
+  Future<dynamic> deleteRest(
       String endpoint, {
       bool auth = true,
       Map<String, dynamic>? body,
@@ -315,6 +315,16 @@ class ApiService {
       if (e is ApiException) rethrow;
       throw ApiException('Error inesperado: $e');
     }
+  }
+
+  /// GET devolviendo bytes (para descargas)
+  Future<http.Response> getBytes(String endpoint, {bool auth = true}) async {
+    final url = _abs(endpoint);
+    final headers = await _headers(withAuth: auth);
+    // ignore: avoid_print
+    print('[API] -> GET(bytes) $url');
+    final resp = await http.get(Uri.parse(url), headers: headers).timeout(ApiConfig.timeout);
+    return resp;
   }
 
   // --------------- Login / Logout ---------------

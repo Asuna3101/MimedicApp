@@ -71,6 +71,7 @@ class ProfileController extends GetxController {
     final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (picked == null) return;
     await _profileService.uploadPhotoFile(File(picked.path));
+    await loadProfile();
     Get.snackbar('Foto', 'Foto actualizada',
         snackPosition: SnackPosition.BOTTOM,
         duration: const Duration(seconds: 2));
