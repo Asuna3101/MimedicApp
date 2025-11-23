@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
+import 'package:mimedicapp/pages/container/container_controller.dart';
+import 'package:mimedicapp/pages/home/ejercicio/ejercicio_controller.dart';
 import 'package:mimedicapp/services/ejercicio_service.dart';
 
 class EjercicioAlertDialog extends StatelessWidget {
@@ -95,8 +98,7 @@ class EjercicioAlertDialog extends StatelessWidget {
                                 ),
                                 child: const Text(
                                   "Entendido",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),
@@ -115,10 +117,17 @@ class EjercicioAlertDialog extends StatelessWidget {
                                         duracionMin: ejercicio.duracionMin,
                                         realizado: true,
                                       );
-                                      await EjercicioService().updateEjercicioUsuario(
+                                      await EjercicioService()
+                                          .updateEjercicioUsuario(
                                         ejercicio.id!,
                                         updated,
                                       );
+                                      final controllerEj =
+                                          Get.find<EjercicioController>();
+                                      final lista = await EjercicioService()
+                                          .getEjerciciosUsuario();
+                                      controllerEj.ejerciciosUsuario
+                                          .assignAll(lista);
                                     }
                                   } catch (e) {
                                     // Manejo de error silencioso
@@ -136,8 +145,7 @@ class EjercicioAlertDialog extends StatelessWidget {
                                 ),
                                 child: const Text(
                                   "Completar",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
                               ),
                             ),
