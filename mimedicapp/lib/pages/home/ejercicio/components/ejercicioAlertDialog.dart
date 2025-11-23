@@ -29,9 +29,9 @@ class EjercicioAlertDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ---------- TÍTULO ----------
-                  Row(
+                  const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Text(
                         "Ejercicio próximo",
                         textAlign: TextAlign.center,
@@ -68,9 +68,9 @@ class EjercicioAlertDialog extends StatelessWidget {
 
                         const SizedBox(height: 8),
 
-                        Text(
+                        const Text(
                           "Tu ejercicio empieza ahora.",
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 14,
                             color: Colors.black87,
                           ),
@@ -81,7 +81,6 @@ class EjercicioAlertDialog extends StatelessWidget {
                         // ---------- BOTONES ----------
                         Row(
                           children: [
-                            // BOTÓN ENTENDIDO
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
@@ -103,19 +102,13 @@ class EjercicioAlertDialog extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 12),
-                            // BOTÓN COMPLETAR
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () async {
                                   try {
                                     if (ejercicio.id != null) {
                                       final updated = EjercicioUsuario(
-                                        id: ejercicio.id,
-                                        nombre: ejercicio.nombre,
-                                        notas: ejercicio.notas,
-                                        horario: ejercicio.horario,
-                                        duracionMin: ejercicio.duracionMin,
-                                        realizado: true,
+                                        realizado: true
                                       );
                                       await EjercicioService()
                                           .updateEjercicioUsuario(
@@ -130,7 +123,7 @@ class EjercicioAlertDialog extends StatelessWidget {
                                           .assignAll(lista);
                                     }
                                   } catch (e) {
-                                    // Manejo de error silencioso
+                                    // Manejo de errores
                                   }
                                   if (Navigator.of(context).canPop()) {
                                     Navigator.of(context).pop();
