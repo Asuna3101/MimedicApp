@@ -73,14 +73,11 @@ class EjercicioController extends GetxController {
     }
   }
 
-  /// Eliminar los ejercicios seleccionados.
-  /// Muestra confirmación y luego llama al servicio.
   Future<void> deleteSelected() async {
     if (selectedIds.isEmpty) {
       Get.snackbar('Atención', 'No hay ejercicios seleccionados');
       return;
     }
-    // Esta función sólo ejecuta la eliminación cuando ya se confirmó.
     try {
       isLoading.value = true;
       await _service.deleteEjerciciosUsuario(selectedIds.toList());

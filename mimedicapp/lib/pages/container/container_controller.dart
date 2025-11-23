@@ -81,40 +81,34 @@ class ContainerController extends GetxController {
     ejerciciosHoy.assignAll(
       lista.where((e) {
         if (e.horario == null) return false;
-
         final horario = parseHorarioHoy(e.horario!);
-        final esPendiente = !(e.realizado ?? false);
-        final esPosterior = horario.isAfter(now);
-
-        return esPendiente && esPosterior;
+        return !(e.realizado ?? false) && horario.isAfter(now);
+      }).map((e) {
+        e.notificado = false; // reset diario
+        return e;
       }).toList(),
     );
-  }
-
-  void eliminarDePendientes(int id) {
-    ejerciciosHoy.removeWhere((e) => e.id == id);
   }
 
   void _checkNotificaciones() {
     final now = DateTime.now();
 
-    // Eliminar ejercicios cuya hora ya pasó uwu
-    // ejerciciosHoy.removeWhere((e) {
-    //   if (e.horario == null) return false;
-    //   final horario = parseHorarioHoy(e.horario!);
-    //   return horario.isBefore(now);
-    // });
-
     for (final e in ejerciciosHoy) {
-      if (!(e.realizado ?? false)) {
-        if (e.horario == null) continue;
+      if (e.notificado) continue;
+      if (e.horario == null) continue;
 
-        final horario = parseHorarioHoy(e.horario!);
-        final diff = horario.difference(now).inMinutes;
+      final horario = parseHorarioHoy(e.horario!);
 
-        if (diff == 0 && horario.isAfter(now.subtract(const Duration(minutes: 1)))) {
-          _mostrarNotificacion(e);
-        }
+      final mismoMinuto =
+          now.year == horario.year &&
+              now.month == horario.month &&
+              now.day == horario.day &&
+              now.hour == horario.hour &&
+              now.minute == horario.minute;
+
+      if (mismoMinuto) {
+        _mostrarNotificacion(e);
+        e.notificado = true;
       }
     }
   }
