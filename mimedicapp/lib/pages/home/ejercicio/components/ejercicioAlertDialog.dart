@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
 import 'package:mimedicapp/models/ejercicioUsuario.dart';
-import 'package:mimedicapp/pages/container/container_controller.dart';
 import 'package:mimedicapp/pages/home/ejercicio/ejercicio_controller.dart';
 import 'package:mimedicapp/services/ejercicio_service.dart';
 
