@@ -10,6 +10,7 @@ import 'package:mimedicapp/services/user_service.dart';
 import 'package:mimedicapp/utils/event_bus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart';
 
 class ReportesController extends GetxController {
   final _userService = UserService();
@@ -19,6 +20,7 @@ class ReportesController extends GetxController {
   final error = RxnString();
   final nombre = ''.obs;
   final fechaNacimiento = Rxn<DateTime>();
+  final fotoBase64 = ''.obs;
   final eventos = <ReportEventModel>[].obs;
   final modulos = <ReportEventType, List<ReportEventModel>>{}.obs;
   final descargando = false.obs;
@@ -47,6 +49,7 @@ class ReportesController extends GetxController {
       final user = summary.user;
       nombre.value = user.nombre;
       fechaNacimiento.value = user.fechaNacimiento;
+      fotoBase64.value = user.foto ?? '';
 
       final List<ReportEventModel> data = [...summary.timeline];
 
@@ -91,11 +94,53 @@ class ReportesController extends GetxController {
     }
   }
 
+  /// Descarga y guarda en la carpeta de documentos de la app (persistente).
+  Future<DownloadFileResult?> downloadAndSave(
+      {required ReportEventType type, String format = 'pdf'}) async {
+    try {
+      descargando.value = true;
+      final mod = reportEventTypeToString(type);
+      final res = await _reportes.downloadModule(module: mod, format: format);
+      final dirPath = await _preferredDownloadDir();
+      final path = await _saveToDir(dirPath, res.bytes, res.filename);
+      return DownloadFileResult(path: path, mime: res.mime, name: res.filename);
+    } catch (e) {
+      error.value = 'No se pudo guardar: $e';
+      return null;
+    } finally {
+      descargando.value = false;
+    }
+  }
+
   Future<String> _saveToTemp(List<int> bytes, String filename) async {
     final dir = await getTemporaryDirectory();
-    final file = File('${dir.path}/$filename');
+    return _saveToDir(dir.path, bytes, filename);
+  }
+
+  Future<String> _saveToDir(String dirPath, List<int> bytes, String filename) async {
+    final file = File('$dirPath/$filename');
     await file.writeAsBytes(bytes, flush: true);
     return file.path;
+  }
+
+  /// Intenta guardar en una carpeta visible (Downloads en Android/desktop, Documents en iOS).
+  Future<String> _preferredDownloadDir() async {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      // Forzar carpeta pública de descargas en Android
+      final downloads = Directory('/storage/emulated/0/Download');
+      if (downloads.existsSync()) return downloads.path;
+      final ext = await getExternalStorageDirectory();
+      if (ext != null) return ext.path;
+    } else {
+      // iOS/desktop: usar Downloads si está disponible
+      try {
+        final dl = await getDownloadsDirectory();
+        if (dl != null) return dl.path;
+      } catch (_) {}
+    }
+    // Fallback: documentos de la app
+    final docs = await getApplicationDocumentsDirectory();
+    return docs.path;
   }
 
   Future<List<Map<String, dynamic>>> _readMedicationEvents() async {

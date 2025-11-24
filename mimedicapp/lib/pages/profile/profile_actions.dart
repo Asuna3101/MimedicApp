@@ -6,13 +6,11 @@ class ProfileActions extends StatelessWidget {
   final VoidCallback onChangePhoto;
   final VoidCallback onChangePassword;
   final VoidCallback onDeleteAccount;
-  final VoidCallback onRecoverAccount;
   const ProfileActions({
     super.key,
     required this.onChangePhoto,
     required this.onChangePassword,
     required this.onDeleteAccount,
-    required this.onRecoverAccount,
   });
 
   @override
@@ -39,12 +37,6 @@ class ProfileActions extends StatelessWidget {
           color: const Color(0xFF5C6BC0),
           title: 'Cambiar contraseña',
           onTap: onChangePassword,
-        ),
-        _ActionTile(
-          icon: Icons.restore_page_outlined,
-          color: const Color(0xFF26A69A),
-          title: 'Recuperar mi cuenta',
-          onTap: onRecoverAccount,
         ),
         _ActionTile(
           icon: Icons.delete_forever_rounded,

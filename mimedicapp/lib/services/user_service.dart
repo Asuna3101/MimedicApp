@@ -43,6 +43,8 @@ class UserService {
         celular: response['celular'] ?? '',
         correo: response['correo'],
         contrasena: '',
+        foto: response['photo'],
+        fotoContentType: response['photo_content_type'],
       );
     } catch (e) {
       throw Exception('Error al obtener usuario actual: $e');
@@ -60,6 +62,8 @@ class UserService {
         celular: response['celular'] ?? '',
         correo: response['correo'],
         contrasena: '',
+        foto: response['photo'],
+        fotoContentType: response['photo_content_type'],
       );
     } catch (e) {
       throw Exception('Error al obtener usuario: $e');
@@ -89,6 +93,8 @@ class UserService {
         celular: response['celular'] ?? '',
         correo: response['correo'],
         contrasena: '',
+        foto: response['photo'],
+        fotoContentType: response['photo_content_type'],
       );
     } catch (e) {
       throw Exception('Error al actualizar usuario: $e');

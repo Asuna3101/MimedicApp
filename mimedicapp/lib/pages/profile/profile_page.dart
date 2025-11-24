@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
+import 'dart:convert';
 import 'profile_controller.dart';
-import 'profile_actions.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -39,13 +39,7 @@ class ProfilePage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Avatar
-              CircleAvatar(
-                radius: 48,
-                backgroundColor: AppColors.primary.withOpacity(0.15),
-                child: const Icon(Icons.person,
-                    size: 64, color: AppColors.primary),
-              ),
+              _Avatar(fotoBase64: c.fotoBase64.value),
               const SizedBox(height: 16),
               Text(
                 c.nombre.value,
@@ -65,13 +59,6 @@ class ProfilePage extends StatelessWidget {
                 value: c.fechaNacimiento.value != null
                     ? _formatDate(c.fechaNacimiento.value!)
                     : '-',
-              ),
-              const SizedBox(height: 16),
-              ProfileActions(
-                onChangePhoto: () => _showPhotoDialog(context, c),
-                onChangePassword: () => _showChangePassDialog(context, c),
-                onDeleteAccount: () => _confirmDelete(context, c),
-                onRecoverAccount: () => _showRecoverDialog(context, c),
               ),
             ],
           ),
@@ -118,123 +105,28 @@ String _formatDate(DateTime d) {
   return '${d.year.toString().padLeft(4, '0')}-${d.month.toString().padLeft(2, '0')}-${d.day.toString().padLeft(2, '0')}';
 }
 
-void _showNotImpl(String msg) {
-  Get.snackbar('Acción', '$msg pendiente de completar',
-      snackPosition: SnackPosition.BOTTOM,
-      duration: const Duration(seconds: 2));
-}
-
-void _showPhotoDialog(BuildContext context, ProfileController c) {
-  Get.dialog(AlertDialog(
-    title: const Text('Cambiar foto'),
-    content: const Text('Selecciona una foto desde tu galería.'),
-    actions: [
-      TextButton(onPressed: () => Get.back(), child: const Text('Cancelar')),
-      ElevatedButton(
-        onPressed: () async {
-          await c.pickAndUploadPhoto();
-          Get.back();
-        },
-        child: const Text('Abrir galería'),
-      ),
-    ],
-  ));
-}
-
-void _showChangePassDialog(BuildContext context, ProfileController c) {
-  final oldCtrl = TextEditingController();
-  final newCtrl = TextEditingController();
-  final confirmCtrl = TextEditingController();
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text('Cambiar contraseña'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          TextField(
-            controller: oldCtrl,
-            decoration: const InputDecoration(labelText: 'Contraseña actual'),
-            obscureText: true,
-          ),
-          TextField(
-            controller: newCtrl,
-            decoration: const InputDecoration(labelText: 'Nueva contraseña'),
-            obscureText: true,
-          ),
-          TextField(
-            controller: confirmCtrl,
-            decoration: const InputDecoration(labelText: 'Confirmar nueva'),
-            obscureText: true,
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text('Cancelar')),
-        ElevatedButton(
-          onPressed: () async {
-            if (newCtrl.text == confirmCtrl.text &&
-                newCtrl.text.isNotEmpty &&
-                oldCtrl.text.isNotEmpty) {
-              await c.changePassword(oldPass: oldCtrl.text, newPass: newCtrl.text);
-              Get.back();
-            } else {
-              Get.snackbar('Error', 'Las contraseñas no coinciden',
-                  snackPosition: SnackPosition.BOTTOM,
-                  duration: const Duration(seconds: 2));
-            }
-          },
-          child: const Text('Guardar'),
-        ),
-      ],
-    ),
-  );
-}
-
-void _confirmDelete(BuildContext context, ProfileController c) {
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text('Eliminar cuenta'),
-      content: const Text(
-          'Esta acción desactivará tu cuenta. ¿Deseas continuar?'),
-      actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text('Cancelar')),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
-          onPressed: () async {
-            await c.deleteAccount();
-            Get.back();
-          },
-          child: const Text('Eliminar'),
-        ),
-      ],
-    ),
-  );
-}
-
-void _showRecoverDialog(BuildContext context, ProfileController c) {
-  final emailCtrl = TextEditingController();
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
-      title: const Text('Recuperar cuenta'),
-      content: TextField(
-        controller: emailCtrl,
-        decoration: const InputDecoration(labelText: 'Correo'),
-      ),
-      actions: [
-        TextButton(onPressed: () => Get.back(), child: const Text('Cancelar')),
-        ElevatedButton(
-          onPressed: () async {
-            if (emailCtrl.text.isNotEmpty) {
-              await c.recoverAccount(emailCtrl.text.trim());
-              Get.back();
-            }
-          },
-          child: const Text('Enviar'),
-        ),
-      ],
-    ),
-  );
+class _Avatar extends StatelessWidget {
+  final String fotoBase64;
+  const _Avatar({required this.fotoBase64});
+  @override
+  Widget build(BuildContext context) {
+    if (fotoBase64.isNotEmpty) {
+      try {
+        final bytes = base64Decode(fotoBase64);
+        return CircleAvatar(
+          radius: 48,
+          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundImage: MemoryImage(bytes),
+          key: ValueKey(fotoBase64.length),
+        );
+      } catch (_) {
+        // fallback below
+      }
+    }
+    return CircleAvatar(
+      radius: 48,
+      backgroundColor: AppColors.primary.withOpacity(0.15),
+      child: const Icon(Icons.person, size: 64, color: AppColors.primary),
+    );
+  }
 }

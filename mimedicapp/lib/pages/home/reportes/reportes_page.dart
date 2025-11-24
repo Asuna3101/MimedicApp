@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mimedicapp/configs/colors.dart';
-import 'package:mimedicapp/pages/home/components/header.dart';
 import 'package:mimedicapp/models/report_event.dart';
 import 'package:mimedicapp/pages/home/reportes/reportes_controller.dart';
 import 'package:mimedicapp/widgets/report_download_sheet.dart';
+import 'dart:convert';
 
 class ReportesPage extends StatelessWidget {
   const ReportesPage({super.key});
@@ -64,14 +64,15 @@ class ReportesPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 12),
-                  const Header(
-                    titulo: "Reportes y seguimiento",
+                  _TitleRow(
+                    title: "Reportes y seguimiento",
                     imagePath: "assets/img/homeIcons/reportes.png",
                   ),
                   const SizedBox(height: 20),
                   _UserCard(
                     nombre: c.nombre.value,
                     fechaNacimiento: c.fechaNacimiento.value,
+                    fotoBase64: c.fotoBase64.value,
                   ),
                   const SizedBox(height: 24),
                   const Text(
@@ -124,7 +125,8 @@ class ReportesPage extends StatelessWidget {
 class _UserCard extends StatelessWidget {
   final String nombre;
   final DateTime? fechaNacimiento;
-  const _UserCard({required this.nombre, required this.fechaNacimiento});
+  final String fotoBase64;
+  const _UserCard({required this.nombre, required this.fechaNacimiento, required this.fotoBase64});
 
   @override
   Widget build(BuildContext context) {
@@ -136,12 +138,7 @@ class _UserCard extends StatelessWidget {
       ),
       child: Row(
         children: [
-          CircleAvatar(
-            radius: 32,
-            backgroundColor: AppColors.primary.withOpacity(0.15),
-            child: const Icon(Icons.person,
-                size: 36, color: AppColors.primary),
-          ),
+          _Avatar(fotoBase64: fotoBase64),
           const SizedBox(width: 16),
           Expanded(
             child: Column(
@@ -155,24 +152,47 @@ class _UserCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 6),
-                Row(
-                  children: [
-                    const Icon(Icons.cake_outlined,
-                        size: 18, color: AppColors.primary),
-                    const SizedBox(width: 6),
-                    Text(
-                      fechaNacimiento != null
-                          ? _fmtDate(fechaNacimiento!)
-                          : '-',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+                if (fechaNacimiento != null)
+                  Row(
+                    children: [
+                      const Icon(Icons.cake_outlined,
+                          size: 18, color: AppColors.primary),
+                      const SizedBox(width: 6),
+                      Text(
+                        _fmtDate(fechaNacimiento!),
+                        style: const TextStyle(fontSize: 14),
+                      ),
+                    ],
+                  ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _Avatar extends StatelessWidget {
+  final String fotoBase64;
+  const _Avatar({required this.fotoBase64});
+  @override
+  Widget build(BuildContext context) {
+    if (fotoBase64.isNotEmpty) {
+      try {
+        final bytes = base64Decode(fotoBase64);
+        return CircleAvatar(
+          radius: 32,
+          backgroundColor: AppColors.primary.withOpacity(0.1),
+          backgroundImage: MemoryImage(bytes),
+          key: ValueKey(fotoBase64.length),
+        );
+      } catch (_) {}
+    }
+    return CircleAvatar(
+      radius: 32,
+      backgroundColor: AppColors.primary.withOpacity(0.15),
+      child: const Icon(Icons.person, size: 32, color: AppColors.primary),
     );
   }
 }
@@ -316,7 +336,7 @@ IconData _typeIcon(ReportEventType type) {
 
 String _fmtDate(DateTime d) {
   String two(int n) => n.toString().padLeft(2, '0');
-  return '${d.year}-${two(d.month)}-${two(d.day)} ${two(d.hour)}:${two(d.minute)}';
+  return '${d.year}-${two(d.month)}-${two(d.day)}';
 }
 
 Map<String, List<ReportEventModel>> _groupByDay(List<ReportEventModel> events) {
@@ -436,6 +456,42 @@ class _DayGroup extends StatefulWidget {
 
   @override
   State<_DayGroup> createState() => _DayGroupState();
+}
+
+class _TitleRow extends StatelessWidget {
+  final String title;
+  final String imagePath;
+  const _TitleRow(
+      {required this.title, required this.imagePath});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Image.asset(imagePath, height: 64),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontFamily: 'Titulo',
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.primary,
+                ),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
 }
 
 class _DayGroupState extends State<_DayGroup> {

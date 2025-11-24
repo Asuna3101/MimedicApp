@@ -5,6 +5,8 @@ class Usuario {
   final String celular;
   final String correo;
   final String contrasena;
+  final String? foto; // base64
+  final String? fotoContentType;
 
   Usuario({
     required this.idUsuario,
@@ -13,6 +15,8 @@ class Usuario {
     required this.celular,
     required this.correo,
     required this.contrasena,
+    this.foto,
+    this.fotoContentType,
   });
 
   // Constructor para crear usuario para registro (sin ID)
@@ -22,6 +26,8 @@ class Usuario {
     required this.celular,
     required this.correo,
     required this.contrasena,
+    this.foto,
+    this.fotoContentType,
   }) : idUsuario = 0; // ID temporal para registro
 
 // Método toString para representar la clase como un String
@@ -64,10 +70,12 @@ class Usuario {
           ? DateTime.parse(json['fecha_nacimiento'])
           : json['fechaNacimiento'] != null
               ? DateTime.parse(json['fechaNacimiento'])
-              : DateTime.now(),
+          : DateTime.now(),
       celular: json['celular'] ?? '',
       correo: json['correo'] ?? '',
       contrasena: json['password'] ?? json['contrasena'] ?? '',
+      foto: json['photo'] as String?,
+      fotoContentType: json['photo_content_type'] as String?,
     );
   }
 
@@ -79,6 +87,8 @@ class Usuario {
     String? celular,
     String? correo,
     String? contrasena,
+    String? foto,
+    String? fotoContentType,
   }) {
     return Usuario(
       idUsuario: idUsuario ?? this.idUsuario,
@@ -87,6 +97,8 @@ class Usuario {
       celular: celular ?? this.celular,
       correo: correo ?? this.correo,
       contrasena: contrasena ?? this.contrasena,
+      foto: foto ?? this.foto,
+      fotoContentType: fotoContentType ?? this.fotoContentType,
     );
   }
 }

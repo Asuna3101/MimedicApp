@@ -6,6 +6,8 @@ class ReportUser {
   final String correo;
   final DateTime? fechaNacimiento;
   final DateTime? fechaCreacion;
+  final String? foto;
+  final String? fotoContentType;
 
   ReportUser({
     required this.id,
@@ -13,6 +15,8 @@ class ReportUser {
     required this.correo,
     this.fechaNacimiento,
     this.fechaCreacion,
+    this.foto,
+    this.fotoContentType,
   });
 
   factory ReportUser.fromJson(Map<String, dynamic> json) {
@@ -26,6 +30,8 @@ class ReportUser {
       fechaCreacion: json['fecha_creacion'] != null
           ? DateTime.tryParse(json['fecha_creacion'].toString())
           : null,
+      foto: json['photo'] as String?,
+      fotoContentType: json['photo_content_type'] as String?,
     );
   }
 }

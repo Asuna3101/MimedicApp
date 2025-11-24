@@ -7,20 +7,11 @@ class ProfileService {
 
   Future<Map<String, dynamic>> uploadPhotoFile(File file) async {
     final res = await _api.uploadFile(
-      '${ApiConfig.baseUrl}/profile/me/photo',
+      '/profile/me/photo',
       'file',
       file,
       auth: true,
       method: 'PUT',
-    );
-    return Map<String, dynamic>.from(res as Map);
-  }
-
-  Future<Map<String, dynamic>> updatePhoto({String? url}) async {
-    final res = await _api.put(
-      '${ApiConfig.baseUrl}/profile/me/photo',
-      {'url': url},
-      auth: true,
     );
     return Map<String, dynamic>.from(res as Map);
   }

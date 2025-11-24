@@ -12,6 +12,7 @@ class RecoverController extends GetxController {
 
   final isSending = false.obs;
   final isConfirming = false.obs;
+  final lastEmailSent = ''.obs;
 
   @override
   void onClose() {
@@ -32,6 +33,7 @@ class RecoverController extends GetxController {
     try {
       isSending.value = true;
       await _userService.requestRecover(emailCtrl.text.trim());
+      lastEmailSent.value = emailCtrl.text.trim();
       Get.snackbar('Código enviado',
           'Revisa tu correo e ingresa el código de 4 dígitos',
           snackPosition: SnackPosition.BOTTOM,
@@ -48,6 +50,12 @@ class RecoverController extends GetxController {
   Future<void> confirm() async {
     if (codeCtrl.text.length != 4) {
       Get.snackbar('Código', 'Ingresa el código de 4 dígitos',
+          snackPosition: SnackPosition.BOTTOM,
+          duration: const Duration(seconds: 2));
+      return;
+    }
+    if (passCtrl.text.length < 6) {
+      Get.snackbar('Contraseña', 'La nueva contraseña debe tener al menos 6 caracteres',
           snackPosition: SnackPosition.BOTTOM,
           duration: const Duration(seconds: 2));
       return;

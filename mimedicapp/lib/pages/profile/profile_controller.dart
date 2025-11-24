@@ -13,6 +13,7 @@ class ProfileController extends GetxController {
   final correo = ''.obs;
   final celular = ''.obs;
   final fechaNacimiento = Rxn<DateTime>();
+  final fotoBase64 = ''.obs;
 
   @override
   void onInit() {
@@ -28,6 +29,7 @@ class ProfileController extends GetxController {
       correo.value = user.correo;
       celular.value = user.celular;
       fechaNacimiento.value = user.fechaNacimiento;
+      fotoBase64.value = user.foto ?? '';
     } catch (e) {
       Get.snackbar('Error', 'No se pudo cargar el perfil: $e');
     } finally {
@@ -39,9 +41,6 @@ class ProfileController extends GetxController {
       {required String oldPass, required String newPass}) async {
     await _profileService.changePassword(
         oldPassword: oldPass, newPassword: newPass);
-    Get.snackbar('Listo', 'Contraseña actualizada',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2));
   }
 
   Future<void> deleteAccount() async {
@@ -59,21 +58,21 @@ class ProfileController extends GetxController {
         duration: const Duration(seconds: 2));
   }
 
-  Future<void> updatePhotoUrl(String url) async {
-    await _profileService.updatePhoto(url: url);
-    Get.snackbar('Foto', 'Foto actualizada',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2));
-  }
-
   Future<void> pickAndUploadPhoto() async {
     final picker = ImagePicker();
     final picked = await picker.pickImage(source: ImageSource.gallery, imageQuality: 80);
     if (picked == null) return;
-    await _profileService.uploadPhotoFile(File(picked.path));
+    final res = await _profileService.uploadPhotoFile(File(picked.path));
+    if (res['photo'] is String) {
+      fotoBase64.value = res['photo'] as String;
+    }
     await loadProfile();
-    Get.snackbar('Foto', 'Foto actualizada',
-        snackPosition: SnackPosition.BOTTOM,
-        duration: const Duration(seconds: 2));
+  }
+
+  Future<void> logout() async {
+    try {
+      await _userService.logout();
+    } catch (_) {}
+    Get.offAllNamed('/sign-in');
   }
 }

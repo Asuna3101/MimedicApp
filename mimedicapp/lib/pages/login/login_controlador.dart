@@ -18,14 +18,6 @@ class LoginControlador extends GetxController {
   // Clave para el formulario
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  @override
-  void onClose() {
-    // Limpiar controllers cuando se destruye el controlador
-    correoController.dispose();
-    contrasenaController.dispose();
-    super.onClose();
-  }
-
   /// Alternar visibilidad de la contraseña
   void togglePasswordVisibility() {
     obscurePassword.value = !obscurePassword.value;

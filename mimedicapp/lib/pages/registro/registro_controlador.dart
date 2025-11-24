@@ -29,12 +29,7 @@ class RegistroControlador extends GetxController {
 
   @override
   void onClose() {
-    // Limpiar controllers cuando se destruye el controlador
-    nombreController.dispose();
-    correoController.dispose();
-    celularController.dispose();
-    contrasenaController.dispose();
-    confirmarContrasenaController.dispose();
+    _disposeControllers();
     super.onClose();
   }
 
@@ -213,6 +208,14 @@ class RegistroControlador extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  void _disposeControllers() {
+    nombreController.dispose();
+    correoController.dispose();
+    celularController.dispose();
+    contrasenaController.dispose();
+    confirmarContrasenaController.dispose();
   }
 
   /// Limpiar el formulario
