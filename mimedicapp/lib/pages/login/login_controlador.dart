@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../services/user_service.dart';
 
 class LoginControlador extends GetxController {
@@ -51,6 +52,10 @@ class LoginControlador extends GetxController {
       );
 
       print('Login exitoso: $result'); // Para debugging
+
+      // Limpiar historial local de tomas al iniciar sesión (puede pertenecer a otro usuario)
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove('completed_tomas_history');
 
       // Si llegamos aquí, el login fue exitoso
       Get.snackbar(

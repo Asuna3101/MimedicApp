@@ -3,7 +3,7 @@ class ApiConfig {
   /// Inyecta la URL con: --dart-define=BASE_URL=....18.91
   /// Fallback útil para emulador Android: 10.0.2.2 apunta al host
   static const String baseUrl = String.fromEnvironment('BASE_URL',
-      defaultValue: 'http://10.0.2.2:8002/api/v1');
+      defaultValue: 'http://10.0.2.2:8000/api/v1');
 
   // Timeouts y headers
   static const Duration timeout = Duration(seconds: 30);
@@ -85,9 +85,9 @@ Para conectar con tu backend local:
 
 2) Ejecuta la app con (ejemplos):
    - Emulador Android:
-     flutter run --dart-define=BASE_URL=http://10.0.2.2:8002/api/v1
+     flutter run --dart-define=BASE_URL=http://10.0.2.2:8000/api/v1
    - Dispositivo físico (misma Wi-Fi):
-     flutter run --dart-define=BASE_URL=http://TU_IP_LOCAL:8002/api/v1
+     flutter run --dart-define=BASE_URL=http://TU_IP_LOCAL:8000/api/v1
    - iOS Simulator:
      flutter run --dart-define=BASE_URL=http://127.0.0.1:8002/api/v1
 
